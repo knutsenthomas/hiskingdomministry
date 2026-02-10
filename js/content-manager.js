@@ -65,6 +65,8 @@ class ContentManager {
             const blogData = await firebaseService.getPageContent('collection_blog');
             const blogItems = Array.isArray(blogData) ? blogData : (blogData && blogData.items ? blogData.items : []);
             if (blogItems.length > 0) this.renderBlogPosts(blogItems, '#blogg .blog-grid');
+
+            this.enableHeroAnimations();
         }
 
         if (this.pageId === 'blogg-post') {
@@ -520,6 +522,7 @@ class ContentManager {
         if (!sliderContainer) return;
 
         if (slides.length > 0) {
+            document.body.classList.remove('hero-animate');
             sliderContainer.innerHTML = slides.map((slide, index) => `
                 <div class="slide ${index === 0 ? 'active' : ''}">
                     <div class="slide-bg" style="background-image: url('${slide.imageUrl}')"></div>
@@ -543,7 +546,14 @@ class ContentManager {
                 window.heroSlider.currentSlide = 0;
                 window.heroSlider.init();
             }
+
+            this.enableHeroAnimations();
         }
+    }
+
+    enableHeroAnimations() {
+        if (this.pageId !== 'index') return;
+        document.body.classList.add('hero-animate');
     }
 
     /**

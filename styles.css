@@ -57,6 +57,10 @@
     box-sizing: border-box;
 }
 
+html {
+    overflow-x: hidden;
+}
+
 body {
     font-family: 'DM Sans', sans-serif;
     color: var(--text-dark);
@@ -856,20 +860,29 @@ section {
 .slide-title {
     font-size: 64px;
     margin-bottom: 20px;
-    animation: fadeInUp 1s ease;
 }
 
 .slide-text {
     font-size: 20px;
     max-width: 600px;
     margin: 0 auto 30px;
-    animation: fadeInUp 1s ease 0.2s both;
 }
 
 .slide-buttons {
     display: flex;
     gap: 20px;
     justify-content: center;
+}
+
+body.hero-animate .slide-title {
+    animation: fadeInUp 1s ease;
+}
+
+body.hero-animate .slide-text {
+    animation: fadeInUp 1s ease 0.2s both;
+}
+
+body.hero-animate .slide-buttons {
     animation: fadeInUp 1s ease 0.4s both;
 }
 
@@ -1833,6 +1846,18 @@ section {
 }
 
 @media (max-width: 768px) {
+    .header {
+        padding-top: env(safe-area-inset-top);
+    }
+
+    .nav {
+        padding-top: env(safe-area-inset-top);
+    }
+
+    .header-content {
+        padding: 12px 16px;
+    }
+
     .slide-title {
         font-size: 32px;
         margin-bottom: 15px;
