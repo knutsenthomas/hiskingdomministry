@@ -1,0 +1,641 @@
+<!DOCTYPE html>
+<html lang="no">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>His Kingdom Ministry | Et felleskap for vekst</title>
+    <meta name="description"
+        content="His Kingdom Ministry - En non-profit organisasjon dedikert til åndelig vekst gjennom undervisning, podcast og reisevirksomhet.">
+
+    <!-- Google Fonts -->
+    <link
+        href="https://fonts.googleapis.com/css2?family=Merriweather:wght@300;400;700;900&family=DM+Sans:wght@400;500;700&display=swap"
+        rel="stylesheet">
+
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+    <!-- Header -->
+    <header class="header" id="header">
+        <div class="container">
+            <div class="header-content">
+                <a href="index.html" class="logo">
+                    <div class="logo-icon">
+                        <img src="img/Logo - sirkel.png" alt="His Kingdom Ministry Logo">
+                    </div>
+                    <span>His Kingdom Ministry</span>
+                </a>
+
+                <nav class="nav" id="nav">
+                    <ul class="nav-list">
+                        <li><a href="index.html#hjem" class="nav-link active">Hjem</a></li>
+                        <li><a href="om-oss.html" class="nav-link">Om oss</a></li>
+                        <li><a href="media.html" class="nav-link">Media</a></li>
+                        <li><a href="arrangementer.html" class="nav-link">Arrangementer</a></li>
+                        <li><a href="blogg.html" class="nav-link">Blogg</a></li>
+                        <li><a href="kontakt.html" class="nav-link">Kontakt</a></li>
+                        <li class="mobile-only"><a href="donasjoner.html" class="btn btn-primary">Gi gave</a></li>
+                    </ul>
+                </nav>
+
+                <div class="header-actions">
+                    <a href="donasjoner.html" class="btn btn-primary desktop-only">Gi gave</a>
+                    <button class="mobile-toggle" id="mobile-toggle">
+                        <span></span>
+                        <span></span>
+                        <span></span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Hero Slider -->
+    <section class="hero-slider" id="hjem">
+        <div class="slider-container">
+            <div class="slide active">
+                <div class="slide-bg"
+                    style="background-image: url('https://images.unsplash.com/photo-1511632765486-a01980e01a18?w=1920&h=1080&fit=crop')">
+                </div>
+                <div class="slide-content">
+                    <div class="container">
+                        <h1 class="slide-title" data-content-key="hero.title">Tenk & gi nestekjærlighet</h1>
+                        <p class="slide-text" data-content-key="hero.subtitle">Vi er her for å støtte deg på din
+                            åndelige reise. Bli med i et trygt miljø
+                            der vi utforsker Guds ord, deler livet og styrker relasjonen til Jesus.</p>
+                        <div class="slide-buttons">
+                            <a href="om-oss.html" class="btn btn-primary">Utforsk mer</a>
+                            <a href="donasjoner.html" class="btn btn-outline">Gi gave</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="slide">
+                <div class="slide-bg"
+                    style="background-image: url('https://images.unsplash.com/photo-1529070538774-1843cb3265df?w=1920&h=1080&fit=crop')">
+                </div>
+                <div class="slide-content">
+                    <div class="container">
+                        <h1 class="slide-title">Vekst gjennom felleskap</h1>
+                        <p class="slide-text">Uansett hvor du er på din vandring, ønsker vi å gå sammen med deg. Bli med
+                            i et felleskap som utforsker Guds ord og styrker troen.</p>
+                        <div class="slide-buttons">
+                            <a href="om-oss.html" class="btn btn-primary">Les mer</a>
+                            <a href="kontakt.html" class="btn btn-outline">Kontakt oss</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="slide">
+                <div class="slide-bg"
+                    style="background-image: url('https://images.unsplash.com/photo-1507692049790-de58290a4334?w=1920&h=1080&fit=crop')">
+                </div>
+                <div class="slide-content">
+                    <div class="container">
+                        <h1 class="slide-title">Støtt vårt arbeid</h1>
+                        <p class="slide-text">Din gave gjør en forskjell. Hjelp oss å nå flere mennesker med evangeliet
+                            gjennom undervisning, reisevirksomhet og felleskap.</p>
+                        <div class="slide-buttons">
+                            <a href="donasjoner.html" class="btn btn-primary">Gi gave nå</a>
+                            <a href="#innsamling" class="btn btn-outline">Se prosjekter</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="slider-nav">
+            <button class="slider-arrow slider-prev"><i class="fas fa-chevron-left"></i></button>
+            <div class="slider-dots"></div>
+            <button class="slider-arrow slider-next"><i class="fas fa-chevron-right"></i></button>
+        </div>
+    </section>
+
+    <!-- Feature Boxes -->
+    <section class="features">
+        <div class="container">
+            <div class="features-grid">
+                <div class="feature-box">
+                    <div class="feature-icon blue">
+                        <i class="fas fa-book-open"></i>
+                    </div>
+                    <h3 class="feature-title" data-content-key="features.teaching.title">Undervisning</h3>
+                    <p class="feature-text" data-content-key="features.teaching.text">Bibelskoler, seminarer og
+                        dyptgående undervisning i Guds ord for åndelig
+                        vekst.</p>
+                    <a href="media.html" class="feature-link">Les mer <i class="fas fa-arrow-right"></i></a>
+                </div>
+
+                <div class="feature-box">
+                    <div class="feature-icon yellow">
+                        <i class="fas fa-podcast"></i>
+                    </div>
+                    <h3 class="feature-title" data-content-key="features.podcast.title">Podcast</h3>
+                    <p class="feature-text" data-content-key="features.podcast.text">Lytt til våre samtaler om tro, liv
+                        og åndelig vekst hvor som helst.</p>
+                    <a href="media.html" class="feature-link">Lytt nå <i class="fas fa-arrow-right"></i></a>
+                </div>
+
+                <div class="feature-box">
+                    <div class="feature-icon red">
+                        <i class="fas fa-globe-americas"></i>
+                    </div>
+                    <h3 class="feature-title" data-content-key="features.travel.title">Reisevirksomhet</h3>
+                    <p class="feature-text" data-content-key="features.travel.text">Forkynnelse og konferanser rundt om
+                        i verden for å spre evangeliet.</p>
+                    <a href="#arrangementer" class="feature-link">Oppdag mer <i class="fas fa-arrow-right"></i></a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- About Section -->
+    <section class="about" id="om-oss">
+        <div class="container">
+            <div class="about-grid">
+                <div class="about-image">
+                    <div class="circular-image">
+                        <img src="https://images.unsplash.com/photo-1529070538774-1843cb3265df?w=600&h=600&fit=crop"
+                            alt="Felleskap">
+                        <div class="play-button">
+                            <i class="fas fa-play"></i>
+                        </div>
+                    </div>
+                    <div class="circular-image-small">
+                        <img src="https://images.unsplash.com/photo-1511632765486-a01980e01a18?w=300&h=300&fit=crop"
+                            alt="Bønn">
+                    </div>
+                </div>
+
+                <div class="about-content">
+                    <span class="section-label" data-content-key="about.label">Velkommen til Fellesskapet</span>
+                    <h2 class="section-title" data-content-key="about.title">Vi er en Non-Profit Organisasjon</h2>
+                    <p class="section-text" data-content-key="about.description">His Kingdom Ministry driver med åndelig
+                        samlinger som bønnemøter,
+                        undervisningseminarer, og forkynnende reisevirksomhet. Vi ønsker å være et felleskap der
+                        mennesker kan vokse i sin tro og relasjon til Jesus.</p>
+
+                    <div class="about-features">
+                        <div class="about-feature">
+                            <div class="about-feature-icon">
+                                <i class="fas fa-check-circle"></i>
+                            </div>
+                            <div class="about-feature-content">
+                                <h4 data-content-key="about.features.mission.title">Vårt Oppdrag</h4>
+                                <p data-content-key="about.features.mission.text">Å utruste og inspirere mennesker til
+                                    et dypere liv med Gud gjennom undervisning,
+                                    fellesskap og bønn. Vi ønsker å være et sted hvor mennesker kan vokse i sin tro.</p>
+                            </div>
+                        </div>
+
+                        <div class="about-feature">
+                            <div class="about-feature-icon">
+                                <i class="fas fa-check-circle"></i>
+                            </div>
+                            <div class="about-feature-content">
+                                <h4 data-content-key="about.features.story.title">Vår Historie</h4>
+                                <p data-content-key="about.features.story.text">Startet med en visjon om å samle
+                                    mennesker i åndelig vekst, har vi vokst til et
+                                    levende felleskap som driver med bønnemøter, undervisning og reisevirksomhet.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <a href="om-oss.html" class="btn btn-primary">Oppdag mer</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Fun Facts / Statistics -->
+    <section class="funfacts">
+        <div class="container">
+            <div class="funfacts-grid">
+                <div class="funfact">
+                    <div class="funfact-icon blue">
+                        <i class="fas fa-calendar-alt"></i>
+                    </div>
+                    <div class="funfact-content">
+                        <span class="funfact-number" data-target="150" data-content-key="stats.events.number">0</span>
+                        <span class="funfact-label" data-content-key="stats.events.label">Arrangementer</span>
+                    </div>
+                </div>
+
+                <div class="funfact">
+                    <div class="funfact-icon yellow">
+                        <i class="fas fa-microphone"></i>
+                    </div>
+                    <div class="funfact-content">
+                        <span class="funfact-number" data-target="85" data-content-key="stats.podcast.number">0</span>
+                        <span class="funfact-label" data-content-key="stats.podcast.label">Podcast Episoder</span>
+                    </div>
+                </div>
+
+                <div class="funfact">
+                    <div class="funfact-icon red">
+                        <i class="fas fa-users"></i>
+                    </div>
+                    <div class="funfact-content">
+                        <span class="funfact-number" data-target="2500" data-content-key="stats.reached.number">0</span>
+                        <span class="funfact-label" data-content-key="stats.reached.label">Mennesker Nådd</span>
+                    </div>
+                </div>
+
+                <div class="funfact">
+                    <div class="funfact-icon blue">
+                        <i class="fas fa-globe"></i>
+                    </div>
+                    <div class="funfact-content">
+                        <span class="funfact-number" data-target="12" data-content-key="stats.countries.number">0</span>
+                        <span class="funfact-label" data-content-key="stats.countries.label">Land Besøkt</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Causes / Fundraising -->
+    <section class="causes" id="innsamling">
+        <div class="container">
+            <div class="section-header">
+                <span class="section-label">Støtt Vårt Arbeid</span>
+                <h2 class="section-title">Aktive Innsamlingsaksjoner</h2>
+                <p class="section-description">Din gave gjør en forskjell. Se hvordan du kan bidra til vårt arbeid.</p>
+            </div>
+
+            <div class="causes-grid">
+                <div class="cause-card">
+                    <div class="cause-image">
+                        <img src="https://images.unsplash.com/photo-1532629345422-7515f3d16bb6?w=600&h=400&fit=crop"
+                            alt="Støtt vårt arbeid">
+                    </div>
+                    <div class="cause-content">
+                        <h3 class="cause-title">Støtt Vårt Arbeid</h3>
+                        <p class="cause-text">Hjelp oss å fortsette med undervisning, podcast og reisevirksomhet for å
+                            nå flere mennesker med evangeliet.</p>
+
+                        <div class="cause-progress">
+                            <div class="progress-bar">
+                                <div class="progress-fill" data-progress="65"></div>
+                            </div>
+                            <div class="progress-stats">
+                                <span><strong>65.000 kr</strong> samlet inn</span>
+                                <span><strong>100.000 kr</strong> mål</span>
+                            </div>
+                        </div>
+
+                        <a href="donasjoner.html" class="btn btn-primary btn-block">Donér nå</a>
+                    </div>
+                </div>
+
+                <div class="cause-card">
+                    <div class="cause-image">
+                        <img src="https://images.unsplash.com/photo-1503676260728-1c00da094a0b?w=600&h=400&fit=crop"
+                            alt="Bibelskole">
+                    </div>
+                    <div class="cause-content">
+                        <h3 class="cause-title">Bibelskole 2026</h3>
+                        <p class="cause-text">Støtt vår årlige bibelskole hvor vi tilbyr dyptgående undervisning i Guds
+                            ord for åndelig vekst.</p>
+
+                        <div class="cause-progress">
+                            <div class="progress-bar">
+                                <div class="progress-fill" data-progress="42"></div>
+                            </div>
+                            <div class="progress-stats">
+                                <span><strong>21.000 kr</strong> samlet inn</span>
+                                <span><strong>50.000 kr</strong> mål</span>
+                            </div>
+                        </div>
+
+                        <a href="donasjoner.html" class="btn btn-primary btn-block">Donér nå</a>
+                    </div>
+                </div>
+
+                <div class="cause-card">
+                    <div class="cause-image">
+                        <img src="https://images.unsplash.com/photo-1488521787991-ed7bbaae773c?w=600&h=400&fit=crop"
+                            alt="Misjonsreise">
+                    </div>
+                    <div class="cause-content">
+                        <h3 class="cause-title">Misjonsreise Afrika</h3>
+                        <p class="cause-text">Støtt vår kommende misjonsreise til Afrika hvor vi skal forkynne
+                            evangeliet og holde konferanser.</p>
+
+                        <div class="cause-progress">
+                            <div class="progress-bar">
+                                <div class="progress-fill" data-progress="28"></div>
+                            </div>
+                            <div class="progress-stats">
+                                <span><strong>28.000 kr</strong> samlet inn</span>
+                                <span><strong>100.000 kr</strong> mål</span>
+                            </div>
+                        </div>
+
+                        <a href="donasjoner.html" class="btn btn-primary btn-block">Donér nå</a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="section-footer" style="text-align: center; margin-top: 50px;">
+                <a href="donasjoner.html" class="btn btn-outline">Se alle innsamlinger</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Events -->
+    <section class="events" id="arrangementer">
+        <div class="container">
+            <div class="section-header">
+                <span class="section-label">Kommende Arrangementer</span>
+                <h2 class="section-title">Bli Med Oss</h2>
+                <p class="section-description">Se våre kommende arrangementer og meld deg på.</p>
+            </div>
+
+            <div class="events-grid">
+                <div class="event-card">
+                    <div class="event-image">
+                        <div class="event-image-zoom">
+                            <img src="https://images.unsplash.com/photo-1511795409834-ef04bbd61622?w=600&h=400&fit=crop"
+                                alt="Bønnemøte">
+                        </div>
+                        <div class="event-date">
+                            <span class="day">15</span>
+                            <span class="month">Mar</span>
+                        </div>
+                    </div>
+                    <div class="event-content">
+                        <h3 class="event-title">Bønnemøte</h3>
+                        <div class="event-meta">
+                            <span><i class="fas fa-clock"></i> 19:00 - 21:00</span>
+                            <span><i class="fas fa-map-marker-alt"></i> Stavanger</span>
+                        </div>
+                        <p class="event-text">Bli med på vårt ukentlige bønnemøte hvor vi søker Gud sammen.</p>
+                        <a href="arrangement-detaljer.html" class="event-link">Les mer <i
+                                class="fas fa-arrow-right"></i></a>
+                    </div>
+                </div>
+
+                <div class="event-card">
+                    <div class="event-image">
+                        <div class="event-image-zoom">
+                            <img src="https://images.unsplash.com/photo-1516738901171-8eb4fc13bd20?w=600&h=400&fit=crop"
+                                alt="Seminar">
+                        </div>
+                        <div class="event-date">
+                            <span class="day">22</span>
+                            <span class="month">Mar</span>
+                        </div>
+                    </div>
+                    <div class="event-content">
+                        <h3 class="event-title">Undervisningsseminar</h3>
+                        <div class="event-meta">
+                            <span><i class="fas fa-clock"></i> 10:00 - 16:00</span>
+                            <span><i class="fas fa-map-marker-alt"></i> Bergen</span>
+                        </div>
+                        <p class="event-text">Heldags seminar med dyptgående undervisning i Guds ord.</p>
+                        <a href="arrangement-detaljer.html" class="event-link">Les mer <i
+                                class="fas fa-arrow-right"></i></a>
+                    </div>
+                </div>
+
+                <div class="event-card">
+                    <div class="event-image">
+                        <div class="event-image-zoom">
+                            <img src="https://images.unsplash.com/photo-1529070538774-1843cb3265df?w=600&h=400&fit=crop"
+                                alt="Påskekonferanse">
+                        </div>
+                        <div class="event-date">
+                            <span class="day">05</span>
+                            <span class="month">Apr</span>
+                        </div>
+                    </div>
+                    <div class="event-content">
+                        <h3 class="event-title">Påskekonferanse</h3>
+                        <div class="event-meta">
+                            <span><i class="fas fa-clock"></i> 3 dager</span>
+                            <span><i class="fas fa-map-marker-alt"></i> Stavanger</span>
+                        </div>
+                        <p class="event-text">Tre dager med undervisning, bønn og felleskap i påsken.</p>
+                        <a href="arrangement-detaljer.html" class="event-link">Les mer <i
+                                class="fas fa-arrow-right"></i></a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="section-footer" style="text-align: center; margin-top: 50px;">
+                <a href="arrangementer.html" class="btn btn-outline">Se alle arrangementer</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Blog / News -->
+    <section class="blog" id="blogg">
+        <div class="container">
+            <div class="section-header">
+                <span class="section-label">Siste Nytt</span>
+                <h2 class="section-title">Nyheter & Blogg</h2>
+                <p class="section-description">Les våre siste artikler og oppdateringer.</p>
+            </div>
+
+            <div class="blog-grid">
+                <article class="blog-card">
+                    <div class="blog-image">
+                        <img src="https://images.unsplash.com/photo-1507692049790-de58290a4334?w=600&h=400&fit=crop"
+                            alt="Blogginnlegg">
+                        <span class="blog-category">Undervisning</span>
+                    </div>
+                    <div class="blog-content">
+                        <div class="blog-meta">
+                            <span><i class="fas fa-calendar"></i> 5. februar 2026</span>
+                            <span><i class="fas fa-user"></i> Admin</span>
+                        </div>
+                        <h3 class="blog-title">Åndelig Vekst i Hverdagen</h3>
+                        <p class="blog-excerpt">Hvordan kan vi vokse åndeligt midt i en travel hverdag? Les våre tips og
+                            refleksjoner...</p>
+                        <a href="#blogg" class="blog-link">Les mer <i class="fas fa-arrow-right"></i></a>
+                    </div>
+                </article>
+
+                <article class="blog-card">
+                    <div class="blog-image">
+                        <img src="https://images.unsplash.com/photo-1511632765486-a01980e01a18?w=600&h=400&fit=crop"
+                            alt="Blogginnlegg">
+                        <span class="blog-category">Vitnesbyrd</span>
+                    </div>
+                    <div class="blog-content">
+                        <div class="blog-meta">
+                            <span><i class="fas fa-calendar"></i> 28. januar 2026</span>
+                            <span><i class="fas fa-user"></i> Admin</span>
+                        </div>
+                        <h3 class="blog-title">Guds Trofasthet</h3>
+                        <p class="blog-excerpt">Et vitnesbyrd om hvordan Gud har vært trofast gjennom utfordringer og
+                            prøvelser...</p>
+                        <a href="#blogg" class="blog-link">Les mer <i class="fas fa-arrow-right"></i></a>
+                    </div>
+                </article>
+
+                <article class="blog-card">
+                    <div class="blog-image">
+                        <img src="https://images.unsplash.com/photo-1529070538774-1843cb3265df?w=600&h=400&fit=crop"
+                            alt="Blogginnlegg">
+                        <span class="blog-category">Podcast</span>
+                    </div>
+                    <div class="blog-content">
+                        <div class="blog-meta">
+                            <span><i class="fas fa-calendar"></i> 15. januar 2026</span>
+                            <span><i class="fas fa-user"></i> Admin</span>
+                        </div>
+                        <h3 class="blog-title">Ny Podcast Episode</h3>
+                        <p class="blog-excerpt">Lytt til vår nyeste episode hvor vi diskuterer tro, tvil og åndelig
+                            vekst...</p>
+                        <a href="blogg.html" class="blog-link">Les mer <i class="fas fa-arrow-right"></i></a>
+                    </div>
+                </article>
+            </div>
+
+            <div class="section-footer" style="text-align: center; margin-top: 50px;">
+                <a href="blogg.html" class="btn btn-outline">Se alle nyheter</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Testimonials -->
+    <section class="testimonials">
+        <div class="container">
+            <div class="section-header">
+                <span class="section-label">Vitnesbyrd</span>
+                <h2 class="section-title">Hva Folk Sier</h2>
+            </div>
+
+            <div class="testimonial-slider">
+                <div class="testimonial-track">
+                    <div class="testimonial-card active">
+                        <div class="testimonial-image">
+                            <img src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=200&h=200&fit=crop"
+                                alt="Person">
+                        </div>
+                        <p class="testimonial-text">"His Kingdom Ministry har vært en velsignelse i mitt liv.
+                            Undervisningen er dyp og relevant, og fellesskapet er varmt og støttende."</p>
+                        <h4 class="testimonial-name">Maria Hansen</h4>
+                        <span class="testimonial-role">Deltaker</span>
+                    </div>
+
+                    <div class="testimonial-card">
+                        <div class="testimonial-image">
+                            <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=200&h=200&fit=crop"
+                                alt="Person">
+                        </div>
+                        <p class="testimonial-text">"Gjennom HKM har jeg vokst enormt i min tro. Podcasten er fantastisk
+                            og arrangementene er alltid inspirerende."</p>
+                        <h4 class="testimonial-name">Erik Johansen</h4>
+                        <span class="testimonial-role">Deltaker</span>
+                    </div>
+
+                    <div class="testimonial-card">
+                        <div class="testimonial-image">
+                            <img src="https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=200&h=200&fit=crop"
+                                alt="Person">
+                        </div>
+                        <p class="testimonial-text">"Jeg er så takknemlig for dette fellesskapet. Her kan jeg være meg
+                            selv og vokse i troen sammen med andre."</p>
+                        <h4 class="testimonial-name">Sofie Berg</h4>
+                        <span class="testimonial-role">Deltaker</span>
+                    </div>
+                </div>
+
+                <div class="testimonial-nav">
+                    <button class="testimonial-prev"><i class="fas fa-chevron-left"></i></button>
+                    <button class="testimonial-next"><i class="fas fa-chevron-right"></i></button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Newsletter -->
+    <section class="newsletter">
+        <div class="container">
+            <div class="newsletter-content">
+                <h2 class="newsletter-title">Hold Deg Oppdatert</h2>
+                <p class="newsletter-text">Meld deg på vårt nyhetsbrev og få de siste oppdateringene om arrangementer,
+                    podcast og undervisning.</p>
+
+                <form class="newsletter-form" id="newsletter-form">
+                    <input type="email" class="newsletter-input" placeholder="Din e-postadresse" required>
+                    <button type="submit" class="btn btn-primary">Abonner</button>
+                </form>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer" id="kontakt">
+        <div class="container">
+            <div class="footer-grid">
+                <div class="footer-col">
+                    <a href="index.html" class="logo" style="margin-bottom: 20px; display: inline-block;">
+                        <div class="logo-icon">
+                            <img src="img/Logo - sirkel.png" alt="His Kingdom Ministry Logo">
+                        </div>
+                        <span style="color: white;">His Kingdom Ministry</span>
+                    </a>
+                    <p class="footer-text">Et felleskap for vekst, bønn og undervisning. Vi ønsker å utruste mennesker
+                        til et dypere liv med Gud.</p>
+                    <div class="footer-social">
+                        <a href="#" class="social-link"><i class="fab fa-facebook-f"></i></a>
+                        <a href="#" class="social-link"><i class="fab fa-instagram"></i></a>
+                        <a href="#" class="social-link"><i class="fab fa-youtube"></i></a>
+                    </div>
+                </div>
+
+                <div class="footer-col">
+                    <h4 class="footer-title">Sjekk ut</h4>
+                    <ul class="footer-links">
+                        <li><a href="index.html#hjem">Hjem</a></li>
+                        <li><a href="index.html#om-oss">Om oss</a></li>
+                        <li><a href="arrangementer.html">Arrangementer</a></li>
+                        <li><a href="blogg.html">Blogg</a></li>
+                        <li><a href="donasjoner.html">Donasjoner</a></li>
+                    </ul>
+                </div>
+
+                <div class="footer-col">
+                    <h4 class="footer-title">Ressurser</h4>
+                    <ul class="footer-links">
+                        <li><a href="blogg.html">Bøker</a></li>
+                        <li><a href="media.html#teaching-section">Undervisning</a></li>
+                        <li><a href="media.html#podcast-section">Podcast</a></li>
+                        <li><a href="arrangementer.html">E-kurs</a></li>
+                    </ul>
+                </div>
+
+                <div class="footer-col">
+                    <h4 class="footer-title">Kontakt</h4>
+                    <ul class="footer-contact">
+                        <li><i class="fas fa-envelope"></i> post@hiskingdomministry.no</li>
+                        <li><i class="fas fa-phone"></i> +47 123 45 678</li>
+                        <li><i class="fas fa-map-marker-alt"></i> Oslo, Norge</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="footer-bottom" style="display: flex; justify-content: space-between; align-items: center;">
+                <p>&copy; 2024 His Kingdom Ministry. Alle rettigheter reservert.</p>
+                <a href="admin/login.html"
+                    style="color: rgba(255,255,255,0.3); font-size: 11px; text-decoration: none;">Admin</a>
+            </div>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+    <script type="module" src="js/content-manager.js"></script>
+</body>
+
+</html>

@@ -1,0 +1,1947 @@
+// ===================================
+// Admin Dashboard - His Kingdom Ministry
+// Core Logic & Firebase Integration
+// ===================================
+import { firebaseService } from "../../js/firebase-service.js";
+
+class AdminManager {
+    constructor() {
+        this.currentSection = 'overview';
+        this.init();
+    }
+
+    init() {
+        this.initAuth();
+        this.initDashboard();
+
+        // Expose to window for the inline navigation script
+        window.adminManager = this;
+    }
+
+    /**
+     * Handle Admin Authentication
+     */
+    initAuth() {
+        if (!firebaseService.isInitialized) {
+            console.warn("⚠️ Firebase not initialized. Auth check skipped for development.");
+            return;
+        }
+
+        firebaseService.onAuthChange((user) => {
+            if (!user) {
+                window.location.href = 'login.html';
+            } else {
+                this.updateUserInfo(user);
+            }
+        });
+    }
+
+    async updateUserInfo(user) {
+        const adminName = document.getElementById('admin-name');
+        const adminAvatar = document.getElementById('admin-avatar');
+
+        // Try load custom profile data
+        let profile = null;
+        try {
+            profile = await firebaseService.getPageContent('settings_profile');
+        } catch (e) { }
+
+        const displayName = (profile && profile.fullName) || user.displayName || user.email;
+        const photoURL = (profile && profile.photoUrl) || user.photoURL;
+
+        if (adminName) adminName.textContent = displayName;
+        if (adminAvatar) {
+            if (photoURL) {
+                adminAvatar.innerHTML = `<img src="${photoURL}" alt="Profile" style="width: 100%; height: 100%; border-radius: 50%; object-fit: cover;">`;
+            } else {
+                const initials = displayName.split(' ').map(n => n[0]).join('').toUpperCase();
+                adminAvatar.textContent = initials.substring(0, 2);
+            }
+        }
+
+        // Add click listener to profile (header)
+        const userProfile = document.querySelector('.user-profile');
+        if (userProfile) {
+            userProfile.style.cursor = 'pointer';
+            userProfile.onclick = () => {
+                // Åpne profil-seksjonen direkte, uten å være avhengig av et meny-element
+                if (window.adminManager && typeof window.adminManager.onSectionSwitch === 'function') {
+                    window.adminManager.onSectionSwitch('profile');
+                }
+
+                const sections = document.querySelectorAll('.section-content');
+                sections.forEach(section => {
+                    section.classList.remove('active');
+                    if (section.id === 'profile-section') {
+                        section.classList.add('active');
+                    }
+                });
+            };
+        }
+    }
+
+    initDashboard() {
+        const logoutBtn = document.getElementById('logout-btn');
+        if (logoutBtn) {
+            logoutBtn.addEventListener('click', async () => {
+                if (confirm('Logg ut?')) {
+                    if (firebaseService.isInitialized) await firebaseService.logout();
+                    window.location.href = 'login.html';
+                }
+            });
+        }
+
+        // Render initial overview
+        this.renderOverview();
+        console.log("Dashboard initialized.");
+    }
+
+    async logout() {
+        try {
+            await firebaseService.signOut();
+            window.location.href = 'login.html';
+        } catch (error) {
+            console.error("Error signing out:", error);
+            alert("Failed to log out. Please try again.");
+        }
+    }
+
+    /**
+     * Called by the inline navigation script in index.html
+     */
+    onSectionSwitch(sectionId) {
+        this.currentSection = sectionId;
+        console.log(`🚀 Switching to section: ${sectionId}`);
+
+        // Initialize section the first time it's visited
+        const section = document.getElementById(`${sectionId}-section`);
+        if (section && section.getAttribute('data-rendered') !== 'true') {
+            switch (sectionId) {
+                case 'content':
+                    this.renderContentEditor();
+                    break;
+                case 'blog':
+                    this.renderCollectionEditor('blog', 'Blogginnlegg');
+                    break;
+                case 'events':
+                    this.renderCollectionEditor('events', 'Arrangementer');
+                    break;
+                case 'media':
+                    this.renderMediaManager();
+                    break;
+                case 'hero':
+                    this.renderHeroManager();
+                    break;
+                case 'teaching':
+                    this.renderTeachingManager();
+                    break;
+                case 'design':
+                    this.renderDesignSection();
+                    break;
+                case 'profile':
+                    this.renderProfileSection();
+                    break;
+                case 'seo':
+                    this.renderSEOSection();
+                    break;
+                case 'overview':
+                    this.renderOverview();
+                    break;
+                case 'settings':
+                    this.renderSettingsSection();
+                    break;
+                case 'integrations':
+                    this.renderIntegrationsSection();
+                    break;
+            }
+        }
+    }
+
+    async renderOverview() {
+        const section = document.getElementById('overview-section');
+        if (!section) return;
+
+        // Basic Stats (tåler at Firebase ikke er satt opp eller at det ikke finnes data ennå)
+        let blogCount = 0;
+        let teachingCount = 0;
+
+        try {
+            const blogData = await firebaseService.getPageContent('collection_blog');
+            const blogItems = Array.isArray(blogData)
+                ? blogData
+                : (blogData && Array.isArray(blogData.items)) ? blogData.items : [];
+            blogCount = blogItems.length;
+        } catch (e) {
+            console.warn('Kunne ikke hente bloggstatistikk:', e);
+        }
+
+        try {
+            const teachingData = await firebaseService.getPageContent('collection_teaching');
+            const teachingItems = Array.isArray(teachingData)
+                ? teachingData
+                : (teachingData && Array.isArray(teachingData.items)) ? teachingData.items : [];
+            teachingCount = teachingItems.length;
+        } catch (e) {
+            console.warn('Kunne ikke hente undervisningsstatistikk:', e);
+        }
+
+        section.innerHTML = `
+            <div class="section-header">
+                <h2 class="section-title">Velkommen tilbake!</h2>
+                <p class="section-subtitle">Oversikt over nettstedets aktivitet og Google Analytics data.</p>
+            </div>
+
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-icon purple"><span class="material-symbols-outlined">visibility</span></div>
+                    <div class="stat-info">
+                        <h3 class="stat-label">Sidevisninger (Siste 30 dager)</h3>
+                        <p class="stat-value">12,450</p>
+                        <span class="stat-trend up"><span class="material-symbols-outlined">trending_up</span> 12.5%</span>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon blue"><span class="material-symbols-outlined">group</span></div>
+                    <div class="stat-info">
+                        <h3 class="stat-label">Unike Besøkende</h3>
+                        <p class="stat-value">3,820</p>
+                        <span class="stat-trend up"><span class="material-symbols-outlined">trending_up</span> 8.2%</span>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon orange"><span class="material-symbols-outlined">edit_note</span></div>
+                    <div class="stat-info">
+                        <h3 class="stat-label">Blogginnlegg</h3>
+                        <p class="stat-value">${blogCount}</p>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon green"><span class="material-symbols-outlined">school</span></div>
+                    <div class="stat-info">
+                        <h3 class="stat-label">Undervisningsserier</h3>
+                        <p class="stat-value">${teachingCount}</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="grid-2-cols">
+                <div class="card">
+                    <div class="card-header flex-between">
+                        <h3 class="card-title">Trafikkovervåking (Google Analytics)</h3>
+                        <div class="card-actions">
+                            <span style="font-size: 12px; color: #64748b;">Sanntid: 24 aktive akkurat nå</span>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div style="height: 300px; display: flex; align-items: flex-end; gap: 10px; padding: 20px 0;">
+                            ${[40, 60, 45, 90, 65, 80, 50, 70, 85, 40, 60, 100].map(h => `
+                                <div style="flex: 1; background: linear-gradient(to top, #6366f1, #a5b4fc); height: ${h}%; border-radius: 4px 4px 0 0; position: relative;" title="${h}%">
+                                    <div style="position: absolute; bottom: -25px; left: 50%; transform: translateX(-50%); font-size: 10px; color: #64748b;">${['Jan', 'Feb', 'Mar', 'Apr', 'Mai', 'Jun', 'Jul', 'Aug', 'Sep', 'Okt', 'Nov', 'Des'][Math.floor(Math.random() * 12)]}</div>
+                                </div>
+                            `).join('')}
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-header"><h3 class="card-title">Topp Sider</h3></div>
+                    <div class="card-body">
+                        <ul style="list-style: none; padding: 0;">
+                            <li style="display: flex; justify-content: space-between; padding: 12px 0; border-bottom: 1px solid #f1f5f9;">
+                                <span style="font-size: 14px; font-weight: 500;">/index.html</span>
+                                <span style="font-size: 14px; color: #64748b;">4,230</span>
+                            </li>
+                            <li style="display: flex; justify-content: space-between; padding: 12px 0; border-bottom: 1px solid #f1f5f9;">
+                                <span style="font-size: 14px; font-weight: 500;">/blogg.html</span>
+                                <span style="font-size: 14px; color: #64748b;">2,150</span>
+                            </li>
+                            <li style="display: flex; justify-content: space-between; padding: 12px 0; border-bottom: 1px solid #f1f5f9;">
+                                <span style="font-size: 14px; font-weight: 500;">/media.html</span>
+                                <span style="font-size: 14px; color: #64748b;">1,840</span>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <div class="grid-2-cols equal" style="margin-top: 24px;">
+                <div class="card">
+                    <div class="card-header flex-between">
+                        <h3 class="card-title">Mest leste innhold (Popularitet)</h3>
+                    </div>
+                    <div class="card-body">
+                        <ul style="list-style: none; padding: 0;">
+                            <li style="display: flex; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid #eee;">
+                                <span>Bibeltro Undervisning (Serier)</span>
+                                <span class="badge" style="background: #eef2ff; color: #6366f1; padding: 2px 8px; border-radius: 12px; font-size: 11px;">Topp</span>
+                            </li>
+                            <li style="display: flex; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid #eee;">
+                                <span>Hvordan leve i nåde (Blogg)</span>
+                                <span style="font-weight: 600;">850 visninger</span>
+                            </li>
+                            <li style="display: flex; justify-content: space-between; padding: 10px 0;">
+                                <span>Bønnens kraft (Undervisning)</span>
+                                <span style="font-weight: 600;">620 visninger</span>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-header"><h3 class="card-title">Søk & AI Trender</h3></div>
+                    <div class="card-body">
+                        <p style="font-size: 13px; color: #64748b; margin-bottom: 15px;">Populære søkeord og konsepter folk leter etter på siden eller via AI-søk (ChatGPT/Perplexity).</p>
+                        <div style="display: flex; flex-wrap: wrap; gap: 8px;">
+                            <span class="badge" style="background: #f3f4f6; padding: 4px 10px; border-radius: 15px; font-size: 12px;">Kristent fellesskap</span>
+                            <span class="badge" style="background: #f3f4f6; padding: 4px 10px; border-radius: 15px; font-size: 12px;">Bibelundervisning</span>
+                            <span class="badge" style="background: #eff6ff; color: #3b82f6; padding: 4px 10px; border-radius: 15px; font-size: 12px; font-weight: 600;">+ Nåde & Sannhet</span>
+                            <span class="badge" style="background: #f3f4f6; padding: 4px 10px; border-radius: 15px; font-size: 12px;">Seminarer 2026</span>
+                        </div>
+                        <div style="margin-top: 20px; padding-top: 15px; border-top: 1px solid #eee;">
+                            <p style="font-size: 12px; font-weight: 600; margin-bottom: 5px;">AI Indeksering Status: <span style="color: #10b981;">Optimalisert</span></p>
+                            <p style="font-size: 11px; color: #64748b;">SEO-titler og GEO-metadata er nå tilgjengelig for AI-boter.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        `;
+        section.setAttribute('data-rendered', 'true');
+    }
+
+    async renderMediaManager() {
+        const section = document.getElementById('media-section');
+        if (!section) return;
+
+        section.innerHTML = `
+            <div class="section-header">
+                <h2 class="section-title">Media-integrasjoner</h2>
+                <p class="section-subtitle">Koble til YouTube og Podcast-strømmer.</p>
+            </div>
+            <div class="card" style="max-width: 800px;">
+                <div class="card-body">
+                    <div class="form-section">
+                        <h4>YouTube Innstillinger</h4>
+                        <div class="form-group">
+                            <label>YouTube Channel ID</label>
+                            <input type="text" id="yt-channel-id" class="form-control" placeholder="f.eks. UCxxxxxxxxxxxx">
+                            <small style="color: #64748b; margin-top: 4px; display: block;">ID-en til kanalen din.</small>
+                        </div>
+                        <div class="form-group" style="margin-top: 15px;">
+                            <label>YouTube Kategorier (Playlister)</label>
+                            <textarea id="yt-playlists" class="form-control" style="height: 100px;" placeholder="Navn: PlaylistID (én per linje)&#10;Tro: PLxxxxxxxxxxxx&#10;Bønn: PLyyyyyyyyyyyy"></textarea>
+                            <small style="color: #64748b; margin-top: 4px; display: block;">Organiser videoer i kategorier ved å legge til spilleliste-IDer.</small>
+                        </div>
+                    </div>
+                    
+                    <div class="divider"></div>
+
+                    <div class="form-section">
+                        <h4>Podcast Innstillinger</h4>
+                        <div class="form-group">
+                            <label>RSS Feed URL</label>
+                            <input type="text" id="podcast-rss-url" class="form-control" placeholder="https://feeds.simplecast.com/xxxxxx">
+                            <small style="color: #64748b; margin-top: 4px; display: block;">RSS-lenken fra din podcast-leverandør.</small>
+                        </div>
+                    </div>
+
+                    <div style="margin-top: 30px;">
+                        <button class="btn-primary" id="save-media-settings">Lagre media-innstillinger</button>
+                    </div>
+                </div>
+            </div>
+        `;
+        section.setAttribute('data-rendered', 'true');
+
+        // Load existing settings
+        try {
+            const settings = await firebaseService.getPageContent('settings_media');
+            if (settings) {
+                if (settings.youtubeChannelId) document.getElementById('yt-channel-id').value = settings.youtubeChannelId;
+                if (settings.youtubePlaylists) document.getElementById('yt-playlists').value = settings.youtubePlaylists;
+                if (settings.podcastRssUrl) document.getElementById('podcast-rss-url').value = settings.podcastRssUrl;
+            }
+        } catch (e) {
+            console.error("Load media settings error:", e);
+        }
+
+        document.getElementById('save-media-settings').addEventListener('click', async () => {
+            const btn = document.getElementById('save-media-settings');
+            const ytChannelId = document.getElementById('yt-channel-id').value.trim();
+            const youtubePlaylists = document.getElementById('yt-playlists').value.trim();
+            const podcastRssUrl = document.getElementById('podcast-rss-url').value.trim();
+
+            btn.textContent = 'Lagrer...';
+            btn.disabled = true;
+
+            try {
+                await firebaseService.savePageContent('settings_media', {
+                    youtubeChannelId: ytChannelId,
+                    youtubePlaylists: youtubePlaylists,
+                    podcastRssUrl: podcastRssUrl,
+                    updatedAt: new Date().toISOString()
+                });
+                alert('✅ Media-innstillinger er lagret!');
+            } catch (err) {
+                console.error("Save media settings error:", err);
+                alert('❌ Feil ved lagring: ' + err.message);
+            } finally {
+                btn.textContent = 'Lagre media-innstillinger';
+                btn.disabled = false;
+            }
+        });
+    }
+
+    /**
+     * Render the Content Editor Section (for static pages)
+     */
+    renderContentEditor() {
+        const section = document.getElementById('content-section');
+        if (!section) return;
+
+        section.innerHTML = `
+            <div class="section-header">
+                <h2 class="section-title">Sideinnhold</h2>
+                <p class="section-subtitle">Rediger tekst på de faste sidene.</p>
+            </div>
+            <div class="content-editor-grid">
+                <aside class="content-sidebar card">
+                    <ul class="page-list">
+                        <li class="page-item active" data-page="index">Forside</li>
+                        <li class="page-item" data-page="om-oss">Om oss</li>
+                        <li class="page-item" data-page="media">Media</li>
+                        <li class="page-item" data-page="arrangementer">Arrangementer</li>
+                        <li class="page-item" data-page="blogg">Blogg</li>
+                        <li class="page-item" data-page="kontakt">Kontakt</li>
+                        <li class="page-item" data-page="donasjoner">Donasjoner</li>
+                        <li class="page-item" data-page="undervisning">Undervisning</li>
+                        <li class="page-item" data-page="bibelstudier">Bibelstudier</li>
+                        <li class="page-item" data-page="seminarer">Seminarer</li>
+                        <li class="page-item" data-page="podcast">Podcast</li>
+                    </ul>
+                </aside>
+                <div class="content-main">
+                    <div class="card">
+                        <div class="card-header flex-between">
+                            <h3 id="editing-page-title">Forside</h3>
+                            <button class="btn-primary" id="save-content">Lagre endringer</button>
+                        </div>
+                        <div class="card-body" id="editor-fields">
+                            <div class="loader">Laster...</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        `;
+        section.setAttribute('data-rendered', 'true');
+
+        // Sidebar logic
+        section.querySelectorAll('.page-item').forEach(item => {
+            item.addEventListener('click', () => {
+                section.querySelectorAll('.page-item').forEach(i => i.classList.remove('active'));
+                item.classList.add('active');
+                const pageId = item.getAttribute('data-page');
+                document.getElementById('editing-page-title').textContent = item.textContent;
+                this.loadPageFields(pageId);
+            });
+        });
+
+        document.getElementById('save-content').addEventListener('click', () => this.savePageContent());
+        this.loadPageFields('index');
+    }
+
+    /**
+     * Render Collection Editor (Blog/Events) with Add/Delete support
+     */
+    async renderCollectionEditor(collectionId, title) {
+        const section = document.getElementById(`${collectionId}-section`);
+        if (!section) return;
+
+        section.innerHTML = `
+            <div class="section-header flex-between">
+                <div>
+                    <h2 class="section-title">${title}</h2>
+                    <p class="section-subtitle">Administrer dine ${title.toLowerCase()}.</p>
+                </div>
+                <button class="btn-primary" id="add-new-${collectionId}">
+                    <span class="material-symbols-outlined">add</span> Legg til ny
+                </button>
+            </div>
+            <div class="card">
+                <div class="card-body">
+                    <div class="collection-list" id="${collectionId}-list">
+                        <div class="loader">Laster ${title.toLowerCase()}...</div>
+                    </div>
+                </div>
+            </div>
+        `;
+        section.setAttribute('data-rendered', 'true');
+
+        document.getElementById(`add-new-${collectionId}`).addEventListener('click', () => this.addNewItem(collectionId));
+        this.loadCollection(collectionId);
+    }
+
+    async loadCollection(collectionId) {
+        const listContainer = document.getElementById(`${collectionId}-list`);
+        if (!firebaseService.isInitialized) {
+            listContainer.innerHTML = '<p class="text-muted">Firebase er ikke tilkoblet.</p>';
+            return;
+        }
+
+        try {
+            const data = await firebaseService.getPageContent(`collection_${collectionId}`);
+            const items = Array.isArray(data) ? data : (data && data.items ? data.items : []);
+            this.renderItems(collectionId, items);
+        } catch (e) {
+            listContainer.innerHTML = '<p>Kunne ikke laste data.</p>';
+        }
+    }
+
+    renderItems(collectionId, items) {
+        const container = document.getElementById(`${collectionId}-list`);
+        if (items.length === 0) {
+            container.innerHTML = '<p style="padding: 20px; text-align: center; color: #94a3b8;">Ingen elementer funnet. Klikk "Legg til ny".</p>';
+            return;
+        }
+
+        container.innerHTML = `<div class="collection-grid">${items.map((item, index) => `
+            <div class="item-card">
+                ${item.imageUrl ? `<div class="item-thumb"><img src="${item.imageUrl}" alt="Thumb"></div>` : ''}
+                <div class="item-content">
+                    <h4 style="margin: 0;">${item.title || 'Uten tittel'}</h4>
+                    <p style="margin: 5px 0 12px; font-size: 13px; color: #64748b;">${item.date || ''}</p>
+                    <div class="item-actions">
+                        <button class="icon-btn" onclick="window.adminManager.editCollectionItem('${collectionId}', ${index})">
+                            <span class="material-symbols-outlined">edit</span>
+                        </button>
+                        <button class="icon-btn delete" onclick="window.adminManager.deleteItem('${collectionId}', ${index})">
+                            <span class="material-symbols-outlined">delete</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        `).join('')}</div>`;
+    }
+
+    async editCollectionItem(collectionId, index) {
+        try {
+            const rawData = await firebaseService.getPageContent(`collection_${collectionId}`);
+            const items = Array.isArray(rawData) ? rawData : (rawData && rawData.items ? rawData.items : []);
+            const item = items[index] || {};
+
+            // Bruk kun ISO-format (YYYY-MM-DD) i dato-feltet. Hvis eksisterende dato
+            // ikke allerede er i dette formatet, lar vi feltet stå tomt slik at brukeren
+            // kan velge dato på nytt – dette hindrer at Date-parsing kaster feil.
+            const safeDate = (typeof item.date === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(item.date))
+                ? item.date
+                : '';
+
+            const modal = document.createElement('div');
+            modal.className = 'dashboard-modal';
+            modal.innerHTML = `
+                <div class="modal-backdrop" style="position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 2000; display: flex; align-items: center; justify-content: center; padding: 20px;">
+                    <div class="card" style="width: 100%; max-width: 800px; max-height: 90vh; overflow-y: auto;">
+                        <div class="card-header flex-between">
+                            <h3 class="card-title">Rediger innhold</h3>
+                            <button class="icon-btn" id="close-col-modal"><span class="material-symbols-outlined">close</span></button>
+                        </div>
+                        <div class="card-body">
+                            <div class="grid-2-cols editor-layout">
+                                <div class="main-fields">
+                                    <div class="form-group">
+                                        <label>Tittel</label>
+                                        <input type="text" id="col-item-title" class="form-control" value="${item.title || ''}">
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Innhold</label>
+                                        <div id="col-item-content" contenteditable="true" class="form-control" style="min-height: 300px; overflow-y: auto;">${item.content || ''}</div>
+                                    </div>
+                                </div>
+                                <div class="side-fields">
+                                    <div class="form-group">
+                                        <label>Publiseringsdato</label>
+                                        <input type="date" id="col-item-date" class="form-control" value="${safeDate}">
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Forfatter / Bidragsyter</label>
+                                        <input type="text" id="col-item-author" class="form-control" value="${item.author || ''}" placeholder="Navn">
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Kategori</label>
+                                        <input type="text" id="col-item-cat" class="form-control" value="${item.category || ''}" placeholder="Eks: Undervisning, Nyheter">
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Bilde URL</label>
+                                        <input type="text" id="col-item-img" class="form-control" value="${item.imageUrl || ''}">
+                                    </div>
+                                    <div class="divider" style="margin: 20px 0;"></div>
+                                    <h4 style="font-size: 14px; margin-bottom: 10px;">SEO & GEO</h4>
+                                    <div class="form-group">
+                                        <label>SEO Tittel</label>
+                                        <input type="text" id="col-item-seo-title" class="form-control" value="${item.seoTitle || ''}">
+                                    </div>
+                                    <div class="form-group">
+                                        <label>SEO Beskrivelse</label>
+                                        <textarea id="col-item-seo-desc" class="form-control" style="height: 60px;">${item.seoDescription || ''}</textarea>
+                                    </div>
+                                    <div class="form-group">
+                                        <label>GEO Posisjon</label>
+                                        <input type="text" id="col-item-geo" class="form-control" value="${item.geoPosition || ''}" placeholder="lat, long">
+                                    </div>
+                                </div>
+                            </div>
+                            <div style="margin-top: 24px; display: flex; gap: 10px;">
+                                <button class="btn-primary" style="flex: 1;" id="save-col-item">Lagre endringer</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+
+            document.body.appendChild(modal);
+
+            document.getElementById('close-col-modal').onclick = () => modal.remove();
+            document.getElementById('save-col-item').onclick = async () => {
+                const btn = document.getElementById('save-col-item');
+
+                item.title = document.getElementById('col-item-title').value;
+                item.content = document.getElementById('col-item-content').innerHTML;
+                item.date = document.getElementById('col-item-date').value;
+                item.imageUrl = document.getElementById('col-item-img').value;
+                item.author = document.getElementById('col-item-author').value;
+                item.category = document.getElementById('col-item-cat').value;
+                item.seoTitle = document.getElementById('col-item-seo-title').value;
+                item.seoDescription = document.getElementById('col-item-seo-desc').value;
+                item.geoPosition = document.getElementById('col-item-geo').value;
+
+                btn.textContent = 'Lagrer...';
+                btn.disabled = true;
+
+                try {
+                    const currentData = await firebaseService.getPageContent(`collection_${collectionId}`);
+                    const list = Array.isArray(currentData) ? currentData : (currentData && currentData.items ? currentData.items : []);
+                    list[index] = item;
+                    await firebaseService.savePageContent(`collection_${collectionId}`, { items: list });
+                    modal.remove();
+                    this.loadCollection(collectionId);
+                } catch (err) {
+                    console.error('Error saving item:', err);
+                    alert('Kunne ikke lagre. Sjekk konsollen for detaljer.');
+                } finally {
+                    btn.textContent = 'Lagre endringer';
+                    btn.disabled = false;
+                }
+            };
+        } catch (err) {
+            console.error('Error opening editor:', err);
+            alert('Kunne ikke åpne elementet. Sjekk konsollen for detaljer.');
+        }
+    }
+
+    async addNewItem(collectionId) {
+        const title = prompt(`Tittel på ny ${collectionId === 'blog' ? 'bloggpost' : (collectionId === 'teaching' ? 'undervisning' : 'arrangement')}:`);
+        if (!title) return;
+
+        const newItem = {
+            title: title,
+            date: new Date().toLocaleDateString('no-NO'),
+            content: ''
+        };
+
+        const currentData = await firebaseService.getPageContent(`collection_${collectionId}`);
+        const items = Array.isArray(currentData) ? currentData : (currentData && currentData.items ? currentData.items : []);
+        items.unshift(newItem);
+        await firebaseService.savePageContent(`collection_${collectionId}`, { items: items });
+        this.loadCollection(collectionId);
+    }
+
+    async deleteItem(collectionId, index) {
+        if (!confirm('Er du sikker på at du vil slette dette elementet?')) return;
+
+        const currentData = await firebaseService.getPageContent(`collection_${collectionId}`);
+        const items = Array.isArray(currentData) ? currentData : (currentData && currentData.items ? currentData.items : []);
+        items.splice(index, 1);
+        await firebaseService.savePageContent(`collection_${collectionId}`, { items: items });
+        this.loadCollection(collectionId);
+    }
+
+    async renderDesignSection() {
+        const section = document.getElementById('design-section');
+        if (!section) return;
+
+        section.innerHTML = `
+            <div class="section-header">
+                <h2 class="section-title">Design & Identitet</h2>
+                <p class="section-subtitle">Administrer logo, favicon, fonter og globale farger.</p>
+            </div>
+            
+            <div class="grid-2-cols" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(400px, 1fr)); gap: 24px;">
+                <!-- Site Identity Card -->
+                <div class="card">
+                    <div class="card-header"><h3 class="card-title">Nettstedsidentitet</h3></div>
+                    <div class="card-body">
+                        <div class="form-group">
+                            <label>Logo URL</label>
+                            <input type="text" id="site-logo-url" class="form-control" placeholder="https://...">
+                            <div class="preview-container" id="logo-preview-container"></div>
+                        </div>
+                        <div class="form-group">
+                            <label>Favicon URL</label>
+                            <input type="text" id="site-favicon-url" class="form-control" placeholder="https://...">
+                            <div class="preview-container" id="favicon-preview-container"></div>
+                        </div>
+                        <div class="form-group">
+                            <label>Sidetittel (SEO)</label>
+                            <input type="text" id="site-title-seo" class="form-control" placeholder="His Kingdom Ministry">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Typography Card -->
+                <div class="card">
+                    <div class="card-header"><h3 class="card-title">Typografi & Styling</h3></div>
+                    <div class="card-body">
+                        <div class="form-group">
+                            <label>Hovedfont (Google Fonts)</label>
+                            <select id="main-font-select" class="form-control">
+                                <option value="Inter">Inter</option>
+                                <option value="DM Sans">DM Sans</option>
+                                <option value="Merriweather">Merriweather</option>
+                                <option value="Roboto">Roboto</option>
+                                <option value="Open Sans">Open Sans</option>
+                                <option value="Montserrat">Montserrat</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Grunnstørrelse (Body Text)</label>
+                            <div class="range-group">
+                                <input type="range" id="font-size-base" min="12" max="24" value="16">
+                                <span class="range-val" id="font-size-base-val">16px</span>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label>Primærfarge</label>
+                            <div class="color-input-group">
+                                <input type="color" id="primary-color-picker" value="#1a1a1a">
+                                <input type="text" id="primary-color-hex" class="form-control" value="#1a1a1a" style="width: 100px;">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div style="margin-top: 24px;">
+                <button class="btn-primary" id="save-design-settings">Lagre design-innstillinger</button>
+            </div>
+        `;
+        section.setAttribute('data-rendered', 'true');
+
+        // Add Listeners
+        const syncRange = (id) => {
+            const el = document.getElementById(id);
+            const valEl = document.getElementById(`${id}-val`);
+            el.oninput = () => valEl.textContent = `${el.value}px`;
+        };
+        syncRange('font-size-base');
+
+        const syncColor = (pickerId, hexId) => {
+            const picker = document.getElementById(pickerId);
+            const hex = document.getElementById(hexId);
+            picker.oninput = () => hex.value = picker.value.toUpperCase();
+            hex.oninput = () => picker.value = hex.value;
+        };
+        syncColor('primary-color-picker', 'primary-color-hex');
+
+        // Load existing
+        try {
+            const data = await firebaseService.getPageContent('settings_design');
+            if (data) {
+                if (data.logoUrl) {
+                    document.getElementById('site-logo-url').value = data.logoUrl;
+                    this.updatePreview('logo-preview-container', data.logoUrl);
+                }
+                if (data.faviconUrl) {
+                    document.getElementById('site-favicon-url').value = data.faviconUrl;
+                    this.updatePreview('favicon-preview-container', data.faviconUrl);
+                }
+                if (data.siteTitle) document.getElementById('site-title-seo').value = data.siteTitle;
+                if (data.mainFont) document.getElementById('main-font-select').value = data.mainFont;
+                if (data.fontSizeBase) {
+                    document.getElementById('font-size-base').value = data.fontSizeBase;
+                    document.getElementById('font-size-base-val').textContent = `${data.fontSizeBase}px`;
+                }
+                if (data.primaryColor) {
+                    document.getElementById('primary-color-picker').value = data.primaryColor;
+                    document.getElementById('primary-color-hex').value = data.primaryColor;
+                }
+            }
+        } catch (e) {
+            console.error("Load design error:", e);
+        }
+
+        document.getElementById('save-design-settings').onclick = async () => {
+            const btn = document.getElementById('save-design-settings');
+            const data = {
+                logoUrl: document.getElementById('site-logo-url').value,
+                faviconUrl: document.getElementById('site-favicon-url').value,
+                siteTitle: document.getElementById('site-title-seo').value,
+                mainFont: document.getElementById('main-font-select').value,
+                fontSizeBase: document.getElementById('font-size-base').value,
+                primaryColor: document.getElementById('primary-color-hex').value,
+                updatedAt: new Date().toISOString()
+            };
+
+            btn.textContent = 'Lagrer...';
+            btn.disabled = true;
+
+            try {
+                await firebaseService.savePageContent('settings_design', data);
+                alert('✅ Design-innstillinger er lagret!');
+            } catch (err) {
+                alert('❌ Feil ved lagring');
+            } finally {
+                btn.textContent = 'Lagre design-innstillinger';
+                btn.disabled = false;
+            }
+        };
+
+        // Preview URL inputs
+        document.getElementById('site-logo-url').onchange = (e) => this.updatePreview('logo-preview-container', e.target.value);
+        document.getElementById('site-favicon-url').onchange = (e) => this.updatePreview('favicon-preview-container', e.target.value);
+    }
+
+    updatePreview(containerId, url) {
+        const container = document.getElementById(containerId);
+        if (url && url.startsWith('http')) {
+            container.innerHTML = `<img src="${url}" class="preview-img" style="margin-top: 10px; max-height: 100px; border-radius: 4px; border: 1px solid #ddd;">`;
+        } else {
+            container.innerHTML = '';
+        }
+    }
+
+    async renderHeroManager() {
+        const section = document.getElementById('hero-section');
+        if (!section) return;
+
+        section.innerHTML = `
+            <div class="section-header flex-between">
+                <div>
+                    <h2 class="section-title">Hero Slider</h2>
+                    <p class="section-subtitle">Administrer slides på forsiden.</p>
+                </div>
+                <button class="btn-primary" id="add-hero-slide">
+                    <span class="material-symbols-outlined">add</span> Ny Slide
+                </button>
+            </div>
+            <div class="collection-grid" id="hero-slides-list">
+                <div class="loader">Laster slides...</div>
+            </div>
+        `;
+        section.setAttribute('data-rendered', 'true');
+
+        document.getElementById('add-hero-slide').onclick = () => this.editHeroSlide();
+        this.loadHeroSlides();
+    }
+
+    async loadHeroSlides() {
+        const container = document.getElementById('hero-slides-list');
+        if (!container) return;
+
+        try {
+            const data = await firebaseService.getPageContent('hero_slides');
+            this.heroSlides = data ? data.slides || [] : [];
+            this.renderHeroSlides(this.heroSlides);
+        } catch (e) {
+            container.innerHTML = '<p>Kunne ikke laste slides.</p>';
+        }
+    }
+
+    async renderProfileSection() {
+        const section = document.getElementById('profile-section');
+        if (!section) return;
+
+        section.innerHTML = `
+            <div class="section-header">
+                <h2 class="section-title">Min Profil</h2>
+                <p class="section-subtitle">Administrer din kontoinformasjon og profilbilde.</p>
+            </div>
+            
+            <div class="grid-2-cols" style="display: grid; grid-template-columns: 280px 1fr; gap: 24px;">
+                <!-- Profile Picture Card -->
+                <div class="card">
+                    <div class="card-header"><h3 class="card-title">Profilbilde</h3></div>
+                    <div class="card-body" style="text-align: center;">
+                        <div id="profile-img-preview" style="width: 150px; height: 150px; border-radius: 50%; background: #f1f5f9; margin: 0 auto 20px; border: 4px solid #fff; box-shadow: 0 4px 12px rgba(0,0,0,0.1); overflow: hidden; display: flex; align-items: center; justify-content: center;">
+                            <span class="material-symbols-outlined" style="font-size: 64px; color: #cbd5e1;">person</span>
+                        </div>
+                        <input type="file" id="profile-file-input" style="display: none;" accept="image/*">
+                        <input type="hidden" id="profile-photo-url">
+                        <button class="btn-primary" id="upload-profile-btn" style="width: 100%; margin-top: 10px;">
+                            <span class="material-symbols-outlined">upload</span> Last opp nytt bilde
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Profile Info Card -->
+                <div class="card">
+                    <div class="card-header"><h3 class="card-title">Personalia & Kontakt</h3></div>
+                    <div class="card-body">
+                        <div class="grid-2-cols" style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
+                            <div class="form-group">
+                                <label>Fullt Navn</label>
+                                <input type="text" id="profile-name" class="form-control" placeholder="Navn Navnesen">
+                            </div>
+                            <div class="form-group">
+                                <label>Fødselsdato</label>
+                                <input type="date" id="profile-dob" class="form-control">
+                            </div>
+                        </div>
+                        <div class="form-group" style="margin-top: 16px;">
+                            <label>Adresse</label>
+                            <input type="text" id="profile-address" class="form-control" placeholder="Gateveien 12, 0123 Oslo">
+                        </div>
+                        <div class="form-group" style="margin-top: 16px;">
+                            <label>Telefon</label>
+                            <input type="tel" id="profile-phone" class="form-control" placeholder="+47 123 45 678">
+                        </div>
+                        <div class="form-group" style="margin-top: 16px;">
+                            <label>Om meg / Bio</label>
+                            <textarea id="profile-bio" class="form-control" style="height: 100px;" placeholder="Skriv litt om deg selv..."></textarea>
+                        </div>
+                        
+                        <div style="margin-top: 24px; border-top: 1px solid #f1f5f9; padding-top: 24px;">
+                            <button class="btn-secondary" id="save-profile-btn" style="width: 100%;">
+                                <span class="material-symbols-outlined">save</span> Lagre Profil
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        `;
+        section.setAttribute('data-rendered', 'true');
+
+        // Load existing profile data
+        const profile = await firebaseService.getPageContent('settings_profile');
+        if (profile) {
+            document.getElementById('profile-name').value = profile.fullName || '';
+            document.getElementById('profile-dob').value = profile.birthDate || '';
+            document.getElementById('profile-address').value = profile.address || '';
+            document.getElementById('profile-phone').value = profile.phone || '';
+            document.getElementById('profile-bio').value = profile.bio || '';
+            document.getElementById('profile-photo-url').value = profile.photoUrl || '';
+            if (profile.photoUrl) {
+                document.getElementById('profile-img-preview').innerHTML = `<img src="${profile.photoUrl}" style="width: 100%; height: 100%; object-fit: cover;">`;
+            }
+        }
+
+        // Handle Image Upload
+        const fileInput = document.getElementById('profile-file-input');
+        const uploadBtn = document.getElementById('upload-profile-btn');
+        const preview = document.getElementById('profile-img-preview');
+        const urlInput = document.getElementById('profile-photo-url');
+
+        uploadBtn.onclick = () => fileInput.click();
+        fileInput.onchange = async () => {
+            if (fileInput.files.length === 0) return;
+            uploadBtn.disabled = true;
+            uploadBtn.innerHTML = '<span class="material-symbols-outlined rotating">sync</span> Laster opp...';
+            try {
+                console.log("🚀 Starting upload to:", `profiles/${Date.now()}_${fileInput.files[0].name}`);
+                const url = await firebaseService.uploadImage(fileInput.files[0], `profiles/${Date.now()}_${fileInput.files[0].name}`);
+                console.log("✅ Upload success:", url);
+                urlInput.value = url;
+                preview.innerHTML = `<img src="${url}" style="width: 100%; height: 100%; object-fit: cover;">`;
+            } catch (err) {
+                console.error("❌ Upload failed:", err);
+                alert('Opplasting feilet: ' + err.message + '\n\nSjekk at du har tilgang til å laste opp filer i Firebase Storage (Security Rules).');
+            } finally {
+                uploadBtn.disabled = false;
+                uploadBtn.innerHTML = '<span class="material-symbols-outlined">upload</span> Last opp nytt bilde';
+            }
+        };
+
+        // Handle Save
+        document.getElementById('save-profile-btn').onclick = async () => {
+            const btn = document.getElementById('save-profile-btn');
+            const data = {
+                fullName: document.getElementById('profile-name').value,
+                birthDate: document.getElementById('profile-dob').value,
+                address: document.getElementById('profile-address').value,
+                phone: document.getElementById('profile-phone').value,
+                bio: document.getElementById('profile-bio').value,
+                photoUrl: document.getElementById('profile-photo-url').value,
+                updatedAt: new Date().toISOString()
+            };
+
+            btn.textContent = 'Lagrer...';
+            btn.disabled = true;
+
+            try {
+                await firebaseService.savePageContent('settings_profile', data);
+                alert('✅ Profilen er lagret!');
+                // Update header info immediately
+                const user = firebaseService.auth.currentUser;
+                if (user) this.updateUserInfo(user);
+            } catch (err) {
+                alert('❌ Feil ved lagring');
+            } finally {
+                btn.textContent = 'Lagre Profil';
+                btn.disabled = false;
+            }
+        };
+    }
+
+    renderHeroSlides(slides) {
+        const container = document.getElementById('hero-slides-list');
+        if (slides.length === 0) {
+            container.innerHTML = '<p style="grid-column: 1/-1; text-align: center; padding: 40px; color: #94a3b8;">Ingen slides ennå. Legg til din første!</p>';
+            return;
+        }
+
+        container.innerHTML = slides.map((slide, index) => `
+            <div class="item-card">
+                <div class="item-thumb">
+                    <img src="${slide.imageUrl || 'https://via.placeholder.com/400x225?text=Ingen+bilde'}" alt="Slide Thumb">
+                </div>
+                <div class="item-content">
+                    <h4 style="margin-bottom: 4px;">${slide.title || 'Uten tittel'}</h4>
+                    <p style="font-size: 13px; color: #64748b; margin-bottom: 12px;">${slide.subtitle || ''}</p>
+                    <div class="item-actions">
+                        <button class="icon-btn" onclick="adminManager.editHeroSlide(${index})">
+                            <span class="material-symbols-outlined">edit</span>
+                        </button>
+                        <button class="icon-btn delete" onclick="adminManager.deleteHeroSlide(${index})">
+                            <span class="material-symbols-outlined">delete</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        `).join('');
+    }
+
+    async editHeroSlide(index = -1) {
+        const isNew = index === -1;
+        const slide = isNew ? { title: '', subtitle: '', imageUrl: '', btnText: '', btnLink: '' } : this.heroSlides[index];
+
+        const modal = document.createElement('div');
+        modal.className = 'dashboard-modal';
+        modal.innerHTML = `
+            <div class="modal-backdrop" style="position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 2000; display: flex; align-items: center; justify-content: center; padding: 20px;">
+                <div class="card" style="width: 100%; max-width: 500px; max-height: 90vh; overflow-y: auto;">
+                    <div class="card-header flex-between">
+                        <h3 class="card-title">${isNew ? 'Legg til ny slide' : 'Rediger slide'}</h3>
+                        <button class="icon-btn" id="close-modal"><span class="material-symbols-outlined">close</span></button>
+                    </div>
+                    <div class="card-body">
+                        <div class="form-group">
+                            <label>Bilde URL / Last opp</label>
+                            <div style="display: flex; gap: 8px;">
+                                <input type="text" id="slide-img-url" class="form-control" value="${slide.imageUrl || ''}" style="flex: 1;">
+                                <button class="btn-primary" id="upload-slide-img" style="padding: 0 12px;"><span class="material-symbols-outlined">upload</span></button>
+                                <input type="file" id="slide-file-input" style="display: none;" accept="image/*">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label>Overskrift</label>
+                            <input type="text" id="slide-title" class="form-control" value="${slide.title || ''}">
+                        </div>
+                        <div class="form-group">
+                            <label>Undertekst</label>
+                            <textarea id="slide-subtitle" class="form-control" style="height: 80px;">${slide.subtitle || ''}</textarea>
+                        </div>
+                        <div class="form-group">
+                            <label>Knapptekst</label>
+                            <input type="text" id="slide-btn-text" class="form-control" value="${slide.btnText || ''}">
+                        </div>
+                        <div class="form-group">
+                            <label>Knapp-lenke</label>
+                            <input type="text" id="slide-btn-link" class="form-control" value="${slide.btnLink || ''}">
+                        </div>
+                        <div style="margin-top: 24px;">
+                            <button class="btn-primary" style="width: 100%;" id="save-slide-btn">Lagre slide</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        `;
+        document.body.appendChild(modal);
+
+        const imgInput = document.getElementById('slide-img-url');
+        const fileInput = document.getElementById('slide-file-input');
+        const uploadBtn = document.getElementById('upload-slide-img');
+
+        uploadBtn.onclick = () => fileInput.click();
+        fileInput.onchange = async () => {
+            if (fileInput.files.length === 0) return;
+            uploadBtn.disabled = true;
+            uploadBtn.innerHTML = '<span class="material-symbols-outlined rotating">sync</span>';
+            try {
+                const url = await firebaseService.uploadImage(fileInput.files[0], `hero/${Date.now()}_${fileInput.files[0].name}`);
+                imgInput.value = url;
+            } catch (err) {
+                alert('Upload failed: ' + err.message);
+            } finally {
+                uploadBtn.disabled = false;
+                uploadBtn.innerHTML = '<span class="material-symbols-outlined">upload</span> Last opp nytt bilde';
+            }
+        };
+
+        document.getElementById('close-modal').onclick = () => modal.remove();
+        document.getElementById('save-slide-btn').onclick = async () => {
+            const btn = document.getElementById('save-slide-btn');
+            const updatedSlide = {
+                imageUrl: document.getElementById('slide-img-url').value,
+                title: document.getElementById('slide-title').value,
+                subtitle: document.getElementById('slide-subtitle').value,
+                btnText: document.getElementById('slide-btn-text').value,
+                btnLink: document.getElementById('slide-btn-link').value
+            };
+
+            btn.textContent = 'Lagrer...';
+            btn.disabled = true;
+
+            if (isNew) {
+                this.heroSlides.push(updatedSlide);
+            } else {
+                this.heroSlides[index] = updatedSlide;
+            }
+
+            try {
+                await firebaseService.savePageContent('hero_slides', { slides: this.heroSlides });
+                modal.remove();
+                this.renderHeroSlides(this.heroSlides);
+            } catch (err) {
+                alert('Feil ved lagring');
+                btn.textContent = 'Lagre slide';
+                btn.disabled = false;
+            }
+        };
+    }
+
+    async deleteHeroSlide(index) {
+        if (!confirm('Vil du slette denne sliden?')) return;
+        this.heroSlides.splice(index, 1);
+        try {
+            await firebaseService.savePageContent('hero_slides', { slides: this.heroSlides });
+            this.renderHeroSlides(this.heroSlides);
+        } catch (err) {
+            alert('Feil ved sletting');
+        }
+    }
+
+    async renderTeachingManager() {
+        this.renderCollectionEditor('teaching', 'Undervisning');
+    }
+
+    async renderSEOSection() {
+        const section = document.getElementById('seo-section');
+        if (!section) return;
+
+        section.innerHTML = `
+            <div class="section-header">
+                <h2 class="section-title">SEO & Synlighet</h2>
+                <p class="section-subtitle">Styr hvordan nettsiden din ser ut i søkemotorer og sosiale medier.</p>
+            </div>
+            
+            <div class="card" style="margin-bottom: 24px; border-left: 4px solid #3b82f6;">
+                <div class="card-body" style="display: flex; align-items: center; gap: 15px;">
+                    <span class="material-symbols-outlined" style="font-size: 32px; color: #3b82f6;">insights</span>
+                    <div>
+                        <h4 style="margin: 0; font-size: 15px;">AI-Søk Optimalisering</h4>
+                        <p style="margin: 5px 0 0; font-size: 13px; color: #64748b;">Ved å legge til GEO-data og tydelige SEO-titler hjelper du AIer som ChatGPT og Perplexity å finne innholdet ditt mer presist.</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="grid-2-cols" style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px;">
+                <!-- Global SEO Card -->
+                <div class="card">
+                    <div class="card-header"><h3 class="card-title">Global SEO</h3></div>
+                    <div class="card-body">
+                        <div class="form-group">
+                            <label>Nettsteds Tittel (Prefix/Suffix)</label>
+                            <input type="text" id="seo-global-title" class="form-control" placeholder="His Kingdom Ministry">
+                        </div>
+                        <div class="form-group">
+                            <label>Standard Beskrivelse (Meta Description)</label>
+                            <textarea id="seo-global-desc" class="form-control" style="height: 100px;"></textarea>
+                        </div>
+                        <div class="form-group">
+                            <label>Søkeord (Keywords)</label>
+                            <input type="text" id="seo-global-keywords" class="form-control" placeholder="tro, jesus, undervisning">
+                        </div>
+                        <div class="divider" style="margin: 20px 0;"></div>
+                        <h4 style="font-size: 14px; margin-bottom: 10px;">GEO Metadata (Lokal SEO)</h4>
+                        <div class="form-group">
+                            <label>GEO Posisjon (Breddegrad, Lengdegrad)</label>
+                            <input type="text" id="seo-global-geo-pos" class="form-control" placeholder="59.9139, 10.7522">
+                        </div>
+                        <div class="form-group">
+                            <label>GEO Region (Landskode-Region)</label>
+                            <input type="text" id="seo-global-geo-region" class="form-control" placeholder="NO-Oslo">
+                        </div>
+                        <div class="form-group">
+                            <label>GEO Sted (Placename)</label>
+                            <input type="text" id="seo-global-geo-place" class="form-control" placeholder="Oslo">
+                        </div>
+                        <div style="margin-top: 24px;">
+                            <button class="btn-primary" id="save-global-seo" style="width: 100%;">Lagre Globale Innstillinger</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Open Graph / Social Media Card -->
+                <div class="card">
+                    <div class="card-header"><h3 class="card-title">Sosiale Medier (Open Graph)</h3></div>
+                    <div class="card-body">
+                        <div class="form-group">
+                            <label>Dele-bilde (OG Image) URL</label>
+                            <div style="display: flex; gap: 8px;">
+                                <input type="text" id="seo-og-image" class="form-control" style="flex: 1;">
+                                <button class="btn-primary" id="upload-og-img" style="padding: 0 12px;"><span class="material-symbols-outlined">upload</span></button>
+                                <input type="file" id="og-file-input" style="display: none;" accept="image/*">
+                            </div>
+                        </div>
+                        <div id="og-preview" style="margin-top: 15px; border-radius: 8px; border: 1px solid #eee; overflow: hidden; display: none;"></div>
+                        <p style="font-size: 12px; color: #64748b; margin-top: 10px;">Dette bildet vises når du deler nettsiden på Facebook, LinkedIn, etc.</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card" style="margin-top: 24px;">
+                <div class="card-header flex-between">
+                    <h3 class="card-title">Sidespesifikk SEO</h3>
+                    <select id="seo-page-selector" class="form-control" style="width: 250px;">
+                        <option value="index">Forside</option>
+                        <option value="om-oss">Om Oss</option>
+                        <option value="media">Media</option>
+                        <option value="arrangementer">Arrangementer</option>
+                        <option value="blogg">Blogg</option>
+                        <option value="donasjoner">Donasjoner</option>
+                        <option value="kontakt">Kontakt</option>
+                        <option value="undervisning">Undervisning</option>
+                        <option value="bibelstudier">Bibelstudier</option>
+                        <option value="seminarer">Seminarer</option>
+                        <option value="podcast">Podcast</option>
+                    </select>
+                </div>
+                <div class="card-body">
+                    <div class="form-group">
+                        <label>Side-tittel (Vises i fanen)</label>
+                        <input type="text" id="seo-page-title" class="form-control">
+                    </div>
+                    <div class="form-group">
+                        <label>Side-beskrivelse</label>
+                        <textarea id="seo-page-desc" class="form-control" style="height: 80px;"></textarea>
+                    </div>
+                    <div class="grid-2-cols" style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
+                        <div class="form-group">
+                            <label>GEO Posisjon (Side)</label>
+                            <input type="text" id="seo-page-geo-pos" class="form-control">
+                        </div>
+                        <div class="form-group">
+                            <label>GEO Sted (Side)</label>
+                            <input type="text" id="seo-page-geo-place" class="form-control">
+                        </div>
+                    </div>
+                    <button class="btn-secondary" id="save-page-seo" style="width: 100%;">Lagre SEO for denne siden</button>
+                </div>
+            </div>
+        `;
+        section.setAttribute('data-rendered', 'true');
+
+        // Load Data
+        const seoData = await firebaseService.getPageContent('settings_seo') || {};
+        document.getElementById('seo-global-title').value = seoData.globalTitle || '';
+        document.getElementById('seo-global-desc').value = seoData.globalDescription || '';
+        document.getElementById('seo-global-keywords').value = seoData.globalKeywords || '';
+        document.getElementById('seo-og-image').value = seoData.ogImage || '';
+        document.getElementById('seo-global-geo-pos').value = seoData.geoPosition || '';
+        document.getElementById('seo-global-geo-region').value = seoData.geoRegion || '';
+        document.getElementById('seo-global-geo-place').value = seoData.geoPlacename || '';
+
+        const updateOGPreview = () => {
+            const url = document.getElementById('seo-og-image').value;
+            const preview = document.getElementById('og-preview');
+            if (url) {
+                preview.innerHTML = `<img src="${url}" style="width: 100%; display: block;">`;
+                preview.style.display = 'block';
+            } else {
+                preview.style.display = 'none';
+            }
+        };
+        updateOGPreview();
+
+        // Page SEO Loading
+        const pageSelector = document.getElementById('seo-page-selector');
+        const loadPageSEO = () => {
+            const pageId = pageSelector.value;
+            const pageSEO = (seoData.pages && seoData.pages[pageId]) || {};
+            document.getElementById('seo-page-title').value = pageSEO.title || '';
+            document.getElementById('seo-page-desc').value = pageSEO.description || '';
+            document.getElementById('seo-page-geo-pos').value = pageSEO.geoPosition || '';
+            document.getElementById('seo-page-geo-place').value = pageSEO.geoPlacename || '';
+        };
+        pageSelector.onchange = loadPageSEO;
+        loadPageSEO();
+
+        // Image Upload
+        const ogFileInput = document.getElementById('og-file-input');
+        const uploadOGBtn = document.getElementById('upload-og-img');
+        uploadOGBtn.onclick = () => ogFileInput.click();
+        ogFileInput.onchange = async () => {
+            if (ogFileInput.files.length === 0) return;
+            uploadOGBtn.disabled = true;
+            uploadOGBtn.innerHTML = '<span class="material-symbols-outlined rotating">sync</span>';
+            try {
+                const url = await firebaseService.uploadImage(ogFileInput.files[0], `seo/og_image_${Date.now()}`);
+                document.getElementById('seo-og-image').value = url;
+                updateOGPreview();
+            } catch (err) { alert('Upload failed'); }
+            finally {
+                uploadOGBtn.disabled = false;
+                uploadOGBtn.innerHTML = '<span class="material-symbols-outlined">upload</span>';
+            }
+        };
+
+        // Save Global
+        document.getElementById('save-global-seo').onclick = async () => {
+            const btn = document.getElementById('save-global-seo');
+            seoData.globalTitle = document.getElementById('seo-global-title').value;
+            seoData.globalDescription = document.getElementById('seo-global-desc').value;
+            seoData.globalKeywords = document.getElementById('seo-global-keywords').value;
+            seoData.ogImage = document.getElementById('seo-og-image').value;
+            seoData.geoPosition = document.getElementById('seo-global-geo-pos').value;
+            seoData.geoRegion = document.getElementById('seo-global-geo-region').value;
+            seoData.geoPlacename = document.getElementById('seo-global-geo-place').value;
+
+            btn.textContent = 'Lagrer...';
+            btn.disabled = true;
+            try {
+                await firebaseService.savePageContent('settings_seo', seoData);
+                alert('Globale SEO-innstillinger lagret!');
+            } catch (err) { alert('Feil ved lagring'); }
+            finally {
+                btn.textContent = 'Lagre Globale Innstillinger';
+                btn.disabled = false;
+            }
+        };
+
+        // Save Page SEO
+        document.getElementById('save-page-seo').onclick = async () => {
+            const btn = document.getElementById('save-page-seo');
+            const pageId = pageSelector.value;
+            if (!seoData.pages) seoData.pages = {};
+            seoData.pages[pageId] = {
+                title: document.getElementById('seo-page-title').value,
+                description: document.getElementById('seo-page-desc').value
+            };
+
+            btn.textContent = 'Lagrer...';
+            btn.disabled = true;
+            try {
+                await firebaseService.savePageContent('settings_seo', seoData);
+                alert(`SEO for ${pageId} lagret!`);
+            } catch (err) { alert('Feil ved lagring'); }
+            finally {
+                btn.textContent = 'Lagre SEO for denne siden';
+                btn.disabled = false;
+            }
+        };
+    }
+
+    async renderIntegrationsSection() {
+        const section = document.getElementById('integrations-section');
+        if (!section) return;
+
+        section.innerHTML = `
+            <div class="section-header">
+                <h2 class="section-title">Integrasjoner</h2>
+                <p class="section-subtitle">Koble nettsiden din til eksterne tjenester som Google Calendar.</p>
+            </div>
+            
+            <div class="grid-2-cols" style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px;">
+                <!-- Google Calendar Integration -->
+                <div class="card">
+                    <div class="card-header flex-between">
+                        <h3 class="card-title">Google Calendar</h3>
+                        <div class="status-badge" id="gcal-status" style="font-size: 12px; padding: 4px 8px; border-radius: 12px; background: #fee2e2; color: #991b1b;">Frakoblet</div>
+                    </div>
+                    <div class="card-body">
+                        <p style="font-size: 13px; color: #64748b; margin-bottom: 20px;">Hent arrangementer automatisk fra din Google-kalender til nettsiden.</p>
+                        
+                        <div class="form-group">
+                            <label>Google API Key</label>
+                            <input type="password" id="gcal-api-key" class="form-control" placeholder="Din Google Cloud API Key">
+                            <p style="font-size: 11px; color: #94a3b8; margin-top: 4px;">Sørg for at 'Google Calendar API' er aktivert i Cloud Console.</p>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label>Calendar ID</label>
+                            <input type="text" id="gcal-id" class="form-control" placeholder="f.eks. dinadresse@gmail.com">
+                            <p style="font-size: 11px; color: #94a3b8; margin-top: 4px;">Du finner denne i kalenderinnstillingene under 'Integrer kalender'.</p>
+                        </div>
+
+                        <div style="margin-top: 24px;">
+                            <button class="btn-primary" id="save-gcal-settings" style="width: 100%;">Lagre Kalender-innstillinger</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Guidance Card -->
+                <div class="card" style="background: #f8fafc; border: 1px dashed #cbd5e1;">
+                    <div class="card-body">
+                        <h4 style="margin-bottom: 15px;">Slik setter du opp Google Calendar:</h4>
+                        <ol style="font-size: 13px; padding-left: 20px; line-height: 1.6; color: #334155;">
+                            <li>Gå til <a href="https://console.cloud.google.com/" target="_blank">Google Cloud Console</a>.</li>
+                            <li>Opprett et prosjekt og aktiver <b>Google Calendar API</b>.</li>
+                            <li>Gå til "Credentials" og opprett en <b>API Key</b> (begrens den gjerne til ditt domene).</li>
+                            <li>I Google Calendar: Gå til innstillinger for kalenderen du vil dele.</li>
+                            <li>Under "Access permissions", huk av for <b>Make available to public</b>.</li>
+                            <li>Finn <b>Calendar ID</b> under "Integrate calendar" og lim den inn her.</li>
+                        </ol>
+                    </div>
+                </div>
+            </div>
+        `;
+
+        // Load existing settings
+        const settings = await firebaseService.getPageContent('settings_integrations') || {};
+        const gcal = settings.googleCalendar || {};
+
+        document.getElementById('gcal-api-key').value = gcal.apiKey || '';
+        document.getElementById('gcal-id').value = gcal.calendarId || '';
+
+        if (gcal.apiKey && gcal.calendarId) {
+            const statusBadge = document.getElementById('gcal-status');
+            statusBadge.textContent = 'Konfigurert';
+            statusBadge.style.background = '#dcfce7';
+            statusBadge.style.color = '#166534';
+        }
+
+        document.getElementById('save-gcal-settings').onclick = async (e) => {
+            const btn = e.target;
+            const apiKey = document.getElementById('gcal-api-key').value.trim();
+            const calendarId = document.getElementById('gcal-id').value.trim();
+
+            btn.textContent = 'Lagrer...';
+            btn.disabled = true;
+
+            try {
+                const newSettings = {
+                    ...settings,
+                    googleCalendar: {
+                        apiKey,
+                        calendarId,
+                        lastUpdated: new Date().toISOString()
+                    }
+                };
+
+                await firebaseService.savePageContent('settings_integrations', newSettings);
+
+                btn.textContent = 'Lagret!';
+                const statusBadge = document.getElementById('gcal-status');
+                if (apiKey && calendarId) {
+                    statusBadge.textContent = 'Konfigurert';
+                    statusBadge.style.background = '#dcfce7';
+                    statusBadge.style.color = '#166534';
+                }
+                setTimeout(() => { btn.textContent = 'Lagre Kalender-innstillinger'; btn.disabled = false; }, 2000);
+            } catch (err) {
+                console.error("Save Error:", err);
+                btn.textContent = 'Feil ved lagring';
+                btn.style.setProperty('background', '#ef4444', 'important');
+                setTimeout(() => {
+                    btn.textContent = 'Lagre Kalender-innstillinger';
+                    btn.disabled = false;
+                    btn.style.setProperty('background', '', '');
+                }, 2000);
+            }
+        };
+
+        section.setAttribute('data-rendered', 'true');
+    }
+
+    /**
+     * Settings, Placeholders and Helpers
+     */
+    renderSettingsSection() {
+        const section = document.getElementById('settings-section');
+        if (!section) return;
+
+        section.innerHTML = `
+            <div class="section-header">
+                <h2 class="section-title">Innstillinger & Verktøy</h2>
+                <p class="section-subtitle">Administrer systeminnstillinger og datasync.</p>
+            </div>
+            <div class="grid-2-cols" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(400px, 1fr)); gap: 24px;">
+                <div class="card">
+                    <div class="card-header"><h3 class="card-title">Firebase Konfigurasjon</h3></div>
+                    <div class="card-body">
+                        <textarea id="fb-config" class="form-control" style="height: 150px; font-family: monospace; margin-bottom: 15px;">${localStorage.getItem('hkm_firebase_config') || ''}</textarea>
+                        <button class="btn-primary" id="save-fb" style="width: 100%;">Lagre & Koble til</button>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-header"><h3 class="card-title">Datasynkronisering</h3></div>
+                    <div class="card-body">
+                        <p style="font-size: 14px; margin-bottom: 20px; color: #64748b;">Dette vil importere alt eksisterende hardkodet innhold fra nettsiden (blogg, hero, undervisning) inn i dashboardet.</p>
+                        <button class="btn-primary" id="sync-existing-content" style="width: 100%; background: #0ea5e9;">
+                            <span class="material-symbols-outlined" style="font-size: 18px; vertical-align: middle; margin-right: 5px;">sync</span>
+                            Synkroniser Innhold
+                        </button>
+                        <div id="sync-status" style="margin-top: 15px; font-size: 13px;"></div>
+                    </div>
+                </div>
+            </div>
+        `;
+        section.setAttribute('data-rendered', 'true');
+
+        document.getElementById('save-fb').addEventListener('click', () => {
+            const val = document.getElementById('fb-config').value;
+            localStorage.setItem('hkm_firebase_config', val);
+            alert('Lagret! Laster på nytt...');
+            window.location.reload();
+        });
+
+        document.getElementById('sync-existing-content').addEventListener('click', () => this.seedExistingData());
+    }
+
+    async seedExistingData() {
+        const statusEl = document.getElementById('sync-status');
+        const btn = document.getElementById('sync-existing-content');
+
+        if (!confirm('Dette vil overskrive eventuelle endringer du har gjort i dashboardet med innhold fra de statiske HTML-filene. Fortsette?')) return;
+
+        btn.disabled = true;
+        statusEl.innerHTML = '<span style="color: #64748b;">Starter synkronisering...</span>';
+
+        try {
+            // 1. Hero Slides
+            statusEl.innerHTML += '<br>Syncing Hero Slides...';
+            const heroSlides = [
+                {
+                    imageUrl: 'https://images.unsplash.com/photo-1511632765486-a01980e01a18?w=1920&h=1080&fit=crop',
+                    title: 'Tenk & gi nestekjærlighet',
+                    subtitle: 'Vi er her for å støtte deg på din åndelige reise. Bli med i et trygt miljø der vi utforsker Guds ord, deler livet og styrker relasjonen til Jesus.',
+                    btnText: 'Utforsk mer',
+                    btnLink: 'om-oss.html'
+                },
+                {
+                    imageUrl: 'https://images.unsplash.com/photo-1529070538774-1843cb3265df?w=1920&h=1080&fit=crop',
+                    title: 'Vekst gjennom felleskap',
+                    subtitle: 'Uansett hvor du er på din vandring, ønsker vi å gå sammen med deg. Bli med i et felleskap som utforsker Guds ord og styrker troen.',
+                    btnText: 'Les mer',
+                    btnLink: 'om-oss.html'
+                },
+                {
+                    imageUrl: 'https://images.unsplash.com/photo-1507692049790-de58290a4334?w=1920&h=1080&fit=crop',
+                    title: 'Støtt vårt arbeid',
+                    subtitle: 'Din gave gjør en forskjell. Hjelp oss å nå flere mennesker med evangeliet gjennom undervisning, reisevirksomhet og felleskap.',
+                    btnText: 'Gi gave nå',
+                    btnLink: 'donasjoner.html'
+                }
+            ];
+            await firebaseService.savePageContent('hero_slides', { slides: heroSlides });
+
+            // 2. Blog Posts
+            statusEl.innerHTML += '<br>Syncing Blog Posts...';
+            const blogPosts = [
+                {
+                    title: 'Hvordan bevare troen i en travel hverdag',
+                    date: '05 Feb, 2024',
+                    category: 'Undervisning',
+                    content: 'Vi utforsker praktiske tips og bibelske prinsipper for å opprettholde en nær relasjon med Gud til tross for en hektisk tidsplan...',
+                    imageUrl: 'https://images.unsplash.com/photo-1504052434569-70ad5836ab65?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80'
+                },
+                {
+                    title: 'Rapport fra misjonsturen til Kenya',
+                    date: '28 Jan, 2024',
+                    category: 'Reise',
+                    content: 'Bli med på reisen gjennom våre opplevelser i Kenya. Vi så Guds godhet i aksjon gjennom helbredelse, omsorg og glede...',
+                    imageUrl: 'https://images.unsplash.com/photo-1489392191049-fc10c97e64b6?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80'
+                },
+                {
+                    title: 'Ny Podcast Episode: Tro, tvil og vekst',
+                    date: '15 Jan, 2024',
+                    category: 'Podcast',
+                    content: 'Lytt til vår nyeste episode hvor vi diskuterer de ærlige sidene ved troslivet og hvordan vi kan finne hvile i Guds løfter...',
+                    imageUrl: 'https://images.unsplash.com/photo-1475483768296-6163e08872a1?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80'
+                },
+                {
+                    title: 'Viktigheten av å stå sammen',
+                    date: '10 Jan, 2024',
+                    category: 'Felleskap',
+                    content: 'Hvorfor felleskapet er essensielt for den kristne vandringen og hvordan vi kan støtte hverandre gjennom livets ulike sesonger...',
+                    imageUrl: 'https://images.unsplash.com/photo-1517486808906-6ca8b3f04846?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80'
+                },
+                {
+                    title: 'Min reise fra mørke til lys',
+                    date: '02 Jan, 2024',
+                    category: 'Vitnesbyrd',
+                    content: 'Et sterkt vitnesbyrd om hvordan Gud forandret et liv preget av håpløshet til et liv fylt med mening, fred og fremtidstro...',
+                    imageUrl: 'https://images.unsplash.com/photo-1507413245164-6160d8298b31?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80'
+                }
+            ];
+            await firebaseService.savePageContent('collection_blog', { items: blogPosts });
+
+            // 3. Teaching Series
+            statusEl.innerHTML += '<br>Syncing Teaching Series...';
+            const teachingSeries = [
+                {
+                    title: 'Tro og Tvil',
+                    content: 'Hvordan håndtere tvil og styrke din tro i utfordrende tider.',
+                    category: '5 episoder',
+                    author: 'His Kingdom',
+                    date: '02 Feb, 2024',
+                    imageUrl: 'https://images.unsplash.com/photo-1501281668745-f7f57925c3b4?w=600&h=400&fit=crop'
+                },
+                {
+                    title: 'Guds Karakter',
+                    content: 'Utforsk Guds egenskaper og hva de betyr for våre liv.',
+                    category: '8 episoder',
+                    author: 'His Kingdom',
+                    date: '25 Jan, 2024',
+                    imageUrl: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=600&h=400&fit=crop'
+                },
+                {
+                    title: 'Åndelige Gaver',
+                    content: 'Oppdag og bruk dine åndelige gaver til Guds ære.',
+                    category: '6 episoder',
+                    author: 'His Kingdom',
+                    date: '15 Jan, 2024',
+                    imageUrl: 'https://images.unsplash.com/photo-1519834785169-98be25ec3f84?w=600&h=400&fit=crop'
+                },
+                {
+                    title: 'Kristen Disippelskap',
+                    content: 'Lær hva det betyr å være en disippel av Jesus.',
+                    category: '10 episoder',
+                    author: 'His Kingdom',
+                    date: '10 Jan, 2024',
+                    imageUrl: 'https://images.unsplash.com/photo-1529070538774-1843cb3265df?w=600&h=400&fit=crop'
+                },
+                {
+                    title: 'Bønneliv',
+                    content: 'Utvikle et kraftfullt og meningsfullt bønneliv.',
+                    category: '7 episoder',
+                    author: 'His Kingdom',
+                    date: '05 Jan, 2024',
+                    imageUrl: 'https://images.unsplash.com/photo-1511632765486-a01980e01a18?w=600&h=400&fit=crop'
+                },
+                {
+                    title: 'Å Finne Guds Vilje',
+                    content: 'Hvordan søke og følge Guds plan for ditt liv.',
+                    category: '4 episoder',
+                    author: 'His Kingdom',
+                    date: '02 Jan, 2024',
+                    imageUrl: 'https://images.unsplash.com/photo-1488521787991-ed7bbaae773c?w=600&h=400&fit=crop'
+                },
+                {
+                    title: 'Tilgivelse og Forsoning',
+                    content: 'Kraften i tilgivelse og hvordan leve i forsoning.',
+                    category: '5 episoder',
+                    author: 'His Kingdom',
+                    date: '28 Dec, 2023',
+                    imageUrl: 'https://images.unsplash.com/photo-1532629345422-7515f3d16bb6?w=600&h=400&fit=crop'
+                },
+                {
+                    title: 'Åndelig Krigføring',
+                    content: 'Stå fast i kampen mot åndelige krefter.',
+                    category: '6 episoder',
+                    author: 'His Kingdom',
+                    date: '20 Dec, 2023',
+                    imageUrl: 'https://images.unsplash.com/photo-1503676260728-1c00da094a0b?w=600&h=400&fit=crop'
+                },
+                {
+                    title: 'Din Identitet i Kristus',
+                    content: 'Forstå hvem du er som Guds barn.',
+                    category: '5 episoder',
+                    author: 'His Kingdom',
+                    date: '15 Dec, 2023',
+                    imageUrl: 'https://images.unsplash.com/photo-1475721027785-f74eccf877e2?w=600&h=400&fit=crop'
+                },
+                {
+                    title: 'Kallet til Tjeneste',
+                    content: 'Hvordan tjene Gud og andre effektivt.',
+                    category: '8 episoder',
+                    author: 'His Kingdom',
+                    date: '10 Dec, 2023',
+                    imageUrl: 'https://images.unsplash.com/photo-1523050854058-8df90110c9f1?w=600&h=400&fit=crop'
+                },
+                {
+                    title: 'Helliggjørelse',
+                    content: 'Vokse i hellighet og likhet med Kristus.',
+                    category: '7 episoder',
+                    author: 'His Kingdom',
+                    date: '05 Dec, 2023',
+                    imageUrl: 'https://images.unsplash.com/photo-1490730141103-6cac27aaab94?w=600&h=400&fit=crop'
+                },
+                {
+                    title: 'Endetidsprofetier',
+                    content: 'Forstå Bibelens profetier om endetiden.',
+                    category: '9 episoder',
+                    author: 'His Kingdom',
+                    date: '01 Dec, 2023',
+                    imageUrl: 'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=600&h=400&fit=crop'
+                }
+            ];
+            await firebaseService.savePageContent('collection_teaching', { items: teachingSeries });
+
+            // 4. Page Content (index)
+            statusEl.innerHTML += '<br>Syncing Page Text...';
+            const indexContent = {
+                about: {
+                    label: 'Velkommen til Fellesskapet',
+                    title: 'Vi er en Non-Profit Organisasjon',
+                    description: 'His Kingdom Ministry driver med åndelig samlinger som bønnemøter, undervisningseminarer, og forkynnende reisevirksomhet. Vi ønsker å være et felleskap der mennesker kan vokse i sin tro og relasjon til Jesus.',
+                    features: {
+                        mission: {
+                            title: 'Vårt Oppdrag',
+                            text: 'Å utruste og inspirere mennesker til et dypere liv med Gud gjennom undervisning, fellesskap og bønn.'
+                        },
+                        story: {
+                            title: 'Vår Historie',
+                            text: 'Startet med en visjon om å samle mennesker i åndelig vekst, har vi vokst til et levende felleskap som driver med bønnemøter, undervisning og reisevirksomhet.'
+                        }
+                    }
+                },
+                features: {
+                    teaching: { title: 'Undervisning', text: 'Bibelskoler, seminarer og dyptgående undervisning.' },
+                    podcast: { title: 'Podcast', text: 'Lytt til våre samtaler om tro, liv og åndelig vekst.' },
+                    travel: { title: 'Reisevirksomhet', text: 'Forkynnelse og konferanser rundt om i verden.' }
+                },
+                stats: {
+                    events: { number: '150', label: 'Arrangementer' },
+                    podcast: { number: '85', label: 'Podcast Episoder' },
+                    reached: { number: '2500', label: 'Mennesker Nådd' },
+                    countries: { number: '12', label: 'Land Besøkt' }
+                }
+            };
+            await firebaseService.savePageContent('index', indexContent);
+
+            // 5. om-oss content
+            statusEl.innerHTML += '<br>Syncing Om Oss...';
+            const omOssContent = {
+                hero: { title: 'Om Oss', subtitle: 'Lær mer om vår visjon, oppdrag og historie' },
+                intro: {
+                    label: 'Velkommen til Fellesskapet',
+                    title: 'Vi er en Non-Profit Organisasjon',
+                    text: 'His Kingdom Ministry driver med åndelig samlinger som bønnemøter, undervisningseminarer, og forkynnende reisevirksomhet. Vi ønsker å være et felleskap der mennesker kan vokse i sin tro og relasjon til Jesus.'
+                },
+                mission: { title: 'Vårt Oppdrag', text: 'Å utruste og inspirere mennesker til et dypere liv med Gud gjennom undervisning, fellesskap og bønn.' },
+                history: { title: 'Vår Historie', text: 'Startet med en visjon om å samle mennesker i åndelig vekst, har vi vokst til et levende felleskap som driver med bønnemøter, undervisning og reisevirksomhet.' },
+                values: {
+                    title: 'Hva Vi Står For',
+                    bible: { title: 'Bibeltro Undervisning', text: 'Vi forankrer alt vi gjør i Guds ord og søker å leve etter Bibelens prinsipper.' },
+                    prayer: { title: 'Bønn & Tilbedelse', text: 'Bønn er hjertet av alt vi gjør, og vi søker Guds nærvær i alt.' },
+                    community: { title: 'Fellesskap', text: 'Vi tror på kraften i felleskap og støtter hverandre i troen.' },
+                    love: { title: 'Kjærlighet & Omsorg', text: 'Vi møter alle med Kristi kjærlighet og omsorg.' }
+                }
+            };
+            await firebaseService.savePageContent('om-oss', omOssContent);
+
+            // 6. kontakt content
+            statusEl.innerHTML += '<br>Syncing Kontakt...';
+            const kontaktContent = {
+                hero: { title: 'Kontakt Oss', subtitle: 'Vi vil gjerne høre fra deg. Send oss en melding eller besøk oss.' },
+                info: {
+                    title: 'Ta Kontakt',
+                    text: 'Har du spørsmål, bønnebehov eller ønsker du å vite mer om vår tjeneste? Ikke nøl med å ta kontakt med oss.',
+                    email: 'post@hiskingdomministry.no',
+                    phone: '+47 123 45 678',
+                    address: 'Oslo, Norge'
+                }
+            };
+            await firebaseService.savePageContent('kontakt', kontaktContent);
+
+            // 7. media content
+            statusEl.innerHTML += '<br>Syncing Media...';
+            const mediaContent = {
+                hero: { title: 'Media', subtitle: 'Utforsk våre videoer, podcaster og annet innhold' },
+                youtube: { title: 'Siste Videoer', description: 'Se våre nyeste videoer og undervisninger' },
+                podcast: { title: 'Siste Episoder', description: 'Lytt til våre podcaster om tro, liv og åndelig vekst' },
+                teaching: { title: 'Undervisningsressurser', description: 'Dyptgående bibelstudier og undervisningsserier' }
+            };
+            await firebaseService.savePageContent('media', mediaContent);
+
+            // 8. donasjoner content
+            statusEl.innerHTML += '<br>Syncing Donasjoner...';
+            const donasjonerContent = {
+                hero: { title: 'Donasjoner' },
+                intro: {
+                    title: 'Våre aktive innsamlingsaksjoner',
+                    description: 'Din gave utgjør en forskjell. Velg et prosjekt du ønsker å støtte og bli med på å forandre liv.'
+                },
+                form: {
+                    title: 'Støtt vårt arbeid',
+                    description: 'Din gave gjør en reell forskjell. Velg beløp og betalingsmetode nedenfor.'
+                }
+            };
+            await firebaseService.savePageContent('donasjoner', donasjonerContent);
+
+            // 9. blogg content
+            statusEl.innerHTML += '<br>Syncing Blogg...';
+            const bloggContent = {
+                hero: { title: 'Nyheter / Blogg', subtitle: 'Les våre siste artikler og oppdateringer' },
+                section: { title: 'Siste Nytt', label: 'Nyheter & Blogg', description: 'Les våre siste artikler og oppdateringer.' }
+            };
+            await firebaseService.savePageContent('blogg', bloggContent);
+
+            // 10. arrangementer content
+            statusEl.innerHTML += '<br>Syncing Arrangementer...';
+            const arrangementerContent = {
+                hero: { title: 'Arrangementer', subtitle: 'Bli med på våre kommende hendelser' },
+                section: { title: 'Kommende Arrangementer', description: 'Se våre kommende arrangementer og meld deg på.' }
+            };
+            await firebaseService.savePageContent('arrangementer', arrangementerContent);
+
+            // 11. undervisning content
+            statusEl.innerHTML += '<br>Syncing Undervisning...';
+            const undervisningContent = {
+                hero: { title: 'Undervisning', subtitle: 'Dyptgående bibelundervisning' }
+            };
+            await firebaseService.savePageContent('undervisning', undervisningContent);
+
+            // 12. bibelstudier content
+            statusEl.innerHTML += '<br>Syncing Bibelstudier...';
+            const bibelstudierContent = {
+                hero: { title: 'Bibelstudier', subtitle: 'Utforsk Guds ord sammen med oss' }
+            };
+            await firebaseService.savePageContent('bibelstudier', bibelstudierContent);
+
+            // 13. seminarer content
+            statusEl.innerHTML += '<br>Syncing Seminarer...';
+            const seminarerContent = {
+                hero: { title: 'Seminarer', subtitle: 'Temabaserte undervisningsdager' }
+            };
+            await firebaseService.savePageContent('seminarer', seminarerContent);
+
+            // 14. podcast content
+            statusEl.innerHTML += '<br>Syncing Podcast...';
+            const podcastContent = {
+                hero: { title: 'Podcast', subtitle: 'Lytt til våre samtaler' }
+            };
+            await firebaseService.savePageContent('podcast', podcastContent);
+
+            // 15. default SEO settings
+            statusEl.innerHTML += '<br>Syncing SEO-innstillinger...';
+            const seoDefaults = {
+                globalTitle: 'His Kingdom Ministry',
+                globalDescription: 'His Kingdom Ministry driver med åndelig samlinger, undervisning og forkynnelse. Velkommen til vårt fellesskap.',
+                globalKeywords: 'tro, bibel, undervisning, bønn, fellesskap, jesus, kristendom',
+                ogImage: '',
+                pages: {
+                    index: { title: 'Forside | His Kingdom Ministry', description: 'Velkommen til His Kingdom Ministry.' },
+                    'om-oss': { title: 'Om Oss | His Kingdom Ministry', description: 'Les om vår visjon og historie.' },
+                    media: { title: 'Media & Undervisning', description: 'Se våre videoer og undervisning.' },
+                    blogg: { title: 'Siste Nytt & Blogg', description: 'Følg med på hva som skjer.' }
+                }
+            };
+            await firebaseService.savePageContent('settings_seo', seoDefaults);
+
+            statusEl.innerHTML = '<span style="color: #10b981; font-weight: 600;">✅ Datasynkronisering fullført!</span>';
+            alert('Synkronisering ferdig! Innholdet er nå tilgjengelig i dashboardet.');
+        } catch (err) {
+            console.error(err);
+            statusEl.innerHTML = '<span style="color: #ef4444;">❌ Synkronisering feilet: ' + err.message + '</span>';
+        } finally {
+            btn.disabled = false;
+        }
+    }
+
+    createPlaceholderSection(id) {
+        const contentArea = document.getElementById('content-area');
+        const section = document.createElement('div');
+        section.id = `${id}-section`;
+        section.className = 'section-content';
+        section.innerHTML = `<div class="card"><div class="card-body"><h2>${id}</h2><p>Kommer snart...</p></div></div>`;
+        contentArea.appendChild(section);
+    }
+
+    async loadPageFields(pageId) {
+        const container = document.getElementById('editor-fields');
+        container.innerHTML = '<div class="loader">Laster...</div>';
+
+        try {
+            const data = await firebaseService.getPageContent(pageId);
+            this.renderFields(data || {});
+        } catch (e) {
+            container.innerHTML = '<p>Error.</p>';
+        }
+    }
+
+    renderFields(data) {
+        const container = document.getElementById('editor-fields');
+        container.innerHTML = '';
+        const flattenedData = this.flatten(data);
+
+        if (Object.keys(flattenedData).length === 0) {
+            container.innerHTML = '<p>Ingen redigerbare felt funnet for denne siden.</p>';
+            return;
+        }
+
+        Object.keys(flattenedData).forEach(key => {
+            const value = flattenedData[key];
+            const formGroup = document.createElement('div');
+            formGroup.className = 'form-group';
+
+            const label = document.createElement('label');
+            label.textContent = key.replace(/\./g, ' > ').toUpperCase();
+
+            let inputElement;
+            if (typeof value === 'string' && (value.length > 100 || key.includes('description') || key.includes('content'))) {
+                inputElement = document.createElement('textarea');
+                inputElement.style.height = '120px';
+            } else {
+                inputElement = document.createElement('input');
+                inputElement.type = 'text';
+            }
+            inputElement.className = 'form-control';
+            inputElement.value = value || '';
+            inputElement.setAttribute('data-key', key);
+
+            formGroup.appendChild(label);
+            formGroup.appendChild(inputElement);
+            container.appendChild(formGroup);
+        });
+    }
+
+    async savePageContent() {
+        const pageId = document.querySelector('.page-item.active').dataset.page;
+        const inputs = document.querySelectorAll('#editor-fields .form-control');
+        const dataToSave = {};
+
+        inputs.forEach(input => {
+            const keys = input.dataset.key.split('.');
+            let curr = dataToSave;
+            keys.forEach((k, i) => {
+                if (i === keys.length - 1) {
+                    curr[k] = input.value;
+                } else {
+                    curr[k] = curr[k] || {};
+                    curr = curr[k];
+                }
+            });
+        });
+
+        try {
+            await firebaseService.savePageContent(pageId, dataToSave);
+            alert('✅ Innholdet er lagret!');
+        } catch (err) {
+            alert('❌ Feil ved lagring');
+        }
+    }
+
+    flatten(obj, prefix = '') {
+        return Object.keys(obj).reduce((acc, k) => {
+            const pre = prefix.length ? prefix + '.' : '';
+            if (typeof obj[k] === 'object' && obj[k] !== null && !Array.isArray(obj[k])) {
+                Object.assign(acc, this.flatten(obj[k], pre + k));
+            } else { acc[pre + k] = obj[k]; }
+            return acc;
+        }, {});
+    }
+}
+
+// Start the manager
+window.adminManager = new AdminManager();

@@ -1,0 +1,383 @@
+<!DOCTYPE html>
+<html lang="no">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Donasjoner | His Kingdom Ministry</title>
+    <meta name="description" content="Støtt vårt arbeid i His Kingdom Ministry. Se våre aktive innsamlingsaksjoner.">
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&family=Merriweather:wght@400;700;900&display=swap"
+        rel="stylesheet">
+
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+    <!-- Header -->
+    <header class="header" id="header">
+        <div class="container">
+            <div class="header-content">
+                <a href="index.html" class="logo">
+                    <div class="logo-icon">
+                        <img src="img/Logo - sirkel.png" alt="His Kingdom Ministry Logo">
+                    </div>
+                    <span>His Kingdom Ministry</span>
+                </a>
+
+                <nav class="nav" id="nav">
+                    <ul class="nav-list">
+                        <li><a href="index.html#hjem" class="nav-link">Hjem</a></li>
+                        <li><a href="om-oss.html" class="nav-link">Om oss</a></li>
+                        <li><a href="media.html" class="nav-link">Media</a></li>
+                        <li><a href="arrangementer.html" class="nav-link">Arrangementer</a></li>
+                        <li><a href="blogg.html" class="nav-link">Blogg</a></li>
+                        <li><a href="kontakt.html" class="nav-link">Kontakt</a></li>
+                        <li class="mobile-only"><a href="#gi-gave" class="btn btn-primary">Gi gave</a></li>
+                    </ul>
+                </nav>
+
+                <div class="header-actions">
+                    <a href="#gi-gave" class="btn btn-primary">Gi gave</a>
+                    <button class="mobile-toggle" id="mobile-toggle">
+                        <span></span>
+                        <span></span>
+                        <span></span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main>
+        <!-- Page Hero -->
+        <section class="page-hero"
+            style="background-image: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)), url('https://images.unsplash.com/photo-1488521787991-ed7bbaae773c?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80'); padding-top: 160px;">
+            <div class="container">
+                <div class="page-hero-content">
+                    <h1 class="page-title" data-content-key="hero.title">Donasjoner</h1>
+                    <div class="breadcrumbs">
+                        <a href="index.html">Hjem</a>
+                        <i class="fas fa-chevron-right"></i>
+                        <span>Donasjoner</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Donations Grid -->
+        <section class="donations-page section">
+            <div class="container">
+                <div class="section-header">
+                    <span class="section-label">Støtt vårt arbeid</span>
+                    <h2 class="section-title" data-content-key="intro.title">Våre aktive innsamlingsaksjoner</h2>
+                    <p class="section-description" data-content-key="intro.description">Din gave utgjør en forskjell.
+                        Velg et prosjekt du ønsker å støtte og
+                        bli med på å forandre liv.</p>
+                </div>
+
+                <div class="causes-grid">
+                    <!-- Cause 1 -->
+                    <div class="cause-card">
+                        <div class="cause-image">
+                            <img src="https://images.unsplash.com/photo-1532629345422-7515f3d16bb6?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
+                                alt="Generell støtte">
+                            <span class="cause-tag">Misjon</span>
+                        </div>
+                        <div class="cause-content">
+                            <h3 class="cause-title">Støtt vårt generelle arbeid</h3>
+                            <p class="cause-text">Bidra til at vi kan fortsette vår misjon og nå ut til flere mennesker
+                                med evangeliet.</p>
+                            <div class="cause-progress">
+                                <div class="progress-info">
+                                    <span>Mål: 50.000 kr</span>
+                                    <span>75%</span>
+                                </div>
+                                <div class="progress-bar">
+                                    <div class="progress-fill" style="width: 75%;"></div>
+                                </div>
+                                <div class="progress-stats">
+                                    <span>Innsamlet: 37.500 kr</span>
+                                </div>
+                            </div>
+                            <a href="#gi-gave" class="btn btn-primary btn-block">Donér nå</a>
+                        </div>
+                    </div>
+
+                    <!-- Cause 2 -->
+                    <div class="cause-card">
+                        <div class="cause-image">
+                            <img src="https://images.unsplash.com/photo-1524069290683-0457abfe42c3?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
+                                alt="Bibelskole">
+                            <span class="cause-tag">Utdanning</span>
+                        </div>
+                        <div class="cause-content">
+                            <h3 class="cause-title">Bibelskole og Undervisning</h3>
+                            <p class="cause-text">Hjelp oss å utruste neste generasjon ledere gjennom våre bibelskoler
+                                og seminarer.</p>
+                            <div class="cause-progress">
+                                <div class="progress-info">
+                                    <span>Mål: 100.000 kr</span>
+                                    <span>40%</span>
+                                </div>
+                                <div class="progress-bar">
+                                    <div class="progress-fill" style="width: 40%;"></div>
+                                </div>
+                                <div class="progress-stats">
+                                    <span>Innsamlet: 40.000 kr</span>
+                                </div>
+                            </div>
+                            <a href="#gi-gave" class="btn btn-primary btn-block">Donér nå</a>
+                        </div>
+                    </div>
+
+                    <!-- Cause 3 -->
+                    <div class="cause-card">
+                        <div class="cause-image">
+                            <img src="https://images.unsplash.com/photo-1469571486292-0ba58a3f068b?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
+                                alt="Reisevirksomhet">
+                            <span class="cause-tag">Reise</span>
+                        </div>
+                        <div class="cause-content">
+                            <h3 class="cause-title">Internasjonal Reisevirksomhet</h3>
+                            <p class="cause-text">Støtt våre reiser til utlandet for forkynnelse, konferanser og
+                                humanitært arbeid.</p>
+                            <div class="cause-progress">
+                                <div class="progress-info">
+                                    <span>Mål: 80.000 kr</span>
+                                    <span>60%</span>
+                                </div>
+                                <div class="progress-bar">
+                                    <div class="progress-fill" style="width: 60%;"></div>
+                                </div>
+                                <div class="progress-stats">
+                                    <span>Innsamlet: 48.000 kr</span>
+                                </div>
+                            </div>
+                            <a href="#gi-gave" class="btn btn-primary btn-block">Donér nå</a>
+                        </div>
+                    </div>
+
+                    <!-- Cause 4 -->
+                    <div class="cause-card">
+                        <div class="cause-image">
+                            <img src="https://images.unsplash.com/photo-1490730141103-6cac27aaab94?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
+                                alt="Mediearbeid">
+                            <span class="cause-tag">Media</span>
+                        </div>
+                        <div class="cause-content">
+                            <h3 class="cause-title">Podcast og Medieproduksjon</h3>
+                            <p class="cause-text">Bidra til produksjon av vår podcast og annet digitalt innhold for å
+                                spre budskapet.</p>
+                            <div class="cause-progress">
+                                <div class="progress-info">
+                                    <span>Mål: 30.000 kr</span>
+                                    <span>90%</span>
+                                </div>
+                                <div class="progress-bar">
+                                    <div class="progress-fill" style="width: 90%;"></div>
+                                </div>
+                                <div class="progress-stats">
+                                    <span>Innsamlet: 27.000 kr</span>
+                                </div>
+                            </div>
+                            <a href="#gi-gave" class="btn btn-primary btn-block">Donér nå</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+
+        <!-- Donation Form -->
+        <section class="donation-form section" id="gi-gave"
+            style="background: linear-gradient(135deg, #f8f9fa 0%, #ffffff 100%);">
+            <div class="container">
+                <div class="section-header">
+                    <span class="section-label">Gi gave</span>
+                    <h2 class="section-title" data-content-key="form.title">Støtt vårt arbeid</h2>
+                    <p class="section-description" data-content-key="form.description">Din gave gjør en reell forskjell.
+                        Velg beløp og betalingsmetode
+                        nedenfor.</p>
+                </div>
+
+                <div style="max-width: 700px; margin: 0 auto;">
+                    <form class="donation-form-content"
+                        style="background: white; padding: 40px; border-radius: 15px; box-shadow: 0 10px 40px rgba(0,0,0,0.1);">
+                        <!-- Amount Selection -->
+                        <div style="margin-bottom: 30px;">
+                            <label
+                                style="display: block; font-weight: 600; margin-bottom: 15px; color: var(--text-dark);">Velg
+                                beløp</label>
+                            <div
+                                style="display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 10px; margin-bottom: 15px;">
+                                <button type="button" class="amount-btn" data-amount="100"
+                                    style="padding: 15px; border: 2px solid #e0e0e0; background: white; border-radius: 8px; cursor: pointer; font-weight: 600; transition: all 0.3s;">100
+                                    kr</button>
+                                <button type="button" class="amount-btn" data-amount="250"
+                                    style="padding: 15px; border: 2px solid #e0e0e0; background: white; border-radius: 8px; cursor: pointer; font-weight: 600; transition: all 0.3s;">250
+                                    kr</button>
+                                <button type="button" class="amount-btn" data-amount="500"
+                                    style="padding: 15px; border: 2px solid #e0e0e0; background: white; border-radius: 8px; cursor: pointer; font-weight: 600; transition: all 0.3s;">500
+                                    kr</button>
+                                <button type="button" class="amount-btn" data-amount="1000"
+                                    style="padding: 15px; border: 2px solid #e0e0e0; background: white; border-radius: 8px; cursor: pointer; font-weight: 600; transition: all 0.3s;">1000
+                                    kr</button>
+                            </div>
+                            <input type="number" id="custom-amount" placeholder="Eller skriv inn eget beløp"
+                                style="width: 100%; padding: 15px; border: 2px solid #e0e0e0; border-radius: 8px; font-size: 16px;">
+                        </div>
+
+                        <!-- Payment Method -->
+                        <div style="margin-bottom: 30px;">
+                            <label
+                                style="display: block; font-weight: 600; margin-bottom: 15px; color: var(--text-dark);">Betalingsmetode</label>
+                            <div
+                                style="display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 10px;">
+                                <label
+                                    style="display: flex; align-items: center; padding: 15px; border: 2px solid #e0e0e0; border-radius: 8px; cursor: pointer; transition: all 0.3s;">
+                                    <input type="radio" name="payment-method" value="vipps" style="margin-right: 10px;">
+                                    <span style="font-weight: 600;"><i class="fas fa-mobile-alt"
+                                            style="margin-right: 8px; color: #FF5B24;"></i>Vipps</span>
+                                </label>
+                                <label
+                                    style="display: flex; align-items: center; padding: 15px; border: 2px solid #e0e0e0; border-radius: 8px; cursor: pointer; transition: all 0.3s;">
+                                    <input type="radio" name="payment-method" value="card" style="margin-right: 10px;">
+                                    <span style="font-weight: 600;"><i class="fas fa-credit-card"
+                                            style="margin-right: 8px; color: #4CAF50;"></i>Kort</span>
+                                </label>
+                                <label
+                                    style="display: flex; align-items: center; padding: 15px; border: 2px solid #e0e0e0; border-radius: 8px; cursor: pointer; transition: all 0.3s;">
+                                    <input type="radio" name="payment-method" value="bank" style="margin-right: 10px;">
+                                    <span style="font-weight: 600;"><i class="fas fa-university"
+                                            style="margin-right: 8px; color: #2196F3;"></i>Bank</span>
+                                </label>
+                            </div>
+                        </div>
+
+                        <!-- Donor Information -->
+                        <div style="margin-bottom: 30px;">
+                            <label
+                                style="display: block; font-weight: 600; margin-bottom: 15px; color: var(--text-dark);">Dine
+                                opplysninger</label>
+                            <div style="display: grid; gap: 15px;">
+                                <input type="text" placeholder="Fullt navn" required
+                                    style="width: 100%; padding: 15px; border: 2px solid #e0e0e0; border-radius: 8px; font-size: 16px;">
+                                <input type="email" placeholder="E-postadresse" required
+                                    style="width: 100%; padding: 15px; border: 2px solid #e0e0e0; border-radius: 8px; font-size: 16px;">
+                                <textarea placeholder="Melding (valgfritt)" rows="4"
+                                    style="width: 100%; padding: 15px; border: 2px solid #e0e0e0; border-radius: 8px; font-size: 16px; resize: vertical;"></textarea>
+                            </div>
+                        </div>
+
+                        <!-- Submit Button -->
+                        <button type="submit" class="btn btn-primary"
+                            style="width: 100%; padding: 18px; font-size: 18px; font-weight: 600;">
+                            <i class="fas fa-heart" style="margin-right: 10px;"></i>Gi gave nå
+                        </button>
+
+                        <p style="text-align: center; margin-top: 20px; color: var(--text-light); font-size: 14px;">
+                            <i class="fas fa-lock" style="margin-right: 5px;"></i>Sikker betaling
+                        </p>
+                    </form>
+                </div>
+            </div>
+        </section>
+
+        <!-- Newsletter -->
+        <section class="newsletter section">
+            <div class="container newsletter-content">
+                <div class="section-header" style="margin-bottom: 0;">
+                    <h2 class="section-title" style="margin-bottom: 10px;">Hold deg oppdatert</h2>
+                    <p style="color: var(--text-light);">Meld deg på vårt nyhetsbrev for å få siste nytt direkte i din
+                        innboks.</p>
+                </div>
+                <form class="newsletter-form">
+                    <input type="email" placeholder="Din e-postadresse" required>
+                    <button type="submit" class="btn btn-primary">Abonner</button>
+                </form>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer" id="kontakt">
+        <div class="container">
+            <div class="footer-grid">
+                <div class="footer-col">
+                    <a href="index.html" class="logo" style="margin-bottom: 20px; display: inline-block;">
+                        <div class="logo-icon">
+                            <img src="img/Logo - sirkel.png" alt="His Kingdom Ministry Logo">
+                        </div>
+                        <span style="color: white;">His Kingdom Ministry</span>
+                    </a>
+                    <p class="footer-text">Et felleskap for vekst, bønn og undervisning. Vi ønsker å utruste mennesker
+                        til et dypere liv med Gud.</p>
+                    <div class="footer-social">
+                        <a href="#" class="social-link"><i class="fab fa-facebook-f"></i></a>
+                        <a href="#" class="social-link"><i class="fab fa-instagram"></i></a>
+                        <a href="#" class="social-link"><i class="fab fa-youtube"></i></a>
+                    </div>
+                </div>
+
+                <div class="footer-col">
+                    <h4 class="footer-title">Sjekk ut</h4>
+                    <ul class="footer-links">
+                        <li><a href="index.html#hjem">Hjem</a></li>
+                        <li><a href="index.html#om-oss">Om oss</a></li>
+                        <li><a href="arrangementer.html">Arrangementer</a></li>
+                        <li><a href="blogg.html">Blogg</a></li>
+                        <li><a href="donasjoner.html">Donasjoner</a></li>
+                    </ul>
+                </div>
+
+                <div class="footer-col">
+                    <h4 class="footer-title">Ressurser</h4>
+                    <ul class="footer-links">
+                        <li><a href="blogg.html">Bøker</a></li>
+                        <li><a href="media.html#teaching-section">Undervisning</a></li>
+                        <li><a href="media.html#podcast-section">Podcast</a></li>
+                        <li><a href="arrangementer.html">E-kurs</a></li>
+                    </ul>
+                </div>
+
+                <div class="footer-col">
+                    <h4 class="footer-title">Kontakt</h4>
+                    <ul class="footer-contact">
+                        <li><i class="fas fa-envelope"></i> post@hiskingdomministry.no</li>
+                        <li><i class="fas fa-phone"></i> +47 123 45 678</li>
+                        <li><i class="fas fa-map-marker-alt"></i> Oslo, Norge</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="footer-bottom">
+                <p>&copy; 2024 His Kingdom Ministry. Alle rettigheter reservert.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script src="script.js"></script>
+    <script type="module" src="js/content-manager.js"></script>
+    <script>
+        // Initialize donation form after script.js loads
+        window.addEventListener('load', function () {
+            setTimeout(function () {
+                if (typeof initDonationForm === 'function') {
+                    initDonationForm();
+                }
+            }, 200);
+        });
+    </script>
+</body>
+
+</html>

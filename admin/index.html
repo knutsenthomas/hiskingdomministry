@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html lang="no">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard | His Kingdom Ministry</title>
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <!-- Material Symbols -->
+    <link rel="stylesheet"
+        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" />
+
+    <!-- Dashboard CSS -->
+    <link rel="stylesheet" href="css/dashboard.css">
+</head>
+
+<body class="admin-body">
+    <!-- Sidebar Navigation -->
+    <aside class="sidebar">
+        <div class="sidebar-header">
+            <div class="logo">
+                <span class="material-symbols-outlined logo-icon">dashboard_customize</span>
+                <h1 class="logo-text">TK Studio</h1>
+            </div>
+        </div>
+
+        <nav class="sidebar-nav">
+            <ul class="nav-list">
+                <li class="nav-item">
+                    <a href="#" class="nav-link active" data-section="overview">
+                        <span class="material-symbols-outlined">home</span>
+                        <span>Oversikt</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="#" class="nav-link" data-section="content">
+                        <span class="material-symbols-outlined">article</span>
+                        <span>Sideinnhold</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="#" class="nav-link" data-section="blog">
+                        <span class="material-symbols-outlined">edit_note</span>
+                        <span>Blogg</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="#" class="nav-link" data-section="events">
+                        <span class="material-symbols-outlined">calendar_today</span>
+                        <span>Arrangementer</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="#" class="nav-link" data-section="media">
+                        <span class="material-symbols-outlined">video_library</span>
+                        <span>Media</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="#" class="nav-link" data-section="hero">
+                        <span class="material-symbols-outlined">view_carousel</span>
+                        <span>Hero Slider</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="#" class="nav-link" data-section="teaching">
+                        <span class="material-symbols-outlined">school</span>
+                        <span>Undervisning</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="#" class="nav-link" data-section="design">
+                        <span class="material-symbols-outlined">palette</span>
+                        <span>Design & Logo</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="#" class="nav-link" data-section="settings">
+                        <span class="material-symbols-outlined">settings</span>
+                        <span>Innstillinger</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="#" class="nav-link" data-section="seo">
+                        <span class="material-symbols-outlined">search_check</span>
+                        <span>SEO & Meta</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="#" class="nav-link" data-section="integrations">
+                        <span class="material-symbols-outlined">api</span>
+                        <span>Integrasjoner</span>
+                    </a>
+                </li>
+            </ul>
+        </nav>
+
+        <div class="sidebar-footer">
+            <a href="../index.html" class="nav-link">
+                <span class="material-symbols-outlined">visibility</span>
+                <span>Se nettside</span>
+            </a>
+            <button id="logout-btn" class="nav-link logout">
+                <span class="material-symbols-outlined">logout</span>
+                <span>Logg ut</span>
+            </button>
+        </div>
+    </aside>
+
+    <!-- Main Content Area -->
+    <main class="main-content">
+        <!-- Header -->
+        <header class="main-header">
+            <button class="mobile-nav-toggle" id="mobile-nav-toggle">
+                <span class="material-symbols-outlined">menu</span>
+            </button>
+            <div class="header-search">
+                <span class="material-symbols-outlined">search</span>
+                <input type="text" placeholder="Søk i innhold...">
+            </div>
+            <div class="header-actions">
+                <div class="user-profile">
+                    <div class="user-info">
+                        <span class="user-name" id="admin-name">Laster...</span>
+                        <span class="user-role">Administrator</span>
+                    </div>
+                    <div class="user-avatar" id="admin-avatar">TK</div>
+                </div>
+            </div>
+        </header>
+
+        <!-- Dynamic Section Content -->
+        <section id="content-area" class="section-container">
+            <!-- Default Overview Section -->
+            <div id="overview-section" class="section-content active">
+                <div class="section-header">
+                    <h2 class="section-title">Velkommen tilbake!</h2>
+                    <p class="section-subtitle">Her er hva som har skjedd på nettsiden din i det siste.</p>
+                </div>
+
+                <!-- Stats Cards (Static for now) -->
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-icon purple">
+                            <span class="material-symbols-outlined">group</span>
+                        </div>
+                        <div class="stat-info">
+                            <h3 class="stat-label">Besøkende</h3>
+                            <p class="stat-value">Laster...</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Pre-rendered Placeholders for Dynamic Content -->
+            <div id="content-section" class="section-content">
+                <div class="section-header">
+                    <h2 class="section-title">Sideinnhold</h2>
+                    <p class="section-subtitle">Laster innhold...</p>
+                </div>
+                <div class="loader"></div>
+            </div>
+
+            <div id="blog-section" class="section-content">
+                <div class="section-header">
+                    <h2 class="section-title">Blogg</h2>
+                    <p class="section-subtitle">Laster innlegg...</p>
+                </div>
+                <div class="loader"></div>
+            </div>
+
+            <div id="events-section" class="section-content">
+                <div class="section-header">
+                    <h2 class="section-title">Arrangementer</h2>
+                    <p class="section-subtitle">Laster arrangementer...</p>
+                </div>
+                <div class="loader"></div>
+            </div>
+
+            <div id="media-section" class="section-content">
+                <div class="section-header">
+                    <h2 class="section-title">Media-integrasjoner</h2>
+                </div>
+                <div class="loader"></div>
+            </div>
+
+            <div id="hero-section" class="section-content">
+                <div class="section-header">
+                    <h2 class="section-title">Hero Slider</h2>
+                </div>
+                <div class="loader"></div>
+            </div>
+
+            <div id="teaching-section" class="section-content">
+                <div class="section-header">
+                    <h2 class="section-title">Undervisning</h2>
+                </div>
+                <div class="loader"></div>
+            </div>
+
+            <div id="design-section" class="section-content">
+                <div class="section-header">
+                    <h2 class="section-title">Design & Identitet</h2>
+                </div>
+                <div class="loader"></div>
+            </div>
+
+            <div id="profile-section" class="section-content">
+                <div class="section-header">
+                    <h2 class="section-title">Brukerprofil</h2>
+                </div>
+                <div class="loader"></div>
+            </div>
+
+            <div id="settings-section" class="section-content">
+                <div class="section-header">
+                    <h2 class="section-title">Innstillinger</h2>
+                </div>
+                <div class="loader"></div>
+            </div>
+
+            <div id="seo-section" class="section-content">
+                <div class="section-header">
+                    <h2 class="section-title">SEO & Meta-tags</h2>
+                </div>
+                <div class="loader"></div>
+            </div>
+
+            <div id="integrations-section" class="section-content">
+                <div class="section-header">
+                    <h2 class="section-title">Integrasjoner</h2>
+                </div>
+                <div class="loader"></div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Core Dashboard Logic (Non-Module for compatibility) -->
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const sidebar = document.querySelector('.sidebar');
+            const mobileToggle = document.getElementById('mobile-nav-toggle');
+
+            // Create overlay if it doesn't exist
+            let overlay = document.querySelector('.sidebar-overlay');
+            if (!overlay) {
+                overlay = document.createElement('div');
+                overlay.className = 'sidebar-overlay';
+                document.body.appendChild(overlay);
+            }
+
+            if (mobileToggle) {
+                mobileToggle.addEventListener('click', () => {
+                    sidebar.classList.toggle('active');
+                    overlay.classList.toggle('active');
+                });
+            }
+
+            overlay.addEventListener('click', () => {
+                sidebar.classList.remove('active');
+                overlay.classList.remove('active');
+            });
+
+            const navLinks = document.querySelectorAll('.nav-link[data-section]');
+
+            navLinks.forEach(link => {
+                link.addEventListener('click', (e) => {
+                    const targetSectionId = link.getAttribute('data-section');
+                    if (!targetSectionId) return;
+
+                    e.preventDefault();
+
+                    // Close sidebar on mobile after selecting a section
+                    if (window.innerWidth <= 768) {
+                        sidebar.classList.remove('active');
+                        overlay.classList.remove('active');
+                    }
+
+                    // Update Active Link UI
+                    navLinks.forEach(l => l.classList.remove('active'));
+                    link.classList.add('active');
+
+                    // Trigger module-based rendering if available
+                    if (window.adminManager && typeof window.adminManager.onSectionSwitch === 'function') {
+                        window.adminManager.onSectionSwitch(targetSectionId);
+                    }
+
+                    // Update Visible Section (Re-query to find dynamically added ones)
+                    const sections = document.querySelectorAll('.section-content');
+                    sections.forEach(section => {
+                        section.classList.remove('active');
+                        if (section.id === `${targetSectionId}-section`) {
+                            section.classList.add('active');
+                        }
+                    });
+                });
+            });
+        });
+    </script>
+
+    <!-- Firebase Scripts (Module) -->
+    <script type="module" src="js/admin.js"></script>
+</body>
+
+</html>

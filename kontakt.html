@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="no">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kontakt | His Kingdom Ministry</title>
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Merriweather:wght@300;400;700;900&family=Open+Sans:wght@300;400;600;700&display=swap"
+        rel="stylesheet">
+
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        .contact-section {
+            padding: 80px 0;
+            background: var(--bg-white);
+        }
+
+        .contact-grid {
+            display: grid;
+            grid-template-columns: 1fr 1.5fr;
+            gap: 60px;
+            margin-top: 40px;
+        }
+
+        .contact-info-card {
+            background: var(--bg-light);
+            padding: 40px;
+            border-radius: 20px;
+            height: fit-content;
+        }
+
+        .contact-method {
+            display: flex;
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .contact-method i {
+            font-size: 24px;
+            color: var(--primary-orange);
+            width: 30px;
+            margin-top: 5px;
+        }
+
+        .contact-method-text h4 {
+            font-size: 18px;
+            margin-bottom: 5px;
+            color: var(--text-dark);
+        }
+
+        .contact-method-text p {
+            color: var(--text-light);
+            font-size: 16px;
+        }
+
+        .contact-form-container {
+            background: white;
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: var(--shadow);
+        }
+
+        .form-group {
+            margin-bottom: 25px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: var(--text-dark);
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 15px 20px;
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            font-family: inherit;
+            font-size: 16px;
+            transition: var(--transition);
+        }
+
+        .form-control:focus {
+            outline: none;
+            border-color: var(--primary-orange);
+            box-shadow: 0 0 0 3px rgba(209, 125, 57, 0.1);
+        }
+
+        textarea.form-control {
+            resize: vertical;
+            min-height: 150px;
+        }
+
+        .social-links-contact {
+            display: flex;
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .social-links-contact a {
+            width: 45px;
+            height: 45px;
+            background: white;
+            color: var(--primary-orange);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            transition: var(--transition);
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+        }
+
+        .social-links-contact a:hover {
+            background: var(--primary-orange);
+            color: white;
+            transform: translateY(-3px);
+        }
+
+        @media (max-width: 992px) {
+            .contact-grid {
+                grid-template-columns: 1fr;
+                gap: 40px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Header -->
+    <header class="header" id="header">
+        <div class="container">
+            <div class="header-content">
+                <a href="index.html" class="logo">
+                    <div class="logo-icon">
+                        <img src="img/Logo - sirkel.png" alt="His Kingdom Ministry Logo">
+                    </div>
+                    <span>His Kingdom Ministry</span>
+                </a>
+
+                <nav class="nav" id="nav">
+                    <ul class="nav-list">
+                        <li><a href="index.html#hjem" class="nav-link">Hjem</a></li>
+                        <li><a href="om-oss.html" class="nav-link">Om oss</a></li>
+                        <li><a href="media.html" class="nav-link">Media</a></li>
+                        <li><a href="arrangementer.html" class="nav-link">Arrangementer</a></li>
+                        <li><a href="blogg.html" class="nav-link">Blogg</a></li>
+                        <li><a href="kontakt.html" class="nav-link active">Kontakt</a></li>
+                        <li class="mobile-only"><a href="donasjoner.html" class="btn btn-primary">Gi gave</a></li>
+                    </ul>
+                </nav>
+
+                <div class="header-actions">
+                    <a href="donasjoner.html" class="btn btn-primary">Gi gave</a>
+                    <button class="mobile-toggle" id="mobile-toggle">
+                        <span></span>
+                        <span></span>
+                        <span></span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Page Hero -->
+    <section class="page-hero" style="padding-top: 160px;">
+        <div class="container">
+            <h1 class="page-hero-title" data-content-key="hero.title">Kontakt Oss</h1>
+            <p class="page-hero-subtitle" data-content-key="hero.subtitle">Vi vil gjerne høre fra deg. Send oss en
+                melding eller besøk oss.</p>
+        </div>
+    </section>
+
+    <!-- Contact Section -->
+    <section class="contact-section">
+        <div class="container">
+            <div class="contact-grid">
+                <!-- Contact Info -->
+                <div class="contact-info-card">
+                    <h3 class="section-title" style="font-size: 32px; text-align: left;" data-content-key="info.title">
+                        Ta Kontakt</h3>
+                    <p style="margin-bottom: 30px; color: var(--text-light);" data-content-key="info.text">Har du
+                        spørsmål, bønnebehov eller ønsker
+                        du å vite mer om vår tjeneste? Ikke nøl med å ta kontakt med oss.</p>
+
+                    <div class="contact-method">
+                        <i class="fas fa-envelope"></i>
+                        <div class="contact-method-text">
+                            <h4 data-content-key="info.email_label">E-post</h4>
+                            <p data-content-key="info.email">post@hiskingdomministry.no</p>
+                        </div>
+                    </div>
+
+                    <div class="contact-method">
+                        <i class="fas fa-phone"></i>
+                        <div class="contact-method-text">
+                            <h4 data-content-key="info.phone_label">Telefon</h4>
+                            <p data-content-key="info.phone">+47 123 45 678</p>
+                        </div>
+                    </div>
+
+                    <div class="contact-method">
+                        <i class="fas fa-map-marker-alt"></i>
+                        <div class="contact-method-text">
+                            <h4 data-content-key="info.address_label">Sted</h4>
+                            <p data-content-key="info.address">Oslo, Norge</p>
+                        </div>
+                    </div>
+
+                    <h4 style="margin-top: 40px; margin-bottom: 15px;">Følg oss</h4>
+                    <div class="social-links-contact">
+                        <a href="#"><i class="fab fa-facebook-f"></i></a>
+                        <a href="#"><i class="fab fa-instagram"></i></a>
+                        <a href="#"><i class="fab fa-youtube"></i></a>
+                    </div>
+                </div>
+
+                <!-- Contact Form -->
+                <div class="contact-form-container">
+                    <form id="contact-form">
+                        <div class="form-group">
+                            <label for="name">Fullt Navn</label>
+                            <input type="text" id="name" class="form-control" placeholder="Ditt navn" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="email">E-postadresse</label>
+                            <input type="email" id="email" class="form-control" placeholder="Din e-post" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="subject">Emne</label>
+                            <input type="text" id="subject" class="form-control" placeholder="Hva gjelder det?"
+                                required>
+                        </div>
+                        <div class="form-group">
+                            <label for="message">Melding</label>
+                            <textarea id="message" class="form-control" placeholder="Skriv din melding her..."
+                                required></textarea>
+                        </div>
+                        <button type="submit" class="btn btn-primary btn-block">Send Melding</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-grid">
+                <div class="footer-col">
+                    <a href="index.html" class="logo" style="margin-bottom: 20px; display: inline-block;">
+                        <div class="logo-icon">
+                            <img src="img/Logo - sirkel.png" alt="His Kingdom Ministry Logo">
+                        </div>
+                        <span style="color: white;">His Kingdom Ministry</span>
+                    </a>
+                    <p class="footer-text">Et felleskap for vekst, bønn og undervisning. Vi ønsker å utruste mennesker
+                        til et dypere liv med Gud.</p>
+                </div>
+
+                <div class="footer-col">
+                    <h4 class="footer-title">Sjekk ut</h4>
+                    <ul class="footer-links">
+                        <li><a href="index.html#hjem">Hjem</a></li>
+                        <li><a href="om-oss.html">Om oss</a></li>
+                        <li><a href="arrangementer.html">Arrangementer</a></li>
+                        <li><a href="blogg.html">Blogg</a></li>
+                        <li><a href="donasjoner.html">Donasjoner</a></li>
+                    </ul>
+                </div>
+
+                <div class="footer-col">
+                    <h4 class="footer-title">Ressurser</h4>
+                    <ul class="footer-links">
+                        <li><a href="blogg.html">Bøker</a></li>
+                        <li><a href="media.html#teaching-section">Undervisning</a></li>
+                        <li><a href="media.html#podcast-section">Podcast</a></li>
+                        <li><a href="arrangementer.html">E-kurs</a></li>
+                    </ul>
+                </div>
+
+                <div class="footer-col">
+                    <h4 class="footer-title">Kontakt</h4>
+                    <ul class="footer-contact">
+                        <li><i class="fas fa-envelope"></i> post@hiskingdomministry.no</li>
+                        <li><i class="fas fa-phone"></i> +47 123 45 678</li>
+                        <li><i class="fas fa-map-marker-alt"></i> Oslo, Norge</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="footer-bottom" style="display: flex; justify-content: space-between; align-items: center;">
+                <p>&copy; 2024 His Kingdom Ministry. Alle rettigheter reservert.</p>
+                <a href="admin/login.html"
+                    style="color: rgba(255,255,255,0.3); font-size: 11px; text-decoration: none;">Admin</a>
+            </div>
+        </div>
+    </footer>
+
+    <!-- JavaScript -->
+    <script src="script.js"></script>
+    <script type="module" src="js/content-manager.js"></script>
+    <script>
+        // Modal or success message handling can be added here
+        document.getElementById('contact-form').addEventListener('submit', function (e) {
+            e.preventDefault();
+            alert('Takk for din melding! Vi kontakter deg snart.');
+            this.reset();
+        });
+    </script>
+</body>
+
+</html>
