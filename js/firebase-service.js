@@ -61,6 +61,17 @@ class FirebaseService {
         if (!this.isInitialized) return null;
 
         try {
+            // Try to get fresh data from server first
+            try {
+                const docSnap = await this.db.collection("content").doc(pageId).get({ source: 'server' });
+                if (docSnap.exists) {
+                    return docSnap.data();
+                }
+            } catch (e) {
+                console.warn(`[FirebaseService] Server fetch failed for ${pageId}, falling back to cache.`, e);
+            }
+
+            // Fallback to cache/default if server fails or document doesn't exist on server (unlikely with source:server)
             const docSnap = await this.db.collection("content").doc(pageId).get();
             if (docSnap.exists) {
                 return docSnap.data();

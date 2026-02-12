@@ -53,7 +53,7 @@
             try {
                 firebase.initializeApp(firebaseConfig);
                 const db = firebase.firestore();
-                const doc = await db.collection("content").doc("collection_blog").get();
+                const doc = await db.collection("content").doc("collection_blog").get({ source: 'server' });
 
                 if (!doc.exists) {
                     document.getElementById('container').innerHTML = "Fant ikke 'collection_blog' dokumentet.";
