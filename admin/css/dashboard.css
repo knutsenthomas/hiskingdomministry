@@ -1092,3 +1092,22 @@ input[type="range"] {
     display: block;
     opacity: 1;
 }
+
+/* Editor.js Spacing Overrides */
+.codex-editor__redactor {
+    padding-bottom: 50px !important;
+}
+
+.ce-block__content {
+    max-width: 800px;
+}
+
+.ce-paragraph {
+    line-height: 1.5em;
+    padding-bottom: 0.8em;
+}
+
+.ce-header {
+    padding-bottom: 0.5em;
+    padding-top: 1em;
+}

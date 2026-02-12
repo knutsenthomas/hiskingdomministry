@@ -1261,6 +1261,7 @@ class AdminManager {
             } else console.warn('Editor.js: Delimiter tool missing');
 
             if (typeof Embed !== 'undefined') {
+                console.log('Editor.js: Embed tool loaded successfully');
                 toolsConfig.embed = {
                     class: Embed,
                     inlineToolbar: true,
@@ -1274,7 +1275,9 @@ class AdminManager {
                         }
                     }
                 };
-            } else console.warn('Editor.js: Embed tool missing');
+            } else {
+                console.error('Editor.js: Embed tool missing! Script might not be loaded.');
+            }
 
             const editor = new EditorJS({
                 holder: 'editorjs-container',
