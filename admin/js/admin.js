@@ -1260,6 +1260,19 @@ class AdminManager {
                 toolsConfig.delimiter = Delimiter;
             } else console.warn('Editor.js: Delimiter tool missing');
 
+            if (typeof Embed !== 'undefined') {
+                toolsConfig.embed = {
+                    class: Embed,
+                    inlineToolbar: true,
+                    config: {
+                        services: {
+                            youtube: true,
+                            vimeo: true
+                        }
+                    }
+                };
+            } else console.warn('Editor.js: Embed tool missing');
+
             const editor = new EditorJS({
                 holder: 'editorjs-container',
                 data: editorData,

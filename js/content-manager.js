@@ -1388,6 +1388,13 @@ class ContentManager {
                         return `<blockquote class="block-quote"><p>${block.data.text}</p><cite>${block.data.caption}</cite></blockquote>`;
                     case 'delimiter':
                         return `<div class="block-delimiter">***</div>`;
+                    case 'embed':
+                        return `
+                            <div class="block-embed">
+                                <iframe src="${block.data.embed}" width="${block.data.width}" height="${block.data.height}" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
+                                ${block.data.caption ? `<div class="block-embed-caption">${block.data.caption}</div>` : ''}
+                            </div>
+                        `;
                     default:
                         return '';
                 }
