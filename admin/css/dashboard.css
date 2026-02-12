@@ -806,6 +806,9 @@ textarea.form-control {
 
 .codex-editor__redactor {
     padding-bottom: 50px !important;
+    padding-left: 50px !important;
+    /* Space for the toolbox on the left */
+    padding-right: 50px !important;
 }
 
 .ce-block__content {
