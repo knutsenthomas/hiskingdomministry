@@ -211,7 +211,7 @@ class ContentManager {
             ).join('');
         }
 
-        container.innerHTML = item.content || '<p>Dette innlegget har foreløpig ikke noe innhold.</p>';
+        container.innerHTML = this.parseBlocks(item.content) || '<p>Dette innlegget har foreløpig ikke noe innhold.</p>';
     }
 
     async loadEvents() {
@@ -1237,7 +1237,7 @@ class ContentManager {
                         </div>
                         ` : ''}
                         <h3 class="blog-title" style="margin-bottom: 12px; font-size: 1.25rem;">${post.title}</h3>
-                        <p class="blog-excerpt" style="color: #666; font-size: 14px; line-height: 1.6; margin-bottom: 20px;">${this.stripHtml(post.content || '').substring(0, 120)}...</p>
+                        <p class="blog-excerpt" style="color: #666; font-size: 14px; line-height: 1.6; margin-bottom: 20px;">${this.stripHtml(this.parseBlocks(post.content) || '').substring(0, 120)}...</p>
                         <a href="blogg-post.html?id=${encodeURIComponent(post.title)}" class="blog-link" style="color: var(--primary-color); font-weight: 600; text-decoration: none;">Les mer <i class="fas fa-arrow-right" style="margin-left: 5px;"></i></a>
                     </div>
                 </article>
@@ -1330,6 +1330,49 @@ class ContentManager {
      * @param {string} title - Event title
      * @returns {string} - Unsplash image URL
      */
+    // --- Editor.js Helper ---
+    parseBlocks(content) {
+        if (!content) return '';
+
+        // Handle Legacy HTML (string)
+        if (typeof content === 'string') {
+            return content;
+        }
+
+        // Handle Editor.js JSON
+        if (typeof content === 'object' && content.blocks) {
+            return content.blocks.map(block => {
+                switch (block.type) {
+                    case 'header':
+                        return `<h${block.data.level} class="block-header">${block.data.text}</h${block.data.level}>`;
+                    case 'paragraph':
+                        return `<p class="block-paragraph">${block.data.text}</p>`;
+                    case 'list':
+                        const listTag = block.data.style === 'ordered' ? 'ol' : 'ul';
+                        const items = block.data.items.map(item => `<li>${item}</li>`).join('');
+                        return `<${listTag} class="block-list">${items}</${listTag}>`;
+                    case 'image':
+                        const caption = block.data.caption ? `<figcaption>${block.data.caption}</figcaption>` : '';
+                        const classes = [
+                            'block-image',
+                            block.data.withBorder ? 'with-border' : '',
+                            block.data.withBackground ? 'with-background' : '',
+                            block.data.stretched ? 'stretched' : ''
+                        ].join(' ');
+                        return `<figure class="${classes}"><img src="${block.data.file.url}" alt="${block.data.caption || ''}">${caption}</figure>`;
+                    case 'quote':
+                        return `<blockquote class="block-quote"><p>${block.data.text}</p><cite>${block.data.caption}</cite></blockquote>`;
+                    case 'delimiter':
+                        return `<div class="block-delimiter">***</div>`;
+                    default:
+                        return '';
+                }
+            }).join('');
+        }
+
+        return '';
+    }
+
     generateEventImage(title) {
         // High-quality curated images from Unsplash for different event types
         const imageLibrary = {

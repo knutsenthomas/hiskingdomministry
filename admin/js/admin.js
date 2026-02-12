@@ -1117,27 +1117,25 @@ class AdminManager {
             modal.className = 'dashboard-modal';
             modal.innerHTML = `
                 <div class="modal-backdrop" style="position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 2000; display: flex; align-items: center; justify-content: center; padding: 20px;">
-                    <div class="card" style="width: 100%; max-width: 900px; max-height: 90vh; overflow-y: auto;">
+                    <div class="card" style="width: 100%; max-width: 1100px; max-height: 95vh; overflow-y: auto;">
                         <div class="card-header flex-between">
-                            <h3 class="card-title">Rediger innhold</h3>
+                            <h3 class="card-title">Rediger innhold (Blokk-editor)</h3>
                             <button class="icon-btn" id="close-col-modal"><span class="material-symbols-outlined">close</span></button>
                         </div>
                         <div class="card-body">
-                            <div class="grid-2-cols editor-layout" style="grid-template-columns: 2fr 1fr; gap: 20px;">
+                            <div class="grid-2-cols editor-layout" style="grid-template-columns: 3fr 1fr; gap: 30px;">
                                 <div class="main-fields">
                                     <div class="form-group">
                                         <label>Tittel</label>
-                                        <input type="text" id="col-item-title" class="form-control" value="${item.title || ''}">
+                                        <input type="text" id="col-item-title" class="form-control" value="${item.title || ''}" style="font-size: 1.2rem; font-weight: 600;">
                                     </div>
                                     <div class="form-group" style="display: flex; flex-direction: column; flex: 1;">
                                         <label>Innhold</label>
-                                        <!-- Quill Editor Container -->
-                                        <div id="quill-editor-container" style="height: 400px; background: white;">
-                                            ${item.content || ''}
-                                        </div>
+                                        <!-- Editor.js Container -->
+                                        <div id="editorjs-container" class="form-control" style="min-height: 500px; background: white; padding: 40px; border: 1px solid #e2e8f0; border-radius: 8px;"></div>
                                     </div>
                                 </div>
-                                <div class="side-fields">
+                                <div class="side-fields" style="background: #f8fafc; padding: 20px; border-radius: 12px; height: fit-content;">
                                     <div class="form-group">
                                         <button class="btn-primary" style="width: 100%; margin-bottom: 20px;" id="save-col-item">
                                             <span class="material-symbols-outlined">save</span> Lagre endringer
@@ -1150,7 +1148,7 @@ class AdminManager {
                                         <input type="date" id="col-item-date" class="form-control" value="${safeDate}">
                                     </div>
                                     <div class="form-group">
-                                        <label>Forfatter / Bidragsyter</label>
+                                        <label>Forfatter</label>
                                         <input type="text" id="col-item-author" class="form-control" value="${item.author || ''}" placeholder="Navn">
                                     </div>
                                     <div class="form-group">
@@ -1163,27 +1161,27 @@ class AdminManager {
                                         <label>Tagger</label>
                                         <div class="tags-input-container">
                                             <div id="active-tags" class="active-tags-list"></div>
-                                            <input type="text" id="tag-input" class="form-control" placeholder="Skriv tag og trykk Enter" style="margin-top: 8px;">
+                                            <input type="text" id="tag-input" class="form-control" placeholder="Tag + Enter" style="margin-top: 8px;">
                                         </div>
                                     </div>
 
                                     <div class="form-group">
-                                        <label>Bilde URL</label>
+                                        <label>Omslagsbilde URL</label>
                                         <input type="text" id="col-item-img" class="form-control" value="${item.imageUrl || ''}">
-                                        <div id="img-preview-box" style="margin-top: 10px; height: 150px; background: #f8fafc; border-radius: 6px; overflow: hidden; display: flex; align-items: center; justify-content: center;">
+                                        <div id="img-preview-box" style="margin-top: 10px; height: 150px; background: white; border-radius: 6px; overflow: hidden; display: flex; align-items: center; justify-content: center; border: 1px solid #e2e8f0;">
                                             ${item.imageUrl ? `<img src="${item.imageUrl}" style="max-width: 100%; max-height: 100%; object-fit: contain;">` : '<span class="material-symbols-outlined" style="color: #cbd5e1; font-size: 48px;">image</span>'}
                                         </div>
                                     </div>
                                     
                                     <div class="divider" style="margin: 20px 0;"></div>
-                                    <h4 style="font-size: 14px; margin-bottom: 10px; color: #64748b;">Avansert (SEO)</h4>
+                                    <h4 style="font-size: 14px; margin-bottom: 15px; color: #64748b;">SEO</h4>
                                     <div class="form-group">
                                         <label>SEO Tittel</label>
                                         <input type="text" id="col-item-seo-title" class="form-control" value="${item.seoTitle || ''}">
                                     </div>
                                     <div class="form-group">
                                         <label>SEO Beskrivelse</label>
-                                        <textarea id="col-item-seo-desc" class="form-control" style="height: 60px;">${item.seoDescription || ''}</textarea>
+                                        <textarea id="col-item-seo-desc" class="form-control" style="height: 80px;">${item.seoDescription || ''}</textarea>
                                     </div>
                                 </div>
                             </div>
@@ -1194,17 +1192,60 @@ class AdminManager {
 
             document.body.appendChild(modal);
 
-            // --- Initialize Quill ---
-            const quill = new Quill('#quill-editor-container', {
-                theme: 'snow',
-                modules: {
-                    toolbar: [
-                        [{ 'header': [1, 2, 3, false] }],
-                        ['bold', 'italic', 'underline', 'strike'],
-                        [{ 'color': [] }, { 'background': [] }],
-                        [{ 'list': 'ordered' }, { 'list': 'bullet' }],
-                        ['link', 'image', 'clean']
-                    ]
+            // --- Editor.js Data Prep ---
+            let editorData = {};
+            if (typeof item.content === 'object' && item.content !== null && item.content.blocks) {
+                editorData = item.content;
+            } else if (typeof item.content === 'string' && item.content.trim().length > 0) {
+                console.warn("Legacy HTML content detected. Editor.js works best with JSON.");
+            }
+
+            // --- Initialize Editor.js ---
+            const editor = new EditorJS({
+                holder: 'editorjs-container',
+                data: editorData,
+                placeholder: 'Trykk "/" for å velge blokker (overskrift, bilde, sitat...)',
+                tools: {
+                    header: {
+                        class: Header,
+                        inlineToolbar: true,
+                        config: {
+                            placeholder: 'Overskrift',
+                            levels: [2, 3, 4],
+                            defaultLevel: 2
+                        }
+                    },
+                    list: {
+                        class: List,
+                        inlineToolbar: true,
+                        config: { defaultStyle: 'unordered' }
+                    },
+                    image: {
+                        class: ImageTool,
+                        config: {
+                            uploader: {
+                                uploadByFile(file) {
+                                    alert("Filopplasting er ikke implementert. Bruk URL.");
+                                    return Promise.resolve({ success: 0 });
+                                },
+                                uploadByUrl(url) {
+                                    return Promise.resolve({
+                                        success: 1,
+                                        file: { url: url }
+                                    });
+                                }
+                            }
+                        }
+                    },
+                    quote: {
+                        class: Quote,
+                        inlineToolbar: true,
+                        config: {
+                            quotePlaceholder: 'Sitat tekst',
+                            captionPlaceholder: 'Forfatter'
+                        }
+                    },
+                    delimiter: Delimiter
                 }
             });
 
@@ -1263,10 +1304,18 @@ class AdminManager {
             document.getElementById('save-col-item').onclick = async () => {
                 const btn = document.getElementById('save-col-item');
 
-                item.title = document.getElementById('col-item-title').value;
+                // Get JSON data from Editor.js
+                let savedData;
+                try {
+                    savedData = await editor.save();
+                } catch (error) {
+                    console.error('Saving failed', error);
+                    alert('Kunne ikke hente innhold fra editor.');
+                    return;
+                }
 
-                // Get HTML from Quill
-                item.content = quill.root.innerHTML;
+                item.title = document.getElementById('col-item-title').value;
+                item.content = savedData; // Store as JSON object
 
                 item.date = document.getElementById('col-item-date').value;
                 item.imageUrl = document.getElementById('col-item-img').value;
@@ -1274,8 +1323,6 @@ class AdminManager {
                 item.category = document.getElementById('col-item-cat').value;
                 item.seoTitle = document.getElementById('col-item-seo-title').value;
                 item.seoDescription = document.getElementById('col-item-seo-desc').value;
-
-                // Save Tags
                 item.tags = currentTags;
 
                 btn.textContent = 'Lagrer...';

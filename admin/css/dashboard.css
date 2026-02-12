@@ -799,25 +799,49 @@ textarea.form-control {
     background-color: var(--accent-light);
 }
 
-/* Quill Editor Customization */
-.ql-toolbar.ql-snow {
-    border: 1px solid var(--border-color);
-    border-top-left-radius: 8px;
-    border-top-right-radius: 8px;
-    background-color: #f8fafc;
+/* Editor.js Customization */
+.codex-editor {
+    z-index: 10;
 }
 
-.ql-container.ql-snow {
-    border: 1px solid var(--border-color);
-    border-bottom-left-radius: 8px;
-    border-bottom-right-radius: 8px;
-    background-color: #ffffff;
-    font-family: 'Inter', sans-serif;
-    font-size: 16px;
+.codex-editor__redactor {
+    padding-bottom: 50px !important;
 }
 
-.ql-editor {
-    min-height: 300px;
+.ce-block__content {
+    max-width: 100%;
+    /* Use full width of container */
+}
+
+h2.ce-header {
+    font-size: 1.5rem;
+    font-weight: 700;
+    margin-bottom: 0.5em;
+}
+
+h3.ce-header {
+    font-size: 1.25rem;
+    font-weight: 600;
+    margin-bottom: 0.5em;
+}
+
+.ce-paragraph {
+    line-height: 1.6;
+    font-size: 1rem;
+    color: #334155;
+}
+
+.cdx-block {
+    max-width: 100% !important;
+}
+
+/* Fix for inline toolbar z-index if needed */
+.ce-inline-toolbar {
+    z-index: 1000;
+}
+
+.ce-conversion-toolbar {
+    z-index: 1000;
 }
 
 /* Tag Management Styling */
