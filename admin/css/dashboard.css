@@ -1103,11 +1103,17 @@ input[type="range"] {
 }
 
 .ce-paragraph {
-    line-height: 1.5em;
-    padding-bottom: 0.8em;
+    line-height: 1.4 !important;
+    padding-bottom: 0 !important;
+    margin-bottom: 0.5em !important;
 }
 
 .ce-header {
-    padding-bottom: 0.5em;
-    padding-top: 1em;
+    padding-bottom: 0.2em !important;
+    padding-top: 0.5em !important;
+    margin-bottom: 0 !important;
+}
+
+.ce-block {
+    margin-bottom: 0 !important;
 }
