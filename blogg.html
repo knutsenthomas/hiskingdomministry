@@ -83,85 +83,11 @@
                 </div>
 
                 <div class="blog-grid">
-                    <!-- Post 1 -->
-                    <article class="blog-card">
-                        <div class="blog-image">
-                            <img src="https://images.unsplash.com/photo-1504052434569-70ad5836ab65?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
-                                alt="Blog post">
-                            <span class="blog-date">05 Feb, 2024</span>
-                            <span class="blog-category">Undervisning</span>
-                        </div>
-                        <div class="blog-content">
-                            <h3 class="blog-title">Hvordan bevare troen i en travel hverdag</h3>
-                            <p class="blog-excerpt">Vi utforsker praktiske tips og bibelske prinsipper for å
-                                opprettholde en nær relasjon med Gud til tross for en hektisk tidsplan...</p>
-                            <a href="blogg-post-1.html" class="blog-link">Les mer <i class="fas fa-arrow-right"></i></a>
-                        </div>
-                    </article>
-
-                    <!-- Post 2 -->
-                    <article class="blog-card">
-                        <div class="blog-image">
-                            <img src="https://images.unsplash.com/photo-1489392191049-fc10c97e64b6?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
-                                alt="Blog post">
-                            <span class="blog-date">28 Jan, 2024</span>
-                            <span class="blog-category">Reise</span>
-                        </div>
-                        <div class="blog-content">
-                            <h3 class="blog-title">Rapport fra misjonsturen til Kenya</h3>
-                            <p class="blog-excerpt">Bli med på reisen gjennom våre opplevelser i Kenya. Vi så Guds
-                                godhet i aksjon gjennom helbredelse, omsorg og glede...</p>
-                            <a href="blogg-post-2.html" class="blog-link">Les mer <i class="fas fa-arrow-right"></i></a>
-                        </div>
-                    </article>
-
-                    <!-- Post 3 -->
-                    <article class="blog-card">
-                        <div class="blog-image">
-                            <img src="https://images.unsplash.com/photo-1475483768296-6163e08872a1?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
-                                alt="Blog post">
-                            <span class="blog-date">15 Jan, 2024</span>
-                            <span class="blog-category">Podcast</span>
-                        </div>
-                        <div class="blog-content">
-                            <h3 class="blog-title">Ny Podcast Episode: Tro, tvil og vekst</h3>
-                            <p class="blog-excerpt">Lytt til vår nyeste episode hvor vi diskuterer de ærlige sidene ved
-                                troslivet og hvordan vi kan finne hvile i Guds løfter...</p>
-                            <a href="blogg-post-3.html" class="blog-link">Les mer <i class="fas fa-arrow-right"></i></a>
-                        </div>
-                    </article>
-
-                    <!-- Post 4 -->
-                    <article class="blog-card">
-                        <div class="blog-image">
-                            <img src="https://images.unsplash.com/photo-1517486808906-6ca8b3f04846?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
-                                alt="Blog post">
-                            <span class="blog-date">10 Jan, 2024</span>
-                            <span class="blog-category">Felleskap</span>
-                        </div>
-                        <div class="blog-content">
-                            <h3 class="blog-title">Viktigheten av å stå sammen</h3>
-                            <p class="blog-excerpt">Hvorfor felleskapet er essensielt for den kristne vandringen og
-                                hvordan vi kan støtte hverandre gjennom livets ulike sesonger...</p>
-                            <a href="blogg-post-4.html" class="blog-link">Les mer <i class="fas fa-arrow-right"></i></a>
-                        </div>
-                    </article>
-
-                    <!-- Post 5 -->
-                    <article class="blog-card">
-                        <div class="blog-image">
-                            <img src="https://images.unsplash.com/photo-1507413245164-6160d8298b31?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
-                                alt="Blog post">
-                            <span class="blog-date">02 Jan, 2024</span>
-                            <span class="blog-category">Vitnesbyrd</span>
-                        </div>
-                        <div class="blog-content">
-                            <h3 class="blog-title">Min reise fra mørke til lys</h3>
-                            <p class="blog-excerpt">Et sterkt vitnesbyrd om hvordan Gud forandret et liv preget av
-                                håpløshet til et liv fylt med mening, fred og fremtidstro...</p>
-                            <a href="blogg-post-5.html" class="blog-link">Les mer <i class="fas fa-arrow-right"></i></a>
-                        </div>
-                    </article>
+                    <!-- Blog posts will be loaded here dynamically from Firestore -->
+                    <div class="loading-spinner" style="text-align: center; grid-column: 1/-1; padding: 40px;">
+                        <i class="fas fa-spinner fa-spin" style="font-size: 40px; color: var(--primary-orange);"></i>
+                        <p>Laster innlegg...</p>
+                    </div>
                 </div>
 
                 <!-- Pagination (Simulated) -->
@@ -190,9 +116,12 @@
                     <p class="footer-text">Et felleskap for vekst, bønn og undervisning. Vi ønsker å utruste mennesker
                         til et dypere liv med Gud.</p>
                     <div class="footer-social">
-                        <a href="https://www.facebook.com/hiskingdomministry777?locale=nb_NO" class="social-link" target="_blank" rel="noopener noreferrer"><i class="fab fa-facebook-f"></i></a>
-                        <a href="https://www.instagram.com/hiskingdomdesigns/" class="social-link" target="_blank" rel="noopener noreferrer"><i class="fab fa-instagram"></i></a>
-                        <a href="https://www.youtube.com/@HisKingdomMinistry" class="social-link" target="_blank" rel="noopener noreferrer"><i class="fab fa-youtube"></i></a>
+                        <a href="https://www.facebook.com/hiskingdomministry777?locale=nb_NO" class="social-link"
+                            target="_blank" rel="noopener noreferrer"><i class="fab fa-facebook-f"></i></a>
+                        <a href="https://www.instagram.com/hiskingdomdesigns/" class="social-link" target="_blank"
+                            rel="noopener noreferrer"><i class="fab fa-instagram"></i></a>
+                        <a href="https://www.youtube.com/@HisKingdomMinistry" class="social-link" target="_blank"
+                            rel="noopener noreferrer"><i class="fab fa-youtube"></i></a>
                     </div>
                 </div>
 

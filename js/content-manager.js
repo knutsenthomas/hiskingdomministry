@@ -133,9 +133,24 @@ class ContentManager {
         }
 
         if (this.pageId === 'blogg') {
-            const blogData = await firebaseService.getPageContent('collection_blog');
-            const blogItems = Array.isArray(blogData) ? blogData : (blogData?.items || []);
-            if (blogItems.length > 0) this.renderBlogPosts(blogItems, '.blog-page .blog-grid');
+            console.log("[ContentManager] Loading content for 'blogg' page...");
+            try {
+                const blogData = await firebaseService.getPageContent('collection_blog');
+                console.log("[ContentManager] Blog data received:", blogData);
+
+                const blogItems = Array.isArray(blogData) ? blogData : (blogData?.items || []);
+                console.log("[ContentManager] Parsed blog items:", blogItems);
+
+                if (blogItems.length > 0) {
+                    this.renderBlogPosts(blogItems, '.blog-page .blog-grid');
+                } else {
+                    console.warn("[ContentManager] No blog posts found in 'collection_blog'.");
+                    const container = document.querySelector('.blog-page .blog-grid');
+                    if (container) container.innerHTML = '<p style="text-align:center; padding: 20px;">Ingen blogginnlegg funnet. Kjør seed-scriptet.</p>';
+                }
+            } catch (err) {
+                console.error("[ContentManager] Error loading blog posts:", err);
+            }
         }
 
         if (this.pageId === 'undervisningsserier') {
