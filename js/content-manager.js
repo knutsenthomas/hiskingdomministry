@@ -224,7 +224,7 @@ class ContentManager {
                 authorBox.style.padding = '20px';
 
                 const tagsHtml = `<div style="display: flex; gap: 10px; flex-wrap: wrap; margin-top: 15px;">
-                    ${item.tags.map(t => `<span class="blog-tag">#${t}</span>`).join('')}
+                    ${item.tags.map(t => `<span class="blog-tag">${t}</span>`).join('')}
                 </div>`;
 
                 authorBox.innerHTML = `
