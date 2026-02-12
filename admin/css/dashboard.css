@@ -1104,7 +1104,9 @@ input[type="range"] {
 
 .ce-paragraph {
     line-height: 1.4 !important;
+    padding-top: 0 !important;
     padding-bottom: 0 !important;
+    margin-top: 0 !important;
     margin-bottom: 0 !important;
 }
 
@@ -1116,4 +1118,5 @@ input[type="range"] {
 
 .ce-block {
     margin-bottom: 0 !important;
+    padding-bottom: 0 !important;
 }
