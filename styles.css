@@ -3590,3 +3590,27 @@ ol.block-list {
     margin-top: 0.5rem;
     font-style: italic;
 }
+
+/* Blog Tags Styling */
+.blog-tag {
+    display: inline-block;
+    padding: 6px 16px;
+    background: #fff;
+    border: 1px solid var(--border-color);
+    border-radius: 50px;
+    color: var(--text-dark);
+    font-size: 0.95rem;
+    font-weight: 500;
+    text-decoration: none;
+    transition: var(--transition);
+    cursor: default;
+    margin-right: 8px;
+    /* Spacing */
+    margin-bottom: 8px;
+}
+
+.blog-tag:hover {
+    border-color: var(--primary-orange);
+    color: var(--primary-orange);
+    background: #fffaf5;
+}
