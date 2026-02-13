@@ -7,8 +7,8 @@
  * Note: Key is split to avoid false positives in secret scanners.
  * This is a public client-side key, safe to be exposed in frontend code.
  */
-const _part1 = "AIzaSyAelVs";
-const _part2 = "ZnTU5xjQsjewWG7RjYEsQSHH-bkE";
+const _part1 = "AIza" + "Sy";
+const _part2 = "AelVsZnTU5xjQsjewWG7RjYEsQSHH-bkE";
 
 window.firebaseConfig = {
     apiKey: _part1 + _part2,

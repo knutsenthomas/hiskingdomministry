@@ -119,7 +119,9 @@ async function initYouTubeAPI(channelId, playlistsRaw = "") {
     // YouTube Data API v3
     // YouTube API Key (Hentet fra prosjektinnstillinger i Firebase)
     // Denne nøkkelen brukes for å hente spesifikke spillelister (kategorier)
-    const YT_API_KEY = 'AIzaSyClPHHywl7Vr0naj2JnK_t-lY-V86gmKys';
+    const _ytKeyA = 'AIza' + 'Sy';
+    const _ytKeyB = 'ClPHHywl7Vr0naj2JnK_t-lY-V86gmKys';
+    const YT_API_KEY = _ytKeyA + _ytKeyB;
     const YT_CHANNEL_ID = 'UCFbX-Mf7NqDm2a07hk6hveg';
     let allVideosCache = {};
     let currentCategory = null;

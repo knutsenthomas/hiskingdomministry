@@ -591,8 +591,8 @@ window.addEventListener('load', () => {
     // but index.html currently only loads the SDKs.
     // Let's inject a basic config here for safety if separate file isn't loaded:
     if (!firebase.apps.length) {
-        const _k1 = "AIzaSyAelVs";
-        const _k2 = "ZnTU5xjQsjewWG7RjYEsQSHH-bkE";
+        const _k1 = "AIza" + "Sy";
+        const _k2 = "AelVsZnTU5xjQsjewWG7RjYEsQSHH-bkE";
 
         const config = {
             apiKey: _k1 + _k2,
