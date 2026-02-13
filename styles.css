@@ -744,19 +744,15 @@ section {
     transition: var(--transition);
     border-radius: 50%;
     overflow: hidden;
-    background: #cc712b;
-    /* Matches logo ring color */
+    background: transparent;
     flex-shrink: 0;
 }
 
 .logo-icon img {
-    width: 120%;
-    /* Increased to push white corners further out */
-    height: 120%;
-    object-fit: cover;
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
     display: block;
-    margin: -10%;
-    /* Precisely centers the 120% image */
 }
 
 .nav {
