@@ -160,10 +160,29 @@ body {
     font-weight: 600;
 }
 
+.sidebar-logo {
+    height: 32px;
+    width: auto;
+    object-fit: contain;
+}
+
 .user-profile {
     display: flex;
     align-items: center;
     gap: 16px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    padding: 4px 8px;
+    border-radius: 8px;
+}
+
+.user-profile:hover {
+    background-color: rgba(0, 0, 0, 0.05);
+    transform: translateY(-1px);
+}
+
+.user-profile:active {
+    transform: translateY(0);
 }
 
 .user-info {

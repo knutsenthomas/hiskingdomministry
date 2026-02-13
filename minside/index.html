@@ -25,8 +25,7 @@
         <aside class="sidebar">
             <div class="sidebar-header">
                 <div class="logo">
-                    <!-- Using main site logo or text -->
-                    <span class="material-symbols-outlined logo-icon">account_circle</span>
+                    <img src="../img/Logo%20sirkel%20-%20orange%20og%20hvit.png" alt="HKM Logo" class="sidebar-logo">
                     <h1 class="logo-text">Min Side</h1>
                 </div>
             </div>
@@ -57,8 +56,6 @@
                             <span>Gaver og Betalinger</span>
                         </a>
                     </li>
-                    <li class="nav-item">
-                        <a href="#profile" class="nav-link" data-view="profile">
                 </ul>
             </nav>
 
@@ -84,7 +81,7 @@
                 <div class="header-title">
                     <h2 id="page-title">Oversikt</h2>
                 </div>
-                <div class="user-profile">
+                <div class="user-profile" onclick="window.minSideManager.navigateTo('profile')">
                     <div class="user-info">
                         <span class="user-name" id="user-name">Laster...</span>
                         <span class="user-role badge">Medlem</span>
