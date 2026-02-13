@@ -1267,16 +1267,19 @@ body.hero-animate .slide-buttons {
     border-radius: 15px;
     text-align: center;
     box-shadow: var(--shadow);
-    transition: var(--transition);
+    transition: opacity 0.6s ease, transform 0.6s ease, box-shadow 0.3s ease;
+    will-change: transform, opacity;
     display: flex;
     flex-direction: column;
     align-items: center;
     min-height: 320px;
 }
 
-.feature-box:hover {
-    transform: translateY(-10px);
-    box-shadow: var(--shadow-hover);
+@media (hover: hover) {
+    .feature-box:hover {
+        transform: translateY(-10px) !important;
+        box-shadow: var(--shadow-hover);
+    }
 }
 
 .feature-icon {
@@ -2845,6 +2848,7 @@ body {
     overflow: hidden;
     display: -webkit-box;
     -webkit-line-clamp: 4;
+    line-clamp: 4;
     -webkit-box-orient: vertical;
     transition: max-height 0.3s ease;
 }
@@ -2852,6 +2856,7 @@ body {
 .team-member.expanded .team-bio {
     max-height: 1000px;
     -webkit-line-clamp: unset;
+    line-clamp: unset;
 }
 
 .team-social {
