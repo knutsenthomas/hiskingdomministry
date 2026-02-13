@@ -715,8 +715,8 @@ section {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: 20px 40px;
-    /* Vertical padding defines the height */
+    padding: 32px 40px;
+    /* Increased for "luft" on large screens */
     width: 100%;
     max-width: 1400px;
     margin: 0 auto;
@@ -724,8 +724,8 @@ section {
 }
 
 .header.scrolled .header-content {
-    padding: 10px 40px;
-    /* Shrink on scroll */
+    padding: 15px 40px;
+    /* Balanced shrink on scroll */
 }
 
 /* Enable backdrop-filter only on desktop for performance */
@@ -734,19 +734,6 @@ section {
         backdrop-filter: blur(10px) !important;
         -webkit-backdrop-filter: blur(10px) !important;
     }
-}
-
-
-.header-content {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 0 40px;
-    /* Horizontal only */
-    width: 100%;
-    height: 100%;
-    max-width: 1400px;
-    margin: 0 auto;
 }
 
 .logo {
