@@ -261,10 +261,13 @@ class MinSideManager {
                                 <input type="checkbox" checked style="width: 18px; height: 18px; accent-color: var(--primary-orange);">
                                 <span>Motta nyhetsbrev på e-post</span>
                             </label>
-                            <label style="display: flex; align-items: center; gap: 12px; cursor: pointer;">
-                                <input type="checkbox" style="width: 18px; height: 18px; accent-color: var(--primary-orange);">
-                                <span>Motta SMS-varsler om møter</span>
                             </label>
+                        </div>
+
+                        <!-- Privacy Settings (Consent) -->
+                        <h4 style="margin-bottom: 16px; color: var(--primary-orange); border-bottom: 1px solid var(--border-color); padding-bottom: 8px;">Personvern & Samtykke</h4>
+                        <div id="consent-status-display" style="padding: 15px; background: #f1f5f9; border-radius: 8px; margin-bottom: 30px;">
+                            <div class="loader">Henter samtykkestatus...</div>
                         </div>
 
                         <!-- Actions -->
@@ -282,6 +285,46 @@ class MinSideManager {
                 </div>
             </div>
         `;
+
+        // Fetch and display consent status
+        this.updateConsentStatusDisplay();
+    }
+
+    async updateConsentStatusDisplay() {
+        const statusDiv = document.getElementById('consent-status-display');
+        if (!statusDiv || !this.currentUser) return;
+
+        try {
+            const userDoc = await firebase.firestore().collection("users").doc(this.currentUser.uid).get();
+            if (userDoc.exists && userDoc.data().privacySettings) {
+                const settings = userDoc.data().privacySettings;
+                const choices = settings.choices;
+
+                let statusText = "<strong>Aktivt samtykke:</strong><br>";
+                statusText += `Nødvendige: <span style="color: green;">Ja</span><br>`;
+                statusText += `Statistikk: ${choices.analytics ? '<span style="color: green;">Ja</span>' : '<span style="color: red;">Nei</span>'}<br>`;
+                statusText += `Markedsføring: ${choices.marketing ? '<span style="color: green;">Ja</span>' : '<span style="color: red;">Nei</span>'}`;
+
+                statusDiv.innerHTML = `
+                    <p style="font-size: 0.95rem; line-height: 1.5;">${statusText}</p>
+                    <button type="button" class="btn btn-outline" style="margin-top: 12px; font-size: 0.85rem; padding: 6px 12px;" 
+                            onclick="localStorage.removeItem('hkm_cookie_consent'); location.reload();">
+                        Endre innstillinger
+                    </button>
+                `;
+            } else {
+                statusDiv.innerHTML = `
+                    <p style="font-size: 0.95rem;">Ingen lagret status funnet på profil.</p>
+                    <button type="button" class="btn btn-outline" style="margin-top: 12px; font-size: 0.85rem; padding: 6px 12px;" 
+                            onclick="localStorage.removeItem('hkm_cookie_consent'); location.reload();">
+                        Sett innstillinger nå
+                    </button>
+                `;
+            }
+        } catch (error) {
+            console.error("Feil ved henting av samtykke:", error);
+            statusDiv.innerHTML = "Kunne ikke hente samtykkestatus.";
+        }
     }
 }
 

@@ -97,8 +97,36 @@ function hideBanner() {
     }
 }
 
-function saveConsent(consent) {
+async function saveConsent(consent) {
     localStorage.setItem('hkm_cookie_consent', JSON.stringify(consent));
+
+    // Persistence logic (Firestore)
+    if (window.firebaseService && window.firebaseService.isInitialized) {
+        const payload = {
+            choices: consent,
+            timestamp: firebase.firestore.FieldValue.serverTimestamp(),
+            userAgent: navigator.userAgent,
+            url: window.location.href
+        };
+
+        try {
+            const user = firebase.auth().currentUser;
+            if (user) {
+                // Save to user profile
+                await firebase.firestore().collection("users").doc(user.uid).set({
+                    privacySettings: payload
+                }, { merge: true });
+                console.log("Consent saved to profile.");
+            } else {
+                // Log anonymously
+                await firebase.firestore().collection("consent_logs").add(payload);
+                console.log("Anonymous consent logged.");
+            }
+        } catch (error) {
+            console.error("Error persisting consent:", error);
+        }
+    }
+
     applyConsent(consent);
 }
 
