@@ -87,8 +87,12 @@ class MinSideManager {
 
     updateUserProfile(user) {
         document.getElementById('user-name').textContent = user.displayName || user.email;
+        const avatarEl = document.getElementById('user-avatar');
         if (user.photoURL) {
-            document.getElementById('user-avatar').innerHTML = `<img src="${user.photoURL}" style="width:100%;height:100%;border-radius:50%;object-fit:cover;">`;
+            avatarEl.innerHTML = `<img src="${user.photoURL}" style="width:100%;height:100%;border-radius:50%;object-fit:cover;">`;
+        } else {
+            const initials = (user.displayName || user.email || '?').charAt(0).toUpperCase();
+            avatarEl.textContent = initials;
         }
     }
 
@@ -346,6 +350,25 @@ class MinSideManager {
                         <span class="badge" style="font-size: 0.9rem; padding: 6px 12px;">Medlem siden 2024</span>
                     </div>
                     
+                    <div style="background: white; border-bottom: 1px solid var(--border-color); padding-bottom: 30px; margin-bottom: 30px; display: flex; align-items: center; gap: 24px;">
+                        <div id="profile-picture-container" style="position: relative; width: 100px; height: 100px; border-radius: 50%; background: var(--primary-orange); display: flex; align-items: center; justify-content: center; color: white; font-size: 2.5rem; font-weight: 700; overflow: hidden; border: 4px solid white; box-shadow: var(--shadow);">
+                            ${this.currentUser.photoURL ? `<img src="${this.currentUser.photoURL}" style="width: 100%; height: 100%; object-fit: cover;">` : (this.currentUser.displayName || this.currentUser.email || '?').charAt(0).toUpperCase()}
+                            <label for="profile-upload" style="position: absolute; inset: 0; background: rgba(0,0,0,0.5); display: flex; align-items: center; justify-content: center; color: white; opacity: 0; transition: opacity 0.3s ease; cursor: pointer;">
+                                <span class="material-symbols-outlined">photo_camera</span>
+                            </label>
+                            <input type="file" id="profile-upload" style="display: none;" accept="image/*" onchange="window.minSideManager.handleProfilePictureUpload(this)">
+                        </div>
+                        <div>
+                            <h4 style="margin-bottom: 4px;">Profilbilde</h4>
+                            <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 12px;">Last opp et bilde fra din enhet eller bruk bildet fra Google.</p>
+                            <div style="display: flex; gap: 10px;">
+                                <button type="button" class="btn" onclick="document.getElementById('profile-upload').click()" style="padding: 6px 12px; font-size: 0.85rem; border: 1px solid var(--border-color); background: white;">Last opp nytt</button>
+                                ${this.currentUser.providerData.some(p => p.providerId === 'google.com') ?
+                `<button type="button" class="btn" onclick="window.minSideManager.syncGooglePhoto()" style="padding: 6px 12px; font-size: 0.85rem; border: 1px solid var(--border-color); background: white;">Hent fra Google</button>` : ''}
+                            </div>
+                        </div>
+                    </div>
+
                     <form onsubmit="event.preventDefault(); alert('Lagret (Simulert)');">
                         <!-- Personal Info -->
                         <h4 style="margin-bottom: 16px; color: var(--primary-orange); border-bottom: 1px solid var(--border-color); padding-bottom: 8px;">Personalia</h4>
@@ -452,6 +475,52 @@ class MinSideManager {
         } catch (error) {
             console.error("Feil ved henting av samtykke:", error);
             statusDiv.innerHTML = "Kunne ikke hente samtykkestatus.";
+        }
+    }
+
+    async handleProfilePictureUpload(input) {
+        const file = input.files[0];
+        if (!file) return;
+
+        // Show loading state
+        const container = document.getElementById('profile-picture-container');
+        const originalContent = container.innerHTML;
+        container.innerHTML = `<div class="loader" style="transform: scale(0.5);"></div>`;
+
+        try {
+            const path = `profiles/${this.currentUser.uid}/avatar.jpg`;
+            const url = await window.firebaseService.uploadImage(file, path);
+
+            // Update User Profile in Firebase Auth
+            await this.currentUser.updateProfile({
+                photoURL: url
+            });
+
+            // Update UI
+            container.innerHTML = `<img src="${url}" style="width:100%;height:100%;object-fit:cover;">`;
+            this.updateUserProfile(this.currentUser);
+            alert('Profilbilde er oppdatert!');
+        } catch (error) {
+            console.error("Opplasting feilet:", error);
+            container.innerHTML = originalContent;
+            alert('Kunne ikke laste opp bilde: ' + error.message);
+        }
+    }
+
+    async syncGooglePhoto() {
+        const googleProvider = this.currentUser.providerData.find(p => p.providerId === 'google.com');
+        if (googleProvider && googleProvider.photoURL) {
+            try {
+                await this.currentUser.updateProfile({
+                    photoURL: googleProvider.photoURL
+                });
+                this.loadView('profile'); // Refresh view
+                this.updateUserProfile(this.currentUser);
+                alert('Profilbilde hentet fra Google!');
+            } catch (error) {
+                console.error("Google sync feilet:", error);
+                alert('Kunne ikke hente bilde fra Google.');
+            }
         }
     }
 }
