@@ -580,6 +580,9 @@ class AdminManager {
         let teachingCount = 0;
         let youtubeStats = { subscribers: 'N/A', videos: 'N/A' };
         let podcastCount = 'N/A';
+        let causesCount = 0;
+        let donationCount = 0;
+        let donationTotal = 0;
 
         try {
             const blogData = await firebaseService.getPageContent('collection_blog');
@@ -595,6 +598,31 @@ class AdminManager {
             teachingCount = teachingItems.length;
         } catch (e) {
             console.warn('Kunne ikke hente undervisningsstatistikk:', e);
+        }
+
+        try {
+            const causesData = await firebaseService.getPageContent('collection_causes');
+            const causesItems = Array.isArray(causesData) ? causesData : (causesData && causesData.items ? causesData.items : []);
+            causesCount = causesItems.length;
+        } catch (e) {
+            console.warn('Kunne ikke hente innsamlingsaksjoner:', e);
+        }
+
+        try {
+            if (firebaseService.db) {
+                const donationsSnapshot = await firebaseService.db.collection('donations').get();
+                donationCount = donationsSnapshot.size;
+                if (!donationsSnapshot.empty) {
+                    donationsSnapshot.forEach(doc => {
+                        const data = doc.data();
+                        if (data.amount) {
+                            donationTotal += (data.amount / 100);
+                        }
+                    });
+                }
+            }
+        } catch (e) {
+            console.warn('Kunne ikke hente donasjoner:', e);
         }
 
         // Fetch Media Stats
@@ -616,6 +644,7 @@ class AdminManager {
             podcastCount = `Feil: ${e.message}`;
         }
 
+        const formattedDonationTotal = donationTotal.toLocaleString('no-NO', { style: 'currency', currency: 'NOK', maximumFractionDigits: 0 });
 
         section.innerHTML = `
             <div class="section-header">
@@ -654,6 +683,25 @@ class AdminManager {
                     <div class="stat-info">
                         <h3 class="stat-label">Undervisningsserier</h3>
                         <p class="stat-value">${teachingCount}</p>
+                    </div>
+                </div>
+
+                <!-- New Donations Card -->
+                <div class="stat-card">
+                    <div class="stat-icon pink"><span class="material-symbols-outlined">volunteer_activism</span></div>
+                    <div class="stat-info">
+                        <h3 class="stat-label">Donasjoner</h3>
+                        <p class="stat-value">${donationCount}</p>
+                        <small style="color: #64748b;">Totalt: <span style="font-weight:600; color:#333;">${formattedDonationTotal}</span></small>
+                    </div>
+                </div>
+
+                <!-- New Causes Card -->
+                 <div class="stat-card">
+                    <div class="stat-icon orange"><span class="material-symbols-outlined">campaign</span></div>
+                    <div class="stat-info">
+                        <h3 class="stat-label">Innsamlingsaksjoner</h3>
+                        <p class="stat-value">${causesCount}</p>
                     </div>
                 </div>
 
