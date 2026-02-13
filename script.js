@@ -300,6 +300,12 @@ function updateSectionOffsets() {
 window.addEventListener('load', updateSectionOffsets);
 window.addEventListener('resize', updateSectionOffsets);
 
+// Recalculate offsets when dynamic content finishes loading (important for mobile)
+window.addEventListener('cmsContentLoaded', () => {
+    // Add a small delay to allow layout to settle
+    setTimeout(updateSectionOffsets, 500);
+});
+
 let navTicking = false;
 window.addEventListener('scroll', () => {
     if (!navTicking) {
@@ -712,13 +718,20 @@ function initScrollToTop() {
     document.body.appendChild(btn);
 
     // Show/Hide on scroll
+    let topTicking = false;
     window.addEventListener('scroll', () => {
-        if (window.scrollY > 300) {
-            btn.classList.add('visible');
-        } else {
-            btn.classList.remove('visible');
+        if (!topTicking) {
+            window.requestAnimationFrame(() => {
+                if (window.scrollY > 300) {
+                    btn.classList.add('visible');
+                } else {
+                    btn.classList.remove('visible');
+                }
+                topTicking = false;
+            });
+            topTicking = true;
         }
-    });
+    }, { passive: true });
 
     // Scroll to top on click
     btn.addEventListener('click', () => {
@@ -906,18 +919,29 @@ const fadeInObserver = new IntersectionObserver((entries) => {
     entries.forEach(entry => {
         if (entry.isIntersecting) {
             entry.target.style.opacity = '1';
-            entry.target.style.transform = 'translateY(0)';
+            // Disable translateY on mobile to prevent "jumping" sensation
+            if (window.innerWidth <= 768) {
+                entry.target.style.transform = 'none';
+            } else {
+                entry.target.style.transform = 'translateY(0)';
+            }
         }
     });
 }, observerOptions);
 
-// Apply fade-in animation to cards (Optimized for mobile)
-const isMobile = window.innerWidth <= 768;
+// Apply fade-in animation to cards (Cleaned up for mobile stability)
 document.querySelectorAll('.feature-box, .cause-card, .event-card, .blog-card').forEach(el => {
+    const isMobileLayout = window.innerWidth <= 768;
     el.style.opacity = '0';
-    // Reduce movement on mobile to prevent "jumping" sensation
-    el.style.transform = isMobile ? 'translateY(15px)' : 'translateY(30px)';
-    el.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
+
+    if (isMobileLayout) {
+        // No vertical offset on mobile to ensure zero jitter/jumping
+        el.style.transform = 'none';
+        el.style.transition = 'opacity 0.8s ease';
+    } else {
+        el.style.transform = 'translateY(30px)';
+        el.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
+    }
     fadeInObserver.observe(el);
 });
 

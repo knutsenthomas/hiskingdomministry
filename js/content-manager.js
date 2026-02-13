@@ -71,6 +71,8 @@ class ContentManager {
             console.error("[ContentManager] Init error:", error);
         } finally {
             this.setLoading(false);
+            // Signal that content is loaded so offsets can be recalculated
+            window.dispatchEvent(new CustomEvent('cmsContentLoaded'));
         }
     }
 
