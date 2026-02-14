@@ -4166,8 +4166,8 @@ ol.block-list {
 /* Donate Button in Header */
 /* Donate Button in Header */
 .header-actions .header-donate-btn {
-    background-color: var(--accent-green) !important;
-    /* Force override of btn-primary */
+    background-color: var(--primary-orange) !important;
+    /* Brand Orange */
     color: white;
     border: none;
     border-radius: 50px;
@@ -4183,16 +4183,16 @@ ol.block-list {
 }
 
 .header-actions .header-donate-btn:hover {
-    background-color: #009444 !important;
-    /* Slightly darker on hover */
+    background-color: #b56b30 !important;
+    /* Slightly darker orange */
     transform: scale(1.05);
     color: white;
 }
 
 /* Hamburger Button */
 .menu-toggle {
-    background: var(--accent-green);
-    /* Green circle */
+    background: var(--primary-orange);
+    /* Brand Orange */
     border: none;
     /* No border */
     width: 50px;
@@ -4208,7 +4208,7 @@ ol.block-list {
 }
 
 .menu-toggle:hover {
-    background-color: #009444;
+    background-color: #b56b30;
     /* Match donate button hover */
     transform: scale(1.05);
     /* Match donate button scale */
