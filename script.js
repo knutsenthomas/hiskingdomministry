@@ -8,7 +8,8 @@ const header = document.getElementById('header');
 const mobileToggle = document.getElementById('mobile-toggle');
 const nav = document.getElementById('nav');
 const navLinks = document.querySelectorAll('.nav-link');
-const headerActions = document.querySelector('.header-actions');
+// headerActions is already declared at top of file
+const headerActionsContainer = document.querySelector('.header-actions');
 
 // ===================================
 // Mobile Viewport Height Fix
@@ -96,7 +97,7 @@ document.addEventListener('DOMContentLoaded', () => {
 // ===================================
 // Global Site Search (magnifying glass in header)
 // ===================================
-const headerActions = document.querySelector('.header-actions');
+// The `headerActions` variable is already declared at the top of the file.
 
 // Only initialize if header actions exist
 if (headerActions) {
@@ -173,76 +174,9 @@ if (headerActions) {
             closeSearch();
         }
     });
+
+
 }
-
-searchBtn.addEventListener('click', openSearch);
-searchClose.addEventListener('click', closeSearch);
-overlay.addEventListener('click', (e) => {
-    if (e.target === overlay) {
-        closeSearch();
-    }
-});
-
-// Mobile Search Injection
-const navList = document.querySelector('.nav-list');
-if (navList) {
-    const mobileSearchItem = document.createElement('li');
-    mobileSearchItem.className = 'mobile-only mobile-search-item';
-    mobileSearchItem.innerHTML = `<button type="button" class="nav-link" style="background:none; border:none; padding:0; font:inherit; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:10px; width:100%;"><i class="fas fa-search"></i> Søk</button>`;
-
-    // Add to nav list
-    navList.appendChild(mobileSearchItem);
-
-    // Attach click handler
-    const btn = mobileSearchItem.querySelector('button');
-    if (btn) {
-        btn.addEventListener('click', () => {
-            // Close mobile menu first
-            nav.classList.remove('active');
-            mobileToggle.classList.remove('active');
-            document.body.style.paddingRight = '';
-            document.body.style.overflow = '';
-
-            // Open search
-            openSearch();
-        });
-    }
-}
-
-if (searchInput) {
-    let searchDebounceId = null;
-
-    searchInput.addEventListener('keydown', (e) => {
-        if (e.key === 'Escape') {
-            e.preventDefault();
-            closeSearch();
-            return;
-        }
-        if (e.key === 'Enter') {
-            e.preventDefault();
-            const query = searchInput.value.trim();
-            if (query.length >= 1) {
-                performSiteSearch(query, searchResults);
-            }
-        }
-    });
-
-    searchInput.addEventListener('input', () => {
-        const value = searchInput.value.trim();
-
-        if (value.length < 3) {
-            searchResults.innerHTML = '<p class="site-search-helper">Skriv minst 3 bokstaver for å søke.</p>';
-            if (searchDebounceId) clearTimeout(searchDebounceId);
-            return;
-        }
-
-        if (searchDebounceId) clearTimeout(searchDebounceId);
-        searchDebounceId = setTimeout(() => {
-            performSiteSearch(value, searchResults);
-        }, 250);
-    });
-}
-    }
 
 // ===================================
 // Hero Slider
