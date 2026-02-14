@@ -24,40 +24,124 @@
 
 <body>
     <!-- Header -->
+    <!-- Header -->
+    <!-- Header (Mega Menu Style) -->
     <header class="header" id="header">
-        <div class="container">
-            <div class="header-content">
-                <a href="index.html" class="logo">
-                    <div class="logo-icon">
-                        <img src="img/Logo sirkel - orange og hvit.png" alt="His Kingdom Ministry Logo">
-                    </div>
-                    <span>His Kingdom Ministry</span>
-                </a>
-
-                <nav class="nav" id="nav">
-                    <ul class="nav-list">
-                        <li><a href="index.html#hjem" class="nav-link">Hjem</a></li>
-                        <li><a href="om-oss.html" class="nav-link">Om oss</a></li>
-                        <li><a href="media.html" class="nav-link">Media</a></li>
-                        <li><a href="arrangementer.html" class="nav-link">Arrangementer</a></li>
-                        <li><a href="blogg.html" class="nav-link">Blogg</a></li>
-                        <li><a href="kontakt.html" class="nav-link">Kontakt</a></li>
-                        <li><a href="minside/index.html" class="nav-link" target="_blank">Min Side</a></li>
-                        <li class="mobile-only"><a href="#gi-gave" class="btn btn-primary">Gi gave</a></li>
-                    </ul>
-                </nav>
-
-                <div class="header-actions">
-                    <a href="#gi-gave" class="btn btn-primary">Gi gave</a>
-                    <button class="mobile-toggle" id="mobile-toggle">
-                        <span></span>
-                        <span></span>
-                        <span></span>
-                    </button>
+        <div class="container-fluid header-container">
+            <!-- Logo -->
+            <a href="index.html" class="logo">
+                <div class="logo-icon">
+                    <img src="img/Logo sirkel - orange og hvit.png" alt="His Kingdom Ministry Logo">
                 </div>
+                <span>His Kingdom Ministry</span>
+            </a>
+
+            <!-- Right Actions: Donate + Hamburger -->
+            <div class="header-actions">
+                <a href="donasjoner.html" class="btn btn-primary header-donate-btn">Gi gave <i
+                        class="fas fa-heart"></i></a>
+                <button class="menu-toggle" id="menu-toggle" aria-label="Åpne meny">
+                    <span class="hamburger-box">
+                        <span class="hamburger-inner"></span>
+                    </span>
+                </button>
             </div>
         </div>
     </header>
+
+    <!-- Full-screen Mega Menu Overlay -->
+    <div class="mega-menu" id="mega-menu">
+        <div class="mega-menu-container">
+
+
+            <!-- Menu Header (Close & Search) -->
+            <div class="mega-menu-header">
+                <!-- Mirrored Header Structure for Precision Alignment -->
+                <div class="header-container-mirror">
+                    <!-- Brand Logo in Menu -->
+                    <a href="index.html" class="logo">
+                        <div class="logo-icon">
+                            <img src="img/Logo sirkel - orange og hvit.png" alt="His Kingdom Ministry Logo">
+                        </div>
+                        <span>His Kingdom Ministry</span>
+                    </a>
+
+                    <!-- Right Controls Wrapper -->
+                    <div class="header-actions-mirror">
+                        <!-- Independent Close Button -->
+                        <button class="menu-close" id="menu-close" aria-label="Lukk meny">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Search & Lang Row (Below Header) -->
+                <div class="menu-controls-row">
+                    <div class="menu-search">
+                        <i class="fas fa-search"></i>
+                        <input type="text" placeholder="Søk...">
+                    </div>
+
+                    <div class="mega-menu-lang in-header mobile-only">
+                        <a href="donasjoner.html" class="active"><i class="fas fa-globe"></i> NO</a>
+                        <a href="en/donations.html"><i class="fas fa-globe"></i> EN</a>
+                        <a href="es/donaciones.html"><i class="fas fa-globe"></i> ES</a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="mega-menu-body">
+                <!-- Menu Content Grid -->
+                <div class="mega-menu-grid">
+                    <!-- Column 1: Engasjer deg -->
+                    <div class="menu-col">
+                        <h3 class="menu-section-title">Engasjer deg</h3>
+                        <ul class="mega-nav-list">
+                            <li><a href="donasjoner.html">Støtt arbeidet</a></li>
+                            <li><a href="donasjoner.html#faste-givere">Bli fast giver</a></li>
+                            <li><a href="for-menigheter.html">For menigheter</a></li>
+                            <li><a href="for-bedrifter.html">For bedrifter</a></li>
+                            <li><a href="bnn.html">Business Network</a></li>
+                        </ul>
+                    </div>
+
+                    <!-- Column 2: Bli kjent med oss -->
+                    <div class="menu-col">
+                        <h3 class="menu-section-title">Bli kjent med oss</h3>
+                        <ul class="mega-nav-list">
+                            <li><a href="om-oss.html">Om stiftelsen</a></li>
+                            <li><a href="om-oss.html#historie">Vår historie</a></li>
+                            <li><a href="kontakt.html">Her arbeider vi</a></li>
+                            <li><a href="kontakt.html">Kontakt oss</a></li>
+                        </ul>
+                    </div>
+
+                    <!-- Column 3: Ressurser & Media -->
+                    <div class="menu-col">
+                        <h3 class="menu-section-title">Ressurser</h3>
+                        <ul class="mega-nav-list">
+                            <li><a href="arrangementer.html">Arrangementer</a></li>
+                            <li><a href="media.html">Media & Podcast</a></li>
+                            <li><a href="blogg.html">Nyheter & Blogg</a></li>
+                            <li><a href="minside/index.html">Min Side</a></li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Menu Footer -->
+                <div class="mega-menu-footer">
+                    <a href="donasjoner.html" class="btn btn-primary btn-large btn-block">Støtt nå <i
+                            class="fas fa-heart"></i></a>
+                    <div class="menu-footer-links">
+                        <a href="donasjoner.html#skattefradrag">Skattefradrag</a>
+                        <a href="om-oss.html">Om oss</a>
+                        <a href="personvern.html">Personvern</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
 
     <main>
         <!-- Page Hero -->
@@ -92,6 +176,61 @@
             </div>
         </section>
 
+
+        <!-- Regular Donor Section -->
+        <section class="regular-donor section" id="faste-givere" style="background: white;">
+            <div class="container">
+                <div class="section-header">
+                    <span class="section-label">Bli fast giver</span>
+                    <h2 class="section-title">Vær med på å skape varig endring</h2>
+                    <p class="section-description">Som fast giver er du med på å sikre forutsigbarhet i vårt arbeid,
+                        slik at vi kan planlegge og gjennomføre flere prosjekter for Guds rike.</p>
+                </div>
+
+                <div
+                    style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 40px; margin-top: 50px;">
+                    <!-- Option 1: Vipps -->
+                    <div
+                        style="background: #f8f9fa; padding: 40px; border-radius: 15px; text-align: center; border: 1px solid #eee;">
+                        <div
+                            style="width: 70px; height: 70px; background: #FF5B24; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 25px; color: white; font-size: 30px;">
+                            <i class="fas fa-mobile-alt"></i>
+                        </div>
+                        <h3 style="margin-bottom: 15px;">Fast gave via Vipps</h3>
+                        <p style="color: var(--text-light); margin-bottom: 25px;">Den enkleste måten å bli fast giver
+                            på. Du oppretter en fast avtale direkte i Vipps-appen.</p>
+                        <a href="https://vipps.no" target="_blank" class="btn btn-outline"
+                            style="color: #FF5B24; border-color: #FF5B24;">Opprett i Vipps</a>
+                    </div>
+
+                    <!-- Option 2: AvtaleGiro -->
+                    <div
+                        style="background: #f8f9fa; padding: 40px; border-radius: 15px; text-align: center; border: 1px solid #eee;">
+                        <div
+                            style="width: 70px; height: 70px; background: #2196F3; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 25px; color: white; font-size: 30px;">
+                            <i class="fas fa-university"></i>
+                        </div>
+                        <h3 style="margin-bottom: 15px;">Bankoverføring</h3>
+                        <p style="color: var(--text-light); margin-bottom: 25px;">Opprett et fast trekk i nettbanken din
+                            til vår konto. Dette gir oss de laveste gebyrene.</p>
+                        <div
+                            style="background: white; padding: 15px; border-radius: 8px; font-weight: 700; color: var(--primary-orange); border: 1px dashed var(--primary-orange);">
+                            Konto: 3000.66.08759
+                        </div>
+                    </div>
+                </div>
+
+                <div style="margin-top: 60px; text-align: center; background: var(--bg-light); padding: 30px; border-radius: 15px;"
+                    id="skattefradrag">
+                    <h4 style="margin-bottom: 10px;"><i class="fas fa-info-circle"
+                            style="margin-right: 10px; color: var(--primary-orange);"></i>Visste du at du får
+                        skattefradrag?</h4>
+                    <p style="max-width: 800px; margin: 0 auto;">Gaver til His Kingdom Ministry gir rett til
+                        skattefradrag dersom de samlede gavene i løpet av et kalenderår er på minst 500 kroner. For å få
+                        fradrag må vi ha ditt fødselsnummer (11 siffer).</p>
+                </div>
+            </div>
+        </section>
 
         <!-- Donation Form -->
         <section class="donation-form section" id="gi-gave"

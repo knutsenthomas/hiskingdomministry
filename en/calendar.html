@@ -1,0 +1,441 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calendar | His Kingdom Ministry</title>
+    <meta name="description"
+        content="View our calendar overview of all upcoming meetings, seminars, and conferences at His Kingdom Ministry.">
+
+    <!-- Google Fonts: Inter for the entire site -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="../styles.css?v=2">
+    <link rel="stylesheet" href="../css/cookie-consent.css">
+</head>
+
+<body>
+    <!-- Header (Mega Menu Style) -->
+    <header class="header" id="header">
+        <div class="container-fluid header-container">
+            <!-- Logo -->
+            <a href="index.html" class="logo">
+                <div class="logo-icon">
+                    <img src="../img/Logo sirkel - orange og hvit.png" alt="His Kingdom Ministry Logo">
+                </div>
+                <span>His Kingdom Ministry</span>
+            </a>
+
+            <!-- Right Actions: Language + Donate + Hamburger -->
+            <div class="header-actions">
+                <div class="lang-switcher">
+                    <button class="lang-btn" id="lang-toggle">
+                        <i class="fas fa-globe"></i>
+                        <span>EN</span>
+                    </button>
+                    <div class="lang-dropdown">
+                        <a href="../kalender.html" data-lang="no">Norsk</a>
+                        <a href="calendar.html" data-lang="en" class="active">English</a>
+                        <a href="../es/calendario.html" data-lang="es">Español</a>
+                    </div>
+                </div>
+
+                <a href="donations.html" class="btn btn-primary header-donate-btn">Donate <i
+                        class="fas fa-heart"></i></a>
+                <button class="menu-toggle" id="menu-toggle" aria-label="Open menu">
+                    <span class="hamburger-box">
+                        <span class="hamburger-inner"></span>
+                    </span>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Full-screen Mega Menu Overlay -->
+    <div class="mega-menu" id="mega-menu">
+        <div class="mega-menu-container">
+            <!-- Independent Close Button -->
+            <button class="menu-close" id="menu-close" aria-label="Close menu">
+                <i class="fas fa-times"></i>
+            </button>
+
+            <!-- Menu Header (Close & Search) -->
+            <div class="mega-menu-header">
+                <!-- Mirrored Header Structure for Precision Alignment -->
+                <div class="header-container-mirror">
+                    <!-- Brand Logo in Menu -->
+                    <a href="index.html" class="logo">
+                        <div class="logo-icon">
+                            <img src="../img/Logo sirkel - orange og hvit.png" alt="His Kingdom Ministry Logo">
+                        </div>
+                        <span>His Kingdom Ministry</span>
+                    </a>
+
+                    <!-- Right Controls Wrapper (Now Empty) -->
+                    <div class="header-actions-mirror">
+                        <!-- Close Button Moved to Root -->
+                    </div>
+                </div>
+
+                <!-- Search & Lang Row (Below Header) -->
+                <div class="menu-controls-row">
+                    <div class="menu-search">
+                        <i class="fas fa-search"></i>
+                        <input type="text" placeholder="Search...">
+                    </div>
+
+                    <div class="mega-menu-lang in-header mobile-only">
+                        <a href="#" class="lang-switch-btn" data-lang="no"><i class="fas fa-globe"></i> NO</a>
+                        <a href="#" class="lang-switch-btn active" data-lang="en"><i class="fas fa-globe"></i> EN</a>
+                        <a href="#" class="lang-switch-btn" data-lang="es"><i class="fas fa-globe"></i> ES</a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="mega-menu-body">
+
+                <!-- Menu Content Grid -->
+                <div class="mega-menu-grid">
+                    <!-- Column 1: Get Involved -->
+                    <div class="menu-col">
+                        <h3 class="menu-section-title">Get Involved</h3>
+                        <ul class="mega-nav-list">
+                            <li><a href="donations.html">Support the Work</a></li>
+                            <li><a href="donations.html#faste-givere">Become a Monthly Donor</a></li>
+                            <li><a href="for-churches.html">For Churches</a></li>
+                            <li><a href="for-businesses.html">For Businesses</a></li>
+                            <li><a href="bnn.html">Business Network</a></li>
+                        </ul>
+                    </div>
+
+                    <!-- Column 2: Get to Know Us -->
+                    <div class="menu-col">
+                        <h3 class="menu-section-title">Get to Know Us</h3>
+                        <ul class="mega-nav-list">
+                            <li><a href="about.html">About the Foundation</a></li>
+                            <li><a href="about.html#historie">Our History</a></li>
+                            <li><a href="contact.html">Where We Work</a></li>
+                            <li><a href="contact.html">Contact Us</a></li>
+                        </ul>
+                    </div>
+
+                    <!-- Column 3: Resources & Media -->
+                    <div class="menu-col">
+                        <h3 class="menu-section-title">Resources</h3>
+                        <ul class="mega-nav-list">
+                            <li><a href="events.html">Events</a></li>
+                            <li><a href="media.html">Media & Podcast</a></li>
+                            <li><a href="blog.html">News & Blog</a></li>
+                            <li><a href="../minside/index.html">My Account</a></li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Menu Footer -->
+                <div class="mega-menu-footer">
+                    <a href="donations.html" class="btn btn-primary btn-large btn-block">Support Now <i
+                            class="fas fa-heart"></i></a>
+                    <div class="menu-footer-links">
+                        <a href="donations.html#skattefradrag">Tax Deduction</a>
+                        <a href="about.html">About Us</a>
+                        <a href="privacy.html">Privacy</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <main>
+        <section class="page-hero"
+            style="background-image: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)), url('https://images.unsplash.com/photo-1506784983877-45594efa4cbe?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80'); padding-top: 160px;">
+            <div class="container">
+                <div class="page-hero-content">
+                    <h1 class="page-title">Monthly Calendar</h1>
+                    <div class="breadcrumbs">
+                        <a href="index.html">Home</a>
+                        <i class="fas fa-chevron-right"></i>
+                        <a href="events.html">Events</a>
+                        <i class="fas fa-chevron-right"></i>
+                        <span>Calendar</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="calendar-section">
+            <div class="container">
+                <div class="calendar-container" data-cal-view="month">
+                    <div class="calendar-view-toggle">
+                        <button class="cal-view-btn active" data-cal-view="month">Month View</button>
+                        <button class="cal-view-btn" data-cal-view="agenda">Agenda</button>
+                    </div>
+
+                    <div class="calendar-header">
+                        <h2 class="calendar-title" id="current-month-year">February 2024</h2>
+                        <div class="calendar-nav">
+                            <button class="cal-btn" id="prev-month"><i class="fas fa-chevron-left"></i></button>
+                            <button class="cal-btn" id="today-btn"
+                                style="width: auto; padding: 0 15px; border-radius: 20px; font-size: 13px; font-weight: 600;">Today</button>
+                            <button class="cal-btn" id="next-month"><i class="fas fa-chevron-right"></i></button>
+                        </div>
+                    </div>
+
+                    <div class="calendar-grid" id="calendar-grid">
+                        <!-- Header days -->
+                        <div class="cal-day-header">Mon</div>
+                        <div class="cal-day-header">Tue</div>
+                        <div class="cal-day-header">Wed</div>
+                        <div class="cal-day-header">Thu</div>
+                        <div class="cal-day-header">Fri</div>
+                        <div class="cal-day-header">Sat</div>
+                        <div class="cal-day-header">Sun</div>
+
+                        <!-- Calendar cells will be injected here -->
+                    </div>
+
+                    <div class="calendar-agenda-card">
+                        <div class="calendar-agenda-header">
+                            <div>
+                                <h3 class="calendar-agenda-title">Agenda Overview</h3>
+                            </div>
+                        </div>
+                        <ul class="calendar-agenda-list" id="calendar-agenda-list"></ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="calendar-section" style="padding-top: 20px;">
+            <div class="container">
+                <div class="section-header" style="margin-bottom: 30px; text-align: left;">
+                    <span class="section-label">Holidays & Observances</span>
+                    <h2 class="section-title" style="font-size: 28px; margin-bottom: 10px;">Why do we mark these
+                        days?</h2>
+                    <p class="section-description" style="margin: 0; max-width: 760px;">
+                        Here you'll find a brief explanation of some of the most important Christian holidays and
+                        Norwegian
+                        public holidays that often affect our calendar.
+                    </p>
+                </div>
+
+                <div class="values-grid">
+                    <div class="value-card">
+                        <h3>New Year's Day</h3>
+                        <p>The first day of the new year. A day for reflection, gratitude for the past year, and prayer
+                            for the year ahead.</p>
+                    </div>
+                    <div class="value-card">
+                        <h3>Palm Sunday</h3>
+                        <p>Marks Jesus' entry into Jerusalem, where people greeted him with palm branches and shouted
+                            "Hosanna."
+                            Begins Holy Week.</p>
+                    </div>
+                    <div class="value-card">
+                        <h3>Maundy Thursday</h3>
+                        <p>In memory of Jesus' last meal with his disciples, where he instituted the Lord's Supper and
+                            showed
+                            the way to servant leadership by washing the disciples' feet.</p>
+                    </div>
+                    <div class="value-card">
+                        <h3>Good Friday</h3>
+                        <p>We remember Jesus' suffering and death on the cross. A quiet and solemn day that points to
+                            the great
+                            love God has shown us.</p>
+                    </div>
+                    <div class="value-card">
+                        <h3>Easter Sunday</h3>
+                        <p>The celebration of Jesus' resurrection. This day is central to the Christian faith and
+                            reminds us
+                            of victory over sin, death, and darkness.</p>
+                    </div>
+                    <div class="value-card">
+                        <h3>Easter Monday</h3>
+                        <p>Continues the joy of the resurrection, and points to the meetings the risen Jesus had with
+                            his disciples.</p>
+                    </div>
+                    <div class="value-card">
+                        <h3>Ascension Day</h3>
+                        <p>Celebrates that Jesus ascended to heaven before the Father, and that he continues to pray for
+                            us and
+                            reign as Lord.</p>
+                    </div>
+                    <div class="value-card">
+                        <h3>Pentecost Sunday</h3>
+                        <p>In memory of the Holy Spirit being poured out on the first believers in Jerusalem. Pentecost
+                            is
+                            often called "the church's birthday."</p>
+                    </div>
+                    <div class="value-card">
+                        <h3>Pentecost Monday</h3>
+                        <p>An extension of the Pentecost celebration, where the focus remains on the Holy Spirit's
+                            presence and
+                            gifts in our lives.</p>
+                    </div>
+                    <div class="value-card">
+                        <h3>Labour Day (May 1st)</h3>
+                        <p>Norwegian public holiday honoring workers' rights. For many also a day to pray for
+                            justice and good working conditions.</p>
+                    </div>
+                    <div class="value-card">
+                        <h3>Constitution Day (May 17th)</h3>
+                        <p>Celebration of Norway's constitution from 1814. A festive day for freedom, community, and
+                            gratitude for
+                            our country.</p>
+                    </div>
+                    <div class="value-card">
+                        <h3>Christmas Day</h3>
+                        <p>Marks Christmas Day itself and celebrates that God's Son was born into the world. Focus is on
+                            the incarnation
+                            – that God became human.</p>
+                    </div>
+                    <div class="value-card">
+                        <h3>Boxing Day</h3>
+                        <p>A quieter follow-up day in Christmas that provides room for reflection, family, and rest
+                            after the
+                            holiday itself.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer" id="kontakt">
+        <div class="container">
+            <div class="footer-layout-v2">
+                <!-- Left Section: Brand + Links -->
+                <div class="footer-left">
+                    <!-- Brand / Intro -->
+                    <div class="footer-brand">
+                        <a href="index.html" class="logo">
+                            <div class="logo-icon">
+                                <img src="../img/Logo sirkel - orange og hvit.png" alt="His Kingdom Ministry Logo">
+                            </div>
+                            <span class="logo-text">His Kingdom Ministry</span>
+                        </a>
+                        <p class="brand-description">His Kingdom Ministry is a non-profit organization dedicated to
+                            spiritual growth through teaching, podcasts, and missionary travel.</p>
+                    </div>
+
+                    <!-- Links Grid -->
+                    <div class="footer-nav-grid">
+                        <div class="nav-col">
+                            <h4>About Us</h4>
+                            <ul>
+                                <li><a href="index.html#hjem">Home</a></li>
+                                <li><a href="about.html">Who We Are</a></li>
+                                <li><a href="about.html#visjon">Our Vision</a></li>
+                                <li><a href="contact.html">Contact Us</a></li>
+                            </ul>
+                        </div>
+
+                        <div class="nav-col">
+                            <h4>Resources</h4>
+                            <ul>
+                                <li><a href="media.html#teaching-section">Teaching</a></li>
+                                <li><a href="events.html">E-courses</a></li>
+                                <li><a href="blog.html">Books & Blog</a></li>
+                                <li><a href="../minside/index.html" target="_blank">My Account</a></li>
+                            </ul>
+                        </div>
+
+                        <div class="nav-col">
+                            <h4>Media</h4>
+                            <ul>
+                                <li><a href="media.html#podcast-section">Podcast</a></li>
+                                <li><a href="media.html">Videos</a></li>
+                                <li><a href="https://www.youtube.com/@HisKingdomMinistry" target="_blank">YouTube</a>
+                                </li>
+                            </ul>
+                        </div>
+
+                        <div class="nav-col">
+                            <h4>Get Involved</h4>
+                            <ul>
+                                <li><a href="events.html">Calendar</a></li>
+                                <li><a href="donations.html">Make a Donation</a></li>
+                                <li><a href="privacy.html">Privacy</a></li>
+                                <li><a href="accessibility.html">Accessibility</a></li>
+                                <li><a href="#"
+                                        onclick="localStorage.removeItem('hkm_cookie_consent'); location.reload(); return false;">Cookies</a>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Right Section: Cards -->
+                <div class="footer-right">
+                    <!-- Follow Us Card -->
+                    <div class="footer-card">
+                        <h3>Follow Us</h3>
+                        <div class="footer-social-icons">
+                            <a href="https://www.facebook.com/hiskingdomministry777?locale=nb_NO" target="_blank"><i
+                                    class="fab fa-facebook-f"></i></a>
+                            <a href="https://www.instagram.com/hiskingdomdesigns/" target="_blank"><i
+                                    class="fab fa-instagram"></i></a>
+                            <a href="https://www.youtube.com/@HisKingdomMinistry" target="_blank"><i
+                                    class="fab fa-youtube"></i></a>
+                        </div>
+                    </div>
+
+                    <!-- Contact Us Card -->
+                    <div class="footer-card contact-card">
+                        <h3>Contact Us</h3>
+                        <a href="contact.html" class="btn btn-primary btn-block btn-sm">Contact Form</a>
+
+                        <div class="contact-details">
+                            <div class="detail-item">
+                                <strong>Email:</strong>
+                                <p>post@hiskingdomministry.no</p>
+                            </div>
+                            <div class="detail-item">
+                                <strong>Phone:</strong>
+                                <p>+47 930 94 615</p>
+                            </div>
+                            <div class="detail-item">
+                                <strong>Vipps:</strong>
+                                <p>938361</p>
+                            </div>
+                            <div class="detail-item">
+                                <strong>Account No.:</strong>
+                                <p>3000.66.08759</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="footer-bottom">
+                <p>&copy; <span id="copyright-year">2026</span> His Kingdom Ministry. All rights reserved.</p>
+                <a href="../admin/login.html" class="admin-link">Admin</a>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Firebase SDK (Compat) -->
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-storage-compat.js"></script>
+
+    <!-- Firebase Config & Service -->
+    <script src="../js/firebase-config.js"></script>
+    <script src="../js/firebase-service.js"></script>
+
+    <!-- App Scripts -->
+    <script src="../js/i18n.js"></script>
+    <script src="../script.js"></script>
+    <script src="../js/content-manager.js?v=author"></script>
+    <script src="../js/cookie-consent.js"></script>
+</body>
+
+</html>

@@ -34,8 +34,18 @@
                 <span>His Kingdom Ministry</span>
             </a>
 
-            <!-- Right Actions: Donate + Hamburger -->
+            <!-- Right Actions: Donate + Language + Hamburger -->
             <div class="header-actions">
+                <div class="lang-switcher">
+                    <button class="lang-btn">
+                        <i class="fas fa-globe"></i> <span>NO</span>
+                    </button>
+                    <div class="lang-dropdown">
+                        <a href="#" class="lang-switch-btn" data-lang="no">🇳🇴 Norsk</a>
+                        <a href="#" class="lang-switch-btn" data-lang="en">🇺🇸 English</a>
+                        <a href="#" class="lang-switch-btn" data-lang="es">🇪🇸 Español</a>
+                    </div>
+                </div>
                 <a href="donasjoner.html" class="btn btn-primary header-donate-btn">Gi gave <i
                         class="fas fa-heart"></i></a>
                 <button class="menu-toggle" id="menu-toggle" aria-label="Åpne meny">
@@ -50,65 +60,91 @@
     <!-- Full-screen Mega Menu Overlay -->
     <div class="mega-menu" id="mega-menu">
         <div class="mega-menu-container">
+
+
             <!-- Menu Header (Close & Search) -->
             <div class="mega-menu-header">
-                <a href="minside/index.html" class="menu-login-link"><i class="fas fa-user-circle"></i> Min side</a>
+                <!-- Mirrored Header Structure for Precision Alignment -->
+                <div class="header-container-mirror">
+                    <!-- Brand Logo in Menu -->
+                    <a href="index.html" class="logo">
+                        <div class="logo-icon">
+                            <img src="img/Logo sirkel - orange og hvit.png" alt="His Kingdom Ministry Logo">
+                        </div>
+                        <span>His Kingdom Ministry</span>
+                    </a>
 
-                <div class="menu-search">
-                    <i class="fas fa-search"></i>
-                    <input type="text" placeholder="Hva leter du etter?">
+                    <!-- Right Controls Wrapper -->
+                    <div class="header-actions-mirror">
+                        <!-- Independent Close Button -->
+                        <button class="menu-close" id="menu-close" aria-label="Lukk meny">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    </div>
                 </div>
 
-                <button class="menu-close" id="menu-close" aria-label="Lukk meny">
-                    <i class="fas fa-times"></i>
-                </button>
-            </div>
+                <!-- Search & Lang Row (Below Header) -->
+                <div class="menu-controls-row">
+                    <div class="menu-search">
+                        <i class="fas fa-search"></i>
+                        <input type="text" placeholder="Søk...">
+                    </div>
 
-            <!-- Menu Content Grid -->
-            <div class="mega-menu-grid">
-                <!-- Column 1: Engasjer deg -->
-                <div class="menu-col">
-                    <h3 class="menu-section-title">Engasjer deg</h3>
-                    <ul class="mega-nav-list">
-                        <li><a href="donasjoner.html">Støtt arbeidet</a></li>
-                        <li><a href="donasjoner.html#faste-givere">Bli fast giver</a></li>
-                        <li><a href="for-menigheter.html">For menigheter</a></li>
-                        <li><a href="for-bedrifter.html">For bedrifter</a></li>
-                        <li><a href="bnn.html">Business Network</a></li>
-                    </ul>
-                </div>
-
-                <!-- Column 2: Bli kjent med oss -->
-                <div class="menu-col">
-                    <h3 class="menu-section-title">Bli kjent med oss</h3>
-                    <ul class="mega-nav-list">
-                        <li><a href="om-oss.html">Om stiftelsen</a></li>
-                        <li><a href="om-oss.html#historie">Vår historie</a></li>
-                        <li><a href="kontakt.html">Her arbeider vi</a></li>
-                        <li><a href="kontakt.html">Kontakt oss</a></li>
-                    </ul>
-                </div>
-
-                <!-- Column 3: Ressurser & Media -->
-                <div class="menu-col">
-                    <h3 class="menu-section-title">Ressurser</h3>
-                    <ul class="mega-nav-list">
-                        <li><a href="arrangementer.html">Arrangementer</a></li>
-                        <li><a href="media.html">Media & Podcast</a></li>
-                        <li><a href="blogg.html">Nyheter & Blogg</a></li>
-                        <li><a href="minside/index.html">Min Side</a></li>
-                    </ul>
+                    <div class="mega-menu-lang in-header mobile-only">
+                        <a href="index.html" class="active"><i class="fas fa-globe"></i> NO</a>
+                        <a href="en/index.html"><i class="fas fa-globe"></i> EN</a>
+                        <a href="es/index.html"><i class="fas fa-globe"></i> ES</a>
+                    </div>
                 </div>
             </div>
 
-            <!-- Menu Footer -->
-            <div class="mega-menu-footer">
-                <a href="donasjoner.html" class="btn btn-primary btn-large btn-block">Støtt nå <i
-                        class="fas fa-heart"></i></a>
-                <div class="menu-footer-links">
-                    <a href="donasjoner.html#skattefradrag">Skattefradrag</a>
-                    <a href="om-oss.html">Om oss</a>
-                    <a href="personvern.html">Personvern</a>
+            <div class="mega-menu-body">
+                <!-- Menu Content Grid -->
+                <div class="mega-menu-grid">
+                    <!-- Column 1: Engasjer deg -->
+                    <div class="menu-col">
+                        <h3 class="menu-section-title">Engasjer deg</h3>
+                        <ul class="mega-nav-list">
+                            <li><a href="donasjoner.html">Støtt arbeidet</a></li>
+                            <li><a href="donasjoner.html#faste-givere">Bli fast giver</a></li>
+                            <li><a href="for-menigheter.html">For menigheter</a></li>
+                            <li><a href="for-bedrifter.html">For bedrifter</a></li>
+                            <li><a href="bnn.html">Business Network</a></li>
+                        </ul>
+                    </div>
+
+                    <!-- Column 2: Bli kjent med oss -->
+                    <div class="menu-col">
+                        <h3 class="menu-section-title">Bli kjent med oss</h3>
+                        <ul class="mega-nav-list">
+                            <li><a href="om-oss.html">Om stiftelsen</a></li>
+                            <li><a href="om-oss.html#historie">Vår historie</a></li>
+                            <li><a href="kontakt.html">Her arbeider vi</a></li>
+                            <li><a href="kontakt.html">Kontakt oss</a></li>
+                        </ul>
+                    </div>
+
+                    <!-- Column 3: Ressurser & Media -->
+                    <div class="menu-col">
+                        <h3 class="menu-section-title">Ressurser</h3>
+                        <ul class="mega-nav-list">
+                            <li><a href="arrangementer.html">Arrangementer</a></li>
+                            <li><a href="media.html">Media & Podcast</a></li>
+                            <li><a href="blogg.html">Nyheter & Blogg</a></li>
+                            <li><a href="minside/index.html">Min Side</a></li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Menu Footer -->
+                <div class="mega-menu-footer">
+                    <a href="donasjoner.html" class="btn btn-primary btn-large btn-block">Støtt nå <i
+                            class="fas fa-heart"></i></a>
+                    <div class="menu-footer-links">
+                        <a href="donasjoner.html#skattefradrag">Skattefradrag</a>
+                        <a href="om-oss.html">Om oss</a>
+                        <a href="personvern.html">Personvern</a>
+                    </div>
                 </div>
             </div>
         </div>
@@ -676,6 +712,7 @@
     <script src="js/user-roles.js"></script>
 
     <!-- App Scripts -->
+    <script src="js/i18n.js"></script>
     <script src="script.js"></script>
     <script src="js/content-manager.js?v=author"></script>
     <script src="js/cookie-consent.js"></script>

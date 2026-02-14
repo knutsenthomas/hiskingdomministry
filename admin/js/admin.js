@@ -2745,7 +2745,19 @@ class AdminManager {
                             <p style="font-size: 11px; color: #94a3b8; margin-top: 6px;">Legg inn flere kalendere for filtrering. Calendar ID finner du under "Integrer kalender".</p>
                         </div>
 
-                        <div style="margin-top: 24px;">
+                        <div style="margin-top: 24px; padding-top: 20px; border-top: 1px solid #f1f5f9;">
+                            <h4 style="margin-bottom: 12px; font-size: 14px;">Visningsinnstillinger</h4>
+                            <div class="form-group" style="display: flex; align-items: center; gap: 10px; margin-bottom: 10px;">
+                                <input type="checkbox" id="gcal-show-month" style="width: 18px; height: 18px;">
+                                <label for="gcal-show-month" style="margin-bottom: 0; cursor: pointer;">Vis Månedskalender</label>
+                            </div>
+                            <div class="form-group" style="display: flex; align-items: center; gap: 10px; margin-bottom: 20px;">
+                                <input type="checkbox" id="gcal-show-agenda" style="width: 18px; height: 18px;">
+                                <label for="gcal-show-agenda" style="margin-bottom: 0; cursor: pointer;">Vis Agendaoversikt (Kommende arrangementer)</label>
+                            </div>
+                        </div>
+
+                        <div style="margin-top: 10px;">
                             <button class="btn-primary" id="save-gcal-settings" style="width: 100%;">Lagre Kalender-innstillinger</button>
                         </div>
                     </div>
@@ -2773,6 +2785,8 @@ class AdminManager {
         const gcal = settings.googleCalendar || {};
 
         document.getElementById('gcal-api-key').value = gcal.apiKey || '';
+        document.getElementById('gcal-show-month').checked = settings.showMonthView !== false; // Default true
+        document.getElementById('gcal-show-agenda').checked = settings.showAgendaView !== false; // Default true
 
         const listEl = document.getElementById('gcal-list');
         const addBtn = document.getElementById('add-gcal');
@@ -2834,6 +2848,8 @@ class AdminManager {
             try {
                 const newSettings = {
                     ...settings,
+                    showMonthView: document.getElementById('gcal-show-month').checked,
+                    showAgendaView: document.getElementById('gcal-show-agenda').checked,
                     googleCalendar: {
                         apiKey,
                         calendarId: calendars[0]?.id || '',

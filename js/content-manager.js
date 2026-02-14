@@ -18,6 +18,65 @@ class ContentManager {
         this.agendaMonthsToShow = 1;
     }
 
+    detectPageId() {
+        const path = window.location.pathname;
+        if (path === '/' || path.endsWith('/') || path.includes('index.html')) return 'index';
+        if (path.includes('arrangementer.html') || path.includes('events.html') || path.includes('eventos.html')) return 'arrangementer';
+        if (path.includes('kalender.html')) return 'kalender';
+        if (path.includes('arrangement-detaljer.html') || path.includes('event-details.html') || path.includes('detalles-evento.html')) return 'arrangement-detaljer';
+        if (path.includes('blogg.html') || path.includes('blog.html')) return 'blogg';
+        if (path.includes('blogg-post.html') || path.includes('blog-post.html')) return 'blogg-post';
+        if (path.includes('undervisningsserier.html') || path.includes('teaching.html')) return 'undervisningsserier';
+        if (path.includes('media.html')) return 'media';
+        if (path.includes('om-oss.html') || path.includes('about.html') || path.includes('sobre-nosotros.html')) return 'om-oss';
+        if (path.includes('kontakt.html') || path.includes('contact.html') || path.includes('contacto.html')) return 'kontakt';
+        if (path.includes('donasjoner.html') || path.includes('donations.html') || path.includes('donaciones.html')) return 'donasjoner';
+        if (path.includes('for-menigheter.html') || path.includes('for-churches.html') || path.includes('para-iglesias.html')) return 'for-menigheter';
+        if (path.includes('for-bedrifter.html') || path.includes('for-businesses.html') || path.includes('para-empresas.html')) return 'for-bedrifter';
+        if (path.includes('bnn.html')) return 'bnn';
+        return '';
+    }
+
+    getLocalizedLink(noFile) {
+        let lang = document.documentElement.lang || 'no';
+        if (lang.includes('-')) lang = lang.split('-')[0]; // Handle es-ES -> es
+
+        if (lang === 'no') return noFile;
+        if (window.i18n && typeof window.i18n.mapFileName === 'function') {
+            return window.i18n.mapFileName(noFile, lang);
+        }
+        // Fallback logic if i18n not yet loaded
+        const mappings = {
+            'en': {
+                'index.html': 'index.html',
+                'om-oss.html': 'about.html',
+                'arrangementer.html': 'events.html',
+                'kontakt.html': 'contact.html',
+                'donasjoner.html': 'donations.html',
+                'for-menigheter.html': 'for-churches.html',
+                'for-bedrifter.html': 'for-businesses.html',
+                'bnn.html': 'bnn.html',
+                'arrangement-detaljer.html': 'event-details.html',
+                'blogg.html': 'blog.html',
+                'blogg-post.html': 'blog-post.html'
+            },
+            'es': {
+                'index.html': 'index.html',
+                'om-oss.html': 'sobre-nosotros.html',
+                'arrangementer.html': 'eventos.html',
+                'kontakt.html': 'contacto.html',
+                'donasjoner.html': 'donaciones.html',
+                'for-menigheter.html': 'para-iglesias.html',
+                'for-bedrifter.html': 'para-empresas.html',
+                'bnn.html': 'bnn.html',
+                'arrangement-detaljer.html': 'detalles-evento.html',
+                'blogg.html': 'blog.html',
+                'blogg-post.html': 'blog-post.html'
+            }
+        };
+        return (mappings[lang] && mappings[lang][noFile]) || noFile;
+    }
+
     setLoading(isLoading) {
         const body = document.body;
         if (!body) return;
@@ -29,49 +88,65 @@ class ContentManager {
     }
 
     async init() {
-        this.setLoading(true);
-        if (!firebaseService.isInitialized) {
-            // Wait briefly for firebase module if needed
+        // 1. Try to apply cached global settings INSTANTLY (pre-Firebase)
+        try {
+            const cachedDesign = localStorage.getItem('hkm_cache_settings_design');
+            if (cachedDesign) {
+                this.applyGlobalSettings(JSON.parse(cachedDesign));
+            }
+            const cachedSEO = localStorage.getItem('hkm_cache_settings_seo');
+            if (cachedSEO) {
+                this.handleSEO(JSON.parse(cachedSEO));
+            }
+            // Also try to update some DOM for current page if cached
+            const cachedPage = localStorage.getItem(`hkm_cache_page_${this.pageId}`);
+            if (cachedPage) {
+                this.updateDOM(JSON.parse(cachedPage));
+            }
+        } catch (e) {
+            console.warn("[ContentManager] Early cache read failed", e);
+        }
+
+        let service = window.firebaseService;
+        if (!service || !service.isInitialized) {
+            // Wait for firebase module (reduced timeout and check frequency)
             let count = 0;
-            while (!firebaseService.isInitialized && count < 10) {
-                await new Promise(r => setTimeout(r, 100));
+            while ((!window.firebaseService || !window.firebaseService.isInitialized) && count < 40) {
+                await new Promise(r => setTimeout(r, 50));
                 count++;
             }
         }
 
+        service = window.firebaseService;
         try {
-            if (!firebaseService.isInitialized) return;
+            if (!service || !service.isInitialized) {
+                console.warn("⚠️ Firebase failed to initialize in time. Content may be limited.");
+            }
 
-            // 1. Initial Load
-            const content = await firebaseService.getPageContent(this.pageId);
-            const globalSettings = await firebaseService.getPageContent('settings_design');
+            // 1. Parallel Initial Load (Firestore defaults to cache if enabled)
+            const [content, globalSettings, seoSettings] = await Promise.all([
+                service ? service.getPageContent(this.pageId) : null,
+                service ? service.getPageContent('settings_design') : null,
+                service ? service.getPageContent('settings_seo') : null
+            ]);
+
+            localStorage.setItem(`hkm_cache_page_${this.pageId}`, JSON.stringify(content));
+            localStorage.setItem('hkm_cache_settings_design', JSON.stringify(globalSettings));
+            localStorage.setItem('hkm_cache_settings_seo', JSON.stringify(seoSettings));
 
             if (globalSettings) this.applyGlobalSettings(globalSettings);
             if (content) this.updateDOM(content);
 
-            // 2. SEO & Meta
-            const seoSettings = await firebaseService.getPageContent('settings_seo');
-            if (seoSettings) await this.handleSEO(seoSettings);
+            // 2. SEO & Meta (Non-blocking)
+            if (seoSettings) this.handleSEO(seoSettings);
 
             // 3. Specialized Loaders
-            try {
-                await this.loadSpecializedContent();
-            } catch (e) {
-                console.error("[ContentManager] Specialized Loader failed:", e);
-            }
+            await this.loadSpecializedContent();
 
-            // 4. (Valgfritt) sanntidsoppdatering
-            // For den offentlige nettsiden ønsker vi stabil tekst uten at den endrer seg
-            // etter at siden er lastet inn, derfor er sanntids-abonnement slått av her.
-            // Hvis du senere vil ha «live preview», kan dette aktiveres igjen.
-            // firebaseService.subscribeToPage(this.pageId, (updatedContent) => {
-            //     this.updateDOM(updatedContent);
-            // });
         } catch (error) {
             console.error("[ContentManager] Init error:", error);
         } finally {
             this.setLoading(false);
-            // Signal that content is loaded so offsets can be recalculated
             window.dispatchEvent(new CustomEvent('cmsContentLoaded'));
         }
     }
@@ -106,7 +181,7 @@ class ContentManager {
             if (heroData && heroData.slides) this.renderHeroSlides(heroData.slides);
 
             const events = await this.loadEvents();
-            if (events && events.length > 0) this.renderEvents(events);
+            this.renderEvents(events || []);
 
             const blogData = await firebaseService.getPageContent('collection_blog');
             const blogItems = Array.isArray(blogData) ? blogData : (blogData?.items || []);
@@ -120,18 +195,53 @@ class ContentManager {
         }
 
         if (this.pageId === 'arrangementer') {
+            const settings = await firebaseService.getPageContent('settings_integrations') || {};
             const events = await this.loadEvents();
-            this.setupCalendarNavigation();
-            this.setCalendarEvents(events || []);
-            this.renderCalendarView();
-            if (events && events.length > 0) this.renderEvents(events);
+
+            // 1. Month View
+            const monthSection = document.getElementById('arrangement-kalender');
+            if (settings.showMonthView !== false) {
+                this.setupCalendarNavigation();
+                this.setCalendarEvents(events || []);
+                this.renderCalendarView();
+                if (monthSection) monthSection.style.display = 'block';
+            } else {
+                if (monthSection) monthSection.style.display = 'none';
+            }
+
+            // 2. Agenda View (Grid of events)
+            const agendaSection = document.querySelector('.events-page');
+            if (settings.showAgendaView !== false) {
+                this.renderEvents(events || []);
+                if (agendaSection) agendaSection.style.display = 'block';
+            } else {
+                if (agendaSection) agendaSection.style.display = 'none';
+            }
         }
 
         if (this.pageId === 'kalender') {
-            const events = await this.loadEvents();
-            this.setupCalendarNavigation();
-            this.setCalendarEvents(events || []);
-            this.renderCalendarView();
+            const settings = await firebaseService.getPageContent('settings_integrations') || {};
+            if (settings.showMonthView !== false) {
+                const events = await this.loadEvents();
+                this.setupCalendarNavigation();
+                this.setCalendarEvents(events || []);
+                this.renderCalendarView();
+            } else {
+                const container = document.querySelector('.calendar-section') || document.querySelector('main');
+                if (container) {
+                    const lang = document.documentElement.lang || 'no';
+                    const eventsLink = this.getLocalizedLink('arrangementer.html');
+                    const title = lang === 'en' ? 'Calendar is temporarily disabled.' : (lang === 'es' ? 'El calendario está desactivado temporalmente.' : 'Kalenderen er midlertidig deaktivert.');
+                    const p = lang === 'en' ? 'Please check our events in the list above.' : (lang === 'es' ? 'Consulte nuestros eventos en la lista de arriba.' : 'Vennligst sjekk våre arrangementer i listen over.');
+                    const btn = lang === 'en' ? 'See events' : (lang === 'es' ? 'Ver eventos' : 'Se arrangementer');
+
+                    container.innerHTML = `<div class="container" style="padding: 100px 20px; text-align: center;"><h2>${title}</h2><p>${p}</p><a href="${eventsLink}" class="btn btn-primary" style="margin-top: 20px;">${btn}</a></div>`;
+                }
+            }
+        }
+
+        if (this.pageId === 'arrangement-detaljer') {
+            await this.renderEventDetailsPage();
         }
 
         if (this.pageId === 'blogg') {
@@ -240,62 +350,101 @@ class ContentManager {
         }
     }
 
-    async loadEvents() {
-        const { startIso, endIso } = this.getMonthRangeIso(this.currentDate);
-        const currentYear = this.currentDate.getFullYear();
-        const holidayEvents = this.getNorwegianHolidays(currentYear);
-        const rangeStart = new Date(startIso);
-        const rangeEnd = new Date(endIso);
-        const monthHolidays = holidayEvents.filter(event => {
-            const eventDate = this.parseEventDate(event.start || event.date);
-            if (!eventDate) return false;
-            return eventDate >= rangeStart && eventDate <= rangeEnd;
-        });
+    async loadEvents(forceRefresh = false) {
+        try {
+            const { startIso, endIso } = this.getMonthRangeIso(this.currentDate);
+            const cacheKey = `hkm_events_${startIso}_${endIso}`;
 
-        // 1. Prefer direct GCal fetch when configured
-        const integrations = await firebaseService.getPageContent('settings_integrations');
-        const gcal = integrations?.googleCalendar || {};
-        const apiKey = gcal.apiKey || '';
-        const calendarList = Array.isArray(integrations?.googleCalendars)
-            ? integrations.googleCalendars
-            : [];
-        const calendars = calendarList.length > 0
-            ? calendarList
-            : (gcal.calendarId ? [{ id: gcal.calendarId, label: gcal.label || 'Arrangementer' }] : []);
-
-        if (apiKey && calendars.length > 0) {
-            const results = await Promise.all(
-                calendars.map(async (calendar) => {
-                    const items = await this.fetchGoogleCalendarEvents(apiKey, calendar.id, startIso, endIso);
-                    return (items || []).map(event => ({
-                        ...event,
-                        sourceId: `gcal:${calendar.id}`,
-                        sourceLabel: calendar.label || calendar.id
-                    }));
-                })
-            );
-
-            const events = results.flat();
-            if (events.length > 0) {
-                return [...events, ...monthHolidays];
+            // 1. Check Cache (Use localStorage for better persistence)
+            if (!forceRefresh) {
+                try {
+                    const cached = localStorage.getItem(cacheKey);
+                    if (cached) {
+                        const { timestamp, events } = JSON.parse(cached);
+                        // 15 minutes TTL
+                        if (Date.now() - timestamp < 15 * 60 * 1000) {
+                            return events;
+                        }
+                    }
+                } catch (e) {
+                    console.warn('[ContentManager] Cache parse failed', e);
+                }
             }
+
+            const currentYear = this.currentDate.getFullYear();
+            const holidayEvents = this.getNorwegianHolidays(currentYear);
+            const rangeStart = new Date(startIso);
+            const rangeEnd = new Date(endIso);
+            const monthHolidays = holidayEvents.filter(event => {
+                const eventDate = this.parseEventDate(event.start || event.date);
+                if (!eventDate) return false;
+                return eventDate >= rangeStart && eventDate <= rangeEnd;
+            });
+
+            let finalEvents = [];
+
+            // 2. Prefer direct GCal fetch when configured
+            const integrations = await firebaseService.getPageContent('settings_integrations');
+            const gcal = integrations?.googleCalendar || {};
+            const apiKey = gcal.apiKey || '';
+            const calendarList = Array.isArray(integrations?.googleCalendars)
+                ? integrations.googleCalendars
+                : [];
+            const calendars = calendarList.length > 0
+                ? calendarList
+                : (gcal.calendarId ? [{ id: gcal.calendarId, label: gcal.label || 'Arrangementer' }] : []);
+
+            let gcalEvents = [];
+            if (apiKey && calendars.length > 0) {
+                const results = await Promise.all(
+                    calendars.map(async (calendar) => {
+                        const items = await this.fetchGoogleCalendarEvents(apiKey, calendar.id, startIso, endIso);
+                        return (items || []).map(event => ({
+                            ...event,
+                            sourceId: `gcal:${calendar.id}`,
+                            sourceLabel: calendar.label || calendar.id
+                        }));
+                    })
+                );
+                gcalEvents = results.flat();
+            }
+
+            if (gcalEvents.length > 0) {
+                finalEvents = [...gcalEvents, ...monthHolidays];
+            } else {
+                // 3. Fallback to cached events from Firestore (if any)
+                const eventData = await firebaseService.getPageContent('collection_events');
+                const firebaseItems = Array.isArray(eventData) ? eventData : (eventData?.items || []);
+
+                if (firebaseItems.length > 0) {
+                    const tagged = firebaseItems.map(event => ({
+                        ...event,
+                        sourceId: 'manual',
+                        sourceLabel: 'Arrangementer'
+                    }));
+                    finalEvents = [...tagged, ...monthHolidays];
+                } else {
+                    // 4. Only holidays if nothing else finnes
+                    finalEvents = monthHolidays;
+                }
+            }
+
+            // Save to Cache
+            try {
+                localStorage.setItem(cacheKey, JSON.stringify({
+                    timestamp: Date.now(),
+                    events: finalEvents
+                }));
+            } catch (e) {
+                console.warn('[ContentManager] Failed to cache events', e);
+            }
+
+            return finalEvents;
+
+        } catch (err) {
+            console.error('[ContentManager] loadEvents critical error:', err);
+            return [];
         }
-
-        // 2. Fallback to cached events from Firestore (if any)
-        const eventData = await firebaseService.getPageContent('collection_events');
-        const firebaseItems = Array.isArray(eventData) ? eventData : (eventData?.items || []);
-
-        if (firebaseItems.length > 0) {
-            const tagged = firebaseItems.map(event => ({
-                ...event,
-                sourceId: 'manual',
-                sourceLabel: 'Arrangementer'
-            }));
-            return [...tagged, ...monthHolidays];
-        }
-
-        // 3. Only holidays if nothing else finnes
-        return monthHolidays;
     }
 
 
@@ -571,68 +720,117 @@ class ContentManager {
         }
     }
 
+    async fetchSingleGoogleCalendarEvent(apiKey, calendarId, eventId) {
+        try {
+            const url = `https://www.googleapis.com/calendar/v3/calendars/${encodeURIComponent(calendarId)}/events/${encodeURIComponent(eventId)}?key=${apiKey}`;
+            const response = await fetch(url);
+
+            if (!response.ok) {
+                if (response.status === 404) return null; // Not found
+                throw new Error(`GCal API responded with ${response.status}`);
+            }
+
+            const item = await response.json();
+
+            return {
+                id: item.id,
+                title: item.summary,
+                description: item.description || '',
+                location: item.location || '',
+                start: item.start.dateTime || item.start.date,
+                end: item.end.dateTime || item.end.date,
+                link: item.htmlLink,
+                hangoutLink: item.hangoutLink || null,
+                conferenceData: item.conferenceData || null,
+                sourceId: `gcal:${calendarId}`,
+                sourceLabel: 'Google Calendar'
+            };
+        } catch (err) {
+            console.warn(`[ContentManager] Failed to fetch single event ${eventId}:`, err);
+            return null;
+        }
+    }
+
     renderEvents(events) {
+        if (window.cmsLog) window.cmsLog(`Viser ${events ? events.length : 0} arrangementer...`);
         const container = document.querySelector('.events-grid');
-        if (!container) return;
-        const visibleEvents = Array.isArray(events)
-            ? events.filter(e => !e.isHoliday)
-            : [];
-        this.setEventCache(visibleEvents);
+        if (!container) {
+            if (window.cmsLog) window.cmsLog('FEIL: Fant ikke .events-grid');
+            return;
+        }
 
-        container.innerHTML = visibleEvents.slice(0, 3).map(event => {
-            const eventKey = this.getEventKey(event);
-            const startValue = event.start || event.date;
-            const startDate = this.parseEventDate(startValue);
-            const hasTime = this.eventHasTime(startValue);
-            const day = startDate ? startDate.getDate() : '--';
-            const monthStr = startDate
-                ? startDate.toLocaleString('no-NO', { month: 'short' }).replace('.', '')
-                : '--';
-            const monthUpper = monthStr.charAt(0).toUpperCase() + monthStr.slice(1);
-            const timeStr = startDate && hasTime
-                ? startDate.toLocaleTimeString('no-NO', { hour: '2-digit', minute: '2-digit' })
-                : 'Tid ikke satt';
+        try {
+            // Cache events for modal usage
+            this.setEventCache(events);
 
-            const rawDescription = event.description || event.content || '';
-            const cleanDescription = this.stripHtml(rawDescription).trim();
-            const shortDescription = cleanDescription ? cleanDescription.substring(0, 140) : 'Beskrivelse kommer.';
-            const needsEllipsis = cleanDescription.length > 140;
+            if (!events || events.length === 0) {
+                container.innerHTML = '<div class="events-empty-state" style="grid-column: 1/-1; display: block; width: 100%; padding: 40px; text-align: center; background: #f8f9fa; border: 1px solid #e9ecef; border-radius: 8px; color: var(--text-dark);"><h3 style="margin-bottom: 10px;">Ingen kommende arrangementer</h3><p>Vi har foreløpig ingen planlagte arrangementer i kalenderen.</p></div>';
+                return;
+            }
 
-            const imageUrl = event.imageUrl || event.image || event.imageLink;
-            const imageSrc = imageUrl || this.generateEventImage(event.title);
-            const imageAlt = event.title || 'Arrangement';
+            // DEBUG: Log first event
+            if (window.cmsLog && events.length > 0) {
+                try {
+                    console.log('[CMS] First event:', events[0]);
+                } catch (e) { }
+            }
 
-            const videoLink = this.extractVideoLink(event);
-            const isOnline = !!videoLink;
+            const html = events.slice(0, 3).map(event => {
+                try {
+                    const eventKey = this.getEventKey(event);
+                    const startValue = event.start || event.date;
+                    const startDate = this.parseEventDate(startValue);
+                    const hasTime = this.eventHasTime(startValue);
+                    const day = startDate ? startDate.getDate() : '--';
+                    const lang = document.documentElement.lang || 'no';
+                    const locale = lang === 'en' ? 'en-US' : (lang === 'es' ? 'es-ES' : 'nb-NO');
 
-            return `
-                <div class="event-card">
-                    <div class="event-image">
-                        <div class="event-image-zoom">
-                            <img src="${imageSrc}" alt="${imageAlt}">
-                        </div>
-                        <div class="event-date">
-                            <span class="day">${day}</span>
-                            <span class="month">${monthUpper}</span>
-                        </div>
-                    </div>
-                    <div class="event-content">
-                        <h3 class="event-title">${event.title}</h3>
-                        <div class="event-meta">
-                            <span><i class="far fa-clock"></i> ${timeStr}</span>
-                            <span><i class="fas fa-map-marker-alt"></i> ${isOnline && !event.location ? 'Online' : (event.location || 'Stavanger')}</span>
-                        </div>
-                        <p class="event-text">${shortDescription}${needsEllipsis ? '...' : ''}</p>
-                        <div style="display: flex; gap: 10px; flex-wrap: wrap; margin-top: 15px;">
-                            ${videoLink ? `<a href="${videoLink}" target="_blank" rel="noopener noreferrer" class="btn btn-primary" style="display: inline-flex; align-items: center; gap: 8px;"><i class="fas fa-video"></i> <span>Bli med online</span></a>` : ''}
-                            <button type="button" class="btn btn-outline event-modal-trigger" data-event-key="${eventKey}" style="background: transparent; color: var(--primary-orange); border: 2px solid var(--primary-orange);">Les mer <i class="fas fa-arrow-right"></i></button>
-                        </div>
-                    </div>
-                </div>
-            `;
-        }).join('');
+                    const monthStr = startDate
+                        ? startDate.toLocaleString(locale, { month: 'short' }).replace('.', '')
+                        : '--';
+                    const monthUpper = monthStr.charAt(0).toUpperCase() + monthStr.slice(1);
 
-        this.bindEventModalTriggers(container);
+                    const dateLabel = startDate
+                        ? startDate.toLocaleDateString(locale, { day: 'numeric', month: 'long', year: 'numeric' })
+                        : '';
+
+                    const imageUrl = event.imageUrl || event.image || event.imageLink;
+                    const imageSrc = imageUrl || this.generateEventImage(event.title);
+                    const imageAlt = event.title || 'Arrangement';
+
+                    const detailsUrl = this.getLocalizedLink('arrangement-detaljer.html') + '?id=' + encodeURIComponent(eventKey);
+
+                    return `
+                        <a href="${detailsUrl}" class="event-card">
+                            <div class="event-image">
+                                <div class="event-image-zoom">
+                                    <img src="${imageSrc}" alt="${imageAlt}">
+                                </div>
+                                <div class="event-date">
+                                    <span class="month">${monthUpper}</span>
+                                    <span class="day">${day}</span>
+                                </div>
+                            </div>
+                            <div class="event-content">
+                                <h3 class="event-title">${event.title || 'Uten tittel'}</h3>
+                                <div class="event-meta">
+                                    ${dateLabel ? `<span>${dateLabel}</span>` : ''}
+                                </div>
+                            </div>
+                        </a>
+                    `;
+                } catch (innerErr) {
+                    console.error('Error rendering single event:', innerErr, event);
+                    return ''; // Skip invalid event
+                }
+            }).join('');
+
+            container.innerHTML = html;
+
+        } catch (err) {
+            if (window.cmsLog) window.cmsLog('CRASH i renderEvents: ' + err.message);
+            console.error(err);
+        }
     }
 
     renderAgenda(events, selector) {
@@ -672,23 +870,26 @@ class ContentManager {
             const startValue = event.start || event.date;
             const startDate = this.parseEventDate(startValue);
             const hasTime = this.eventHasTime(startValue);
+            const lang = document.documentElement.lang || 'no';
+            const locale = lang === 'en' ? 'en-US' : (lang === 'es' ? 'es-ES' : 'nb-NO');
+
             const dayNum = startDate
-                ? startDate.toLocaleDateString('nb-NO', { day: '2-digit' })
+                ? startDate.toLocaleDateString(locale, { day: '2-digit' })
                 : '--';
             const monthStr = startDate
-                ? startDate.toLocaleDateString('nb-NO', { month: 'short' }).replace('.', '')
+                ? startDate.toLocaleDateString(locale, { month: 'short' }).replace('.', '')
                 : '--';
             const weekdayStr = startDate
-                ? startDate.toLocaleDateString('nb-NO', { weekday: 'short' }).replace('.', '')
+                ? startDate.toLocaleDateString(locale, { weekday: 'short' }).replace('.', '')
                 : '';
             const timeStr = startDate && hasTime
-                ? startDate.toLocaleTimeString('nb-NO', { hour: '2-digit', minute: '2-digit' })
+                ? startDate.toLocaleTimeString(locale, { hour: '2-digit', minute: '2-digit' })
                 : '';
             const timeLabel = timeStr ? timeStr : 'Tid ikke satt';
             const location = event.location || 'Sted ikke satt';
 
             return `
-                <li class="calendar-agenda-item">
+                < li class="calendar-agenda-item" >
                     <div class="agenda-date-col">
                         <span class="agenda-day">${dayNum}</span>
                         <span class="agenda-month">${monthStr}</span>
@@ -703,8 +904,8 @@ class ContentManager {
                         <span class="agenda-meta">${location}</span>
                     </div>
                     <button type="button" class="agenda-link event-modal-trigger" data-event-key="${eventKey}">Detaljer</button>
-                </li>
-            `;
+                </li >
+                `;
         }).join('');
 
         container.innerHTML = listHtml;
@@ -734,15 +935,17 @@ class ContentManager {
 
     setEventCache(events) {
         this.eventCache = new Map();
-        events.forEach(event => {
-            const key = this.getEventKey(event);
-            if (key) this.eventCache.set(key, event);
-        });
+        if (Array.isArray(events)) {
+            events.forEach(event => {
+                const key = this.getEventKey(event);
+                if (key) this.eventCache.set(key, event);
+            });
+        }
     }
 
     getEventKey(event) {
         if (!event) return '';
-        return event.id || `${event.title || 'event'}|${event.start || event.date || ''}`;
+        return event.id || `${event.title || 'event'}| ${event.start || event.date || ''} `;
     }
 
     bindEventModalTriggers(root) {
@@ -774,17 +977,20 @@ class ContentManager {
         const startDate = this.parseEventDate(startValue);
         const hasTime = this.eventHasTime(startValue);
 
+        const lang = document.documentElement.lang || 'no';
+        const locale = lang === 'en' ? 'en-US' : (lang === 'es' ? 'es-ES' : 'nb-NO');
+
         const dateLabel = startDate
-            ? startDate.toLocaleDateString('nb-NO', { day: '2-digit', month: 'long', year: 'numeric' })
-            : 'Dato ikke satt';
+            ? startDate.toLocaleDateString(locale, { day: '2-digit', month: 'long', year: 'numeric' })
+            : this.getTranslation('loading');
         const timeLabel = startDate && hasTime
-            ? startDate.toLocaleTimeString('nb-NO', { hour: '2-digit', minute: '2-digit' })
-            : 'Tid ikke satt';
+            ? startDate.toLocaleTimeString(locale, { hour: '2-digit', minute: '2-digit' })
+            : this.getTranslation('location_not_set');
 
         titleEl.textContent = event.title || 'Arrangement';
-        dateEl.innerHTML = `<i class="far fa-calendar-alt"></i> ${dateLabel}`;
-        timeEl.innerHTML = `<i class="far fa-clock"></i> ${timeLabel}`;
-        locationEl.innerHTML = `<i class="fas fa-map-marker-alt"></i> ${event.location || 'Sted ikke satt'}`;
+        dateEl.innerHTML = `< i class="far fa-calendar-alt" ></i > ${dateLabel} `;
+        timeEl.innerHTML = `< i class="far fa-clock" ></i > ${timeLabel} `;
+        locationEl.innerHTML = `< i class="fas fa-map-marker-alt" ></i > ${event.location || 'Sted ikke satt'} `;
         const rawDescription = event.description || '';
         const safeHtml = this.sanitizeEventHtml(rawDescription);
         if (safeHtml) {
@@ -808,7 +1014,7 @@ class ContentManager {
         const videoLinkEl = modal.querySelector('.event-modal-video-link');
 
         if (videoLink && videoLinkEl) {
-            videoLinkEl.innerHTML = `<a href="${videoLink}" target="_blank" rel="noopener noreferrer" class="btn btn-primary" style="display: inline-flex; align-items: center; gap: 8px; margin-bottom: 12px;"><i class="fas fa-video"></i> Bli med på nettmøtet</a>`;
+            videoLinkEl.innerHTML = `< a href = "${videoLink}" target = "_blank" rel = "noopener noreferrer" class="btn btn-primary" style = "display: inline-flex; align-items: center; gap: 8px; margin-bottom: 12px;" > <i class="fas fa-video"></i> Bli med på nettmøtet</a > `;
             videoLinkEl.style.display = 'block';
         } else if (videoLinkEl) {
             videoLinkEl.style.display = 'none';
@@ -823,7 +1029,7 @@ class ContentManager {
             overlay = document.createElement('div');
             overlay.className = 'event-modal-overlay';
             overlay.innerHTML = `
-                <div class="event-modal">
+                < div class="event-modal" >
                     <div class="event-modal-image-wrap" style="display: none;">
                         <img class="event-modal-image" alt="">
                     </div>
@@ -845,8 +1051,8 @@ class ContentManager {
                             <p class="event-modal-description"></p>
                         </div>
                     </div>
-                </div>
-            `;
+                </div >
+                `;
             document.body.appendChild(overlay);
 
             overlay.addEventListener('click', (e) => {
@@ -864,14 +1070,14 @@ class ContentManager {
         const body = overlay.querySelector('.event-modal-body');
         if (body && !body.querySelector('.event-modal-left')) {
             body.innerHTML = `
-                <div class="event-modal-left">
+                < div class="event-modal-left" >
                     <div class="event-modal-meta">
                         <span class="event-modal-date"></span>
                         <span class="event-modal-time"></span>
                         <span class="event-modal-location"></span>
                     </div>
                     <div class="event-modal-video-link" style="display: none;"></div>
-                </div>
+                </div >
                 <div class="event-modal-right">
                     <h4 class="event-modal-section-title">Mer om arrangement</h4>
                     <p class="event-modal-description"></p>
@@ -963,7 +1169,7 @@ class ContentManager {
             const year = dateValue.getFullYear();
             const month = String(dateValue.getMonth() + 1).padStart(2, '0');
             const day = String(dateValue.getDate()).padStart(2, '0');
-            return `${year}-${month}-${day}`;
+            return `${year} -${month} -${day} `;
         };
 
         const addHoliday = (date, title) => {
@@ -971,7 +1177,7 @@ class ContentManager {
             const dayOnly = new Date(date.getFullYear(), date.getMonth(), date.getDate());
             const isoDate = formatLocalIsoDate(dayOnly);
             holidays.push({
-                id: `holiday-${isoDate}-${title}`,
+                id: `holiday - ${isoDate} -${title} `,
                 title,
                 description: 'Helligdag / kristen høytid',
                 start: isoDate,
@@ -1039,14 +1245,7 @@ class ContentManager {
         return new Date(year, month, day);
     }
 
-    /**
-     * Determine which page we are on based on filename
-     */
-    detectPageId() {
-        const path = window.location.pathname;
-        const page = path.split("/").pop().replace(".html", "") || "index";
-        return page;
-    }
+
 
     /**
      * Update DOM elements based on Firestore data
@@ -1054,6 +1253,13 @@ class ContentManager {
      */
     updateDOM(data) {
         if (!data) return;
+
+        // Skip updateDOM for translated pages (EN/ES) to preserve HTML translations
+        const lang = document.documentElement.lang || 'no';
+        if (lang !== 'no') {
+            console.log('[ContentManager] Skipping updateDOM for translated page:', lang);
+            return;
+        }
 
         // Find all elements with data-content-key
         const elements = document.querySelectorAll("[data-content-key]");
@@ -1126,7 +1332,7 @@ class ContentManager {
 
         // Apply Typography
         if (data.mainFont) {
-            document.body.style.fontFamily = `'${data.mainFont}', sans-serif`;
+            document.body.style.fontFamily = `'${data.mainFont}', sans - serif`;
             if (!document.getElementById('google-font-injection')) {
                 const link = document.createElement('link');
                 link.id = 'google-font-injection';
@@ -1264,7 +1470,7 @@ class ContentManager {
                         ` : ''}
                         <h3 class="blog-title" style="margin-bottom: 12px; font-size: 1.25rem;">${post.title}</h3>
                         <p class="blog-excerpt" style="color: #666; font-size: 14px; line-height: 1.6; margin-bottom: 20px;">${this.stripHtml(this.parseBlocks(post.content) || '').substring(0, 120)}...</p>
-                        <a href="blogg-post.html?id=${encodeURIComponent(post.title)}" class="blog-link" style="color: var(--primary-color); font-weight: 600; text-decoration: none;">Les mer <i class="fas fa-arrow-right" style="margin-left: 5px;"></i></a>
+                        <a href="${this.getLocalizedLink('blogg-post.html')}?id=${encodeURIComponent(post.id || post.title)}" class="blog-link" style="color: var(--primary-color); font-weight: 600; text-decoration: none;">${this.getTranslation('read_more')} <i class="fas fa-arrow-right" style="margin-left: 5px;"></i></a>
                     </div>
                 </article>
             `).join('');
@@ -1299,6 +1505,219 @@ class ContentManager {
                 </div>
             `).join('');
         }
+    }
+
+    async renderEventDetailsPage() {
+        const urlParams = new URLSearchParams(window.location.search);
+        const eventKey = urlParams.get('id');
+
+        if (!eventKey) {
+            const container = document.querySelector('.event-main-content');
+            if (container) container.innerHTML = '<p>Arrangementet ble ikke funnet.</p>';
+            return;
+        }
+
+        // 1. Check localStorage CACHE first for instant render
+        let event = null;
+        try {
+            // Try to find in ANY cached month range
+            for (let i = 0; i < localStorage.length; i++) {
+                const key = localStorage.key(i);
+                if (key.startsWith('hkm_events_')) {
+                    const { events } = JSON.parse(localStorage.getItem(key));
+                    const found = events.find(e => this.getEventKey(e) === eventKey || encodeURIComponent(this.getEventKey(e)) === eventKey);
+                    if (found) {
+                        event = found;
+                        this.populateEventDetailsDOM(event);
+                        break;
+                    }
+                }
+            }
+        } catch (e) { }
+
+        // 2. Initial fetch (Cached if 15m TTL)
+        const allEvents = await this.loadEvents();
+        const foundInCurrent = allEvents.find(e => this.getEventKey(e) === eventKey || encodeURIComponent(this.getEventKey(e)) === eventKey);
+
+        if (foundInCurrent) {
+            event = foundInCurrent;
+            this.populateEventDetailsDOM(event);
+        }
+
+        // 3. Background Sync for specific event (Google Calendar direct)
+        // This ensures the page is always up to date even if cache is stale or event range is outside standard load
+        const integrations = await firebaseService.getPageContent('settings_integrations');
+        const gcal = integrations?.googleCalendar || {};
+        const apiKey = gcal.apiKey;
+        if (apiKey) {
+            const calendarList = Array.isArray(integrations?.googleCalendars) ? integrations.googleCalendars : [];
+            const calendars = calendarList.length > 0 ? calendarList : (gcal.calendarId ? [{ id: gcal.calendarId }] : []);
+
+            // Try to find by ID specifically
+            for (const calendar of calendars) {
+                // If eventKey is a valid GCal ID (no pipe), fetch it directly
+                if (!eventKey.includes('|')) {
+                    const freshEvent = await this.fetchSingleGoogleCalendarEvent(apiKey, calendar.id, eventKey);
+                    if (freshEvent) {
+                        event = freshEvent;
+                        this.populateEventDetailsDOM(event);
+                        break;
+                    }
+                }
+            }
+        }
+
+        if (!event) {
+            const container = document.querySelector('.event-main-content');
+            if (container) container.innerHTML = '<div class="alert alert-info">Fant ikke arrangementet eller det har passert datoen for visning.</div>';
+
+            const titleEl = document.querySelector('.page-title');
+            if (titleEl && titleEl.textContent === 'Laster...') titleEl.textContent = 'Fant ikke arrangement';
+
+            const breadcrumbEl = document.querySelector('.breadcrumbs span:last-child');
+            if (breadcrumbEl) breadcrumbEl.textContent = 'Ikke funnet';
+
+            // Hide sidebar placeholders
+            const sidebar = document.querySelector('.event-sidebar');
+            if (sidebar) sidebar.style.display = 'none';
+        }
+    }
+
+    /**
+     * Helper to get translated strings based on current page language.
+     */
+    getTranslation(key) {
+        const lang = document.documentElement.lang || 'no';
+        const strings = {
+            'no': {
+                'loading': 'Laster...',
+                'loading_recent': 'Laster nylige...',
+                'no_events': 'Ingen andre arrangementer.',
+                'not_found': 'Arrangementet ble ikke funnet.',
+                'location_not_set': 'Sted ikke oppgitt',
+                'no_description': 'Ingen beskrivelse tilgjengelig.',
+                'read_more': 'Les mer'
+            },
+            'en': {
+                'loading': 'Loading...',
+                'loading_recent': 'Loading recent...',
+                'no_events': 'No other events.',
+                'not_found': 'Event not found.',
+                'location_not_set': 'Location not specified',
+                'no_description': 'No description available.',
+                'read_more': 'Read more'
+            },
+            'es': {
+                'loading': 'Cargando...',
+                'loading_recent': 'Cargando recientes...',
+                'no_events': 'No hay otros eventos.',
+                'not_found': 'Evento no encontrado.',
+                'location_not_set': 'Ubicación no especificada',
+                'no_description': 'No hay descripción disponible.',
+                'read_more': 'Leer más'
+            }
+        };
+        return (strings[lang] && strings[lang][key]) || strings['no'][key] || key;
+    }
+
+    populateEventDetailsDOM(event) {
+        if (!event) return;
+
+        const lang = document.documentElement.lang || 'no';
+        const locale = lang === 'en' ? 'en-US' : (lang === 'es' ? 'es-ES' : 'nb-NO');
+
+        const heroTitleEl = document.getElementById('hero-title');
+        const titleEl = document.getElementById('event-title');
+        const breadcrumbEl = document.getElementById('breadcrumb-current');
+        const imgEl = document.getElementById('event-hero-image');
+        const descEl = document.getElementById('event-description');
+        const timeEl = document.getElementById('event-time');
+        const locEl = document.getElementById('event-location');
+
+        const startValue = event.start || event.date;
+        const startDate = this.parseEventDate(startValue);
+        const hasTime = this.eventHasTime(startValue);
+
+        if (heroTitleEl) heroTitleEl.textContent = event.title;
+        if (titleEl) titleEl.textContent = event.title;
+        if (breadcrumbEl) breadcrumbEl.textContent = event.title;
+
+        const imageUrl = event.imageUrl || event.image || event.imageLink || this.generateEventImage(event.title);
+        if (imgEl && imageUrl) {
+            imgEl.src = imageUrl;
+            imgEl.onerror = () => { imgEl.src = '../img/placeholder-event.jpg'; };
+        }
+
+        // Description
+        const rawDescription = event.description || event.content || '';
+        if (descEl) {
+            const html = this.sanitizeEventHtml(rawDescription) || `<p>${this.getTranslation('no_description')}</p>`;
+            descEl.innerHTML = html;
+        }
+
+        // Meta Info (Date/Time)
+        if (timeEl && startDate) {
+            const dateStr = startDate.toLocaleDateString(locale, { day: 'numeric', month: 'long', year: 'numeric' });
+            let formattedTime = dateStr;
+
+            if (hasTime) {
+                const startTime = startDate.toLocaleTimeString(locale, { hour: '2-digit', minute: '2-digit' });
+                const atPrefix = lang === 'en' ? 'at' : (lang === 'es' ? 'a las' : 'kl.');
+                formattedTime += `, ${atPrefix} ${startTime}`;
+            }
+            timeEl.textContent = formattedTime;
+        }
+
+        // Location Info
+        if (locEl) {
+            locEl.textContent = event.location || this.getTranslation('location_not_set');
+        }
+
+        // Sidebar: Recent Events
+        this.populateSidebarRecentEvents();
+    }
+
+    async populateSidebarRecentEvents() {
+        const sidebarContainer = document.getElementById('recent-events-sidebar');
+        if (!sidebarContainer) return;
+
+        const lang = document.documentElement.lang || 'no';
+        const locale = lang === 'en' ? 'en-US' : (lang === 'es' ? 'es-ES' : 'nb-NO');
+
+        let detailsPage = 'arrangement-detaljer.html';
+        if (lang === 'en') detailsPage = 'event-details.html';
+        if (lang === 'es') detailsPage = 'detalles-evento.html';
+
+        // Get a few upcoming events (excluding current)
+        const allEvents = await this.loadEvents();
+        const urlParams = new URLSearchParams(window.location.search);
+        const currentId = urlParams.get('id');
+
+        const others = allEvents
+            .filter(e => this.getEventKey(e) !== currentId)
+            .slice(0, 3);
+
+        if (others.length === 0) {
+            sidebarContainer.innerHTML = `<p>${this.getTranslation('no_events')}</p>`;
+            return;
+        }
+
+        sidebarContainer.innerHTML = others.map(event => {
+            const key = this.getEventKey(event);
+            const img = event.imageUrl || event.image || event.imageLink || this.generateEventImage(event.title);
+            const date = this.parseEventDate(event.start || event.date);
+            const dateStr = date ? date.toLocaleDateString(locale, { day: 'numeric', month: 'short' }) : '';
+
+            return `
+                <div class="recent-event-item">
+                    <img src="${img}" alt="${event.title}" class="recent-event-img">
+                    <div class="recent-event-info">
+                        <h4><a href="${this.getLocalizedLink('arrangement-detaljer.html')}?id=${key}">${event.title}</a></h4>
+                        <span class="recent-event-date">${dateStr}</span>
+                    </div>
+                </div>
+            `;
+        }).join('');
     }
 
     /**

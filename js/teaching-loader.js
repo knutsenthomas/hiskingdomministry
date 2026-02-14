@@ -13,7 +13,7 @@ async function loadTeachingCategory(categoryName, gridContainerId = 'teaching-gr
     try {
         // Get the teaching collection data
         const teachingData = await firebaseService.getPageContent('collection_teaching');
-        
+
         if (!teachingData || !teachingData.items || teachingData.items.length === 0) {
             renderEmptyTeachingState(gridContainerId, emptyLabel);
             updateTeachingCount(countElementSelector, 0, emptyLabel);
@@ -21,7 +21,7 @@ async function loadTeachingCategory(categoryName, gridContainerId = 'teaching-gr
         }
 
         // Filter items by category
-        const filteredItems = teachingData.items.filter(item => 
+        const filteredItems = teachingData.items.filter(item =>
             item.category && item.category.trim().toLowerCase() === categoryName.trim().toLowerCase()
         );
 
@@ -51,7 +51,18 @@ async function loadTeachingCategory(categoryName, gridContainerId = 'teaching-gr
         console.error(`Error loading teaching category ${categoryName}:`, error);
         const container = document.getElementById(gridContainerId);
         if (container) {
-            container.innerHTML = '<p style="grid-column: 1/-1; text-align: center; color: #666;">Beklager, kunne ikke laste undervisningsinnhold.</p>';
+            const lang = document.documentElement.lang || 'no';
+            let usageErrorMsg = '';
+
+            if (lang === 'en') {
+                usageErrorMsg = 'Sorry, could not load teaching content.';
+            } else if (lang === 'es') {
+                usageErrorMsg = 'Lo siento, no se pudo cargar el contenido de enseñanza.';
+            } else {
+                usageErrorMsg = 'Beklager, kunne ikke laste undervisningsinnhold.';
+            }
+
+            container.innerHTML = `<p style="grid-column: 1/-1; text-align: center; color: #666;">${usageErrorMsg}</p>`;
         }
     }
 }
@@ -68,10 +79,10 @@ function createTeachingCard(item, index) {
 
     // Determine image URL (use item image or fallback to unsplash)
     const imageUrl = item.imageUrl || 'https://images.unsplash.com/photo-1501281668745-f7f57925c3b4?w=600&h=400&fit=crop';
-    
+
     // Extract title - handle markdown/text safely
     const title = item.title || `Undervisning ${index + 1}`;
-    
+
     // Extract description - handle markdown/text safely
     const description = item.description || item.content || 'Klikk for mer informasjon';
 
@@ -114,15 +125,30 @@ function createTeachingCard(item, index) {
  */
 function renderEmptyTeachingState(gridContainerId, label = 'undervisning') {
     const container = document.getElementById(gridContainerId);
-    if (container) {
-        container.innerHTML = `
-            <div style="grid-column: 1/-1; text-align: center; padding: 60px 20px; color: #666;">
-                <i class="fas fa-inbox" style="font-size: 48px; margin-bottom: 20px; opacity: 0.5;"></i>
-                <p style="font-size: 18px; margin: 20px 0;">Ingen ${label.toLowerCase()} er tilgjengelig akkurat nå</p>
-                <p style="font-size: 14px; opacity: 0.7;">Vennligst sjekk tilbake senere</p>
-            </div>
-        `;
+    if (!container) return;
+
+    const lang = document.documentElement.lang || 'no';
+    let message = '', subMessage = '';
+
+    if (lang === 'en') {
+        message = `No ${label.toLowerCase()} available right now`;
+        subMessage = 'Please check back later';
+    } else if (lang === 'es') {
+        message = `No hay ${label.toLowerCase()} disponibles en este momento`;
+        subMessage = 'Por favor, vuelve a comprobar más tarde';
+    } else {
+        // Default Norwegian
+        message = `Ingen ${label.toLowerCase()} er tilgjengelig akkurat nå`;
+        subMessage = 'Vennligst sjekk tilbake senere';
     }
+
+    container.innerHTML = `
+        <div style="grid-column: 1/-1; text-align: center; padding: 60px 20px; color: #666;">
+            <i class="fas fa-inbox" style="font-size: 48px; margin-bottom: 20px; opacity: 0.5;"></i>
+            <p style="font-size: 18px; margin: 20px 0;">${message}</p>
+            <p style="font-size: 14px; opacity: 0.7;">${subMessage}</p>
+        </div>
+    `;
 }
 
 /**
@@ -133,13 +159,21 @@ function renderEmptyTeachingState(gridContainerId, label = 'undervisning') {
  */
 function updateTeachingCount(selector, count, label = 'undervisning') {
     const element = document.querySelector(selector);
-    if (element) {
-        let countText = `${count} ${label}`;
-        if (count === 0) {
-            countText = `Ingen ${label}`;
-        }
-        element.textContent = countText;
+    if (!element) return;
+
+    const lang = document.documentElement.lang || 'no';
+    let countText = '';
+
+    if (lang === 'en') {
+        countText = count === 0 ? `No ${label}` : `${count} ${label}`;
+    } else if (lang === 'es') {
+        countText = count === 0 ? `No hay ${label}` : `${count} ${label}`;
+    } else {
+        // Default Norwegian
+        countText = count === 0 ? `Ingen ${label}` : `${count} ${label}`;
     }
+
+    element.textContent = countText;
 }
 
 /**

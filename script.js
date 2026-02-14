@@ -49,7 +49,7 @@ window.addEventListener('scroll', () => {
             if (window.scrollY > 100) {
                 header.classList.add('scrolled');
             } else {
-                header.classList.remove('scrolled');
+                if (!document.body.classList.contains("header-always-scrolled")) header.classList.remove("scrolled");
             }
             scrollTicking = false;
         });
@@ -97,28 +97,32 @@ document.addEventListener('DOMContentLoaded', () => {
 // ===================================
 // Global Site Search (magnifying glass in header)
 // ===================================
-// The `headerActions` variable is already declared at the top of the file.
+// ===================================
+// Global Site Search (magnifying glass in header)
+// ===================================
+document.addEventListener('DOMContentLoaded', () => {
+    const headerActions = document.querySelector('.header-actions');
 
-// Only initialize if header actions exist
-if (headerActions) {
-    // Create search toggle button
-    const searchBtn = document.createElement('button');
-    searchBtn.type = 'button';
-    searchBtn.className = 'header-search-btn';
-    searchBtn.innerHTML = '<i class="fas fa-search"></i>';
+    // Only initialize if header actions exist
+    if (headerActions) {
+        // Create search toggle button
+        const searchBtn = document.createElement('button');
+        searchBtn.type = 'button';
+        searchBtn.className = 'header-search-btn';
+        searchBtn.innerHTML = '<i class="fas fa-search"></i>';
 
-    // Insert before main CTA button (if exists), otherwise first
-    const firstChild = headerActions.firstElementChild;
-    if (firstChild) {
-        headerActions.insertBefore(searchBtn, firstChild);
-    } else {
-        headerActions.appendChild(searchBtn);
-    }
+        // Insert before main CTA button (if exists), otherwise first
+        const firstChild = headerActions.firstElementChild;
+        if (firstChild) {
+            headerActions.insertBefore(searchBtn, firstChild);
+        } else {
+            headerActions.appendChild(searchBtn);
+        }
 
-    // Create overlay for search UI
-    const overlay = document.createElement('div');
-    overlay.className = 'site-search-overlay';
-    overlay.innerHTML = `
+        // Create overlay for search UI
+        const overlay = document.createElement('div');
+        overlay.className = 'site-search-overlay';
+        overlay.innerHTML = `
     <div class="site-search-dialog">
         <div class="site-search-header">
             <div class="site-search-input-wrapper">
@@ -134,49 +138,50 @@ if (headerActions) {
         </div>
     </div>`;
 
-    document.body.appendChild(overlay);
+        document.body.appendChild(overlay);
 
-    const searchInput = document.getElementById('site-search-input');
-    const searchResults = document.getElementById('site-search-results');
-    const searchClose = document.getElementById('site-search-close');
+        const searchInput = document.getElementById('site-search-input');
+        const searchResults = document.getElementById('site-search-results');
+        const searchClose = document.getElementById('site-search-close');
 
-    function openSearch() {
-        overlay.classList.add('active');
-        document.body.style.overflow = 'hidden';
-        if (searchInput) {
-            searchInput.value = '';
-            searchResults.innerHTML = '<p class="site-search-helper">Skriv inn et søkeord og trykk Enter.</p>';
-            setTimeout(() => searchInput.focus(), 50);
+        function openSearch() {
+            overlay.classList.add('active');
+            document.body.style.overflow = 'hidden';
+            if (searchInput) {
+                searchInput.value = '';
+                searchResults.innerHTML = '<p class="site-search-helper">Skriv inn et søkeord og trykk Enter.</p>';
+                setTimeout(() => searchInput.focus(), 50);
+            }
         }
-    }
 
-    function closeSearch() {
-        overlay.classList.remove('active');
-        document.body.style.overflow = '';
-    }
-
-    searchBtn.addEventListener('click', openSearch);
-
-    if (searchClose) {
-        searchClose.addEventListener('click', closeSearch);
-    }
-
-    // Close on escape
-    document.addEventListener('keydown', (e) => {
-        if (e.key === 'Escape' && overlay.classList.contains('active')) {
-            closeSearch();
+        function closeSearch() {
+            overlay.classList.remove('active');
+            document.body.style.overflow = '';
         }
-    });
 
-    // Close on clicking outside dialog
-    overlay.addEventListener('click', (e) => {
-        if (e.target === overlay) {
-            closeSearch();
+        searchBtn.addEventListener('click', openSearch);
+
+        if (searchClose) {
+            searchClose.addEventListener('click', closeSearch);
         }
-    });
+
+        // Close on escape
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && overlay.classList.contains('active')) {
+                closeSearch();
+            }
+        });
+
+        // Close on clicking outside dialog
+        overlay.addEventListener('click', (e) => {
+            if (e.target === overlay) {
+                closeSearch();
+            }
+        });
 
 
-}
+    }
+});
 
 // ===================================
 // Hero Slider
@@ -226,7 +231,6 @@ class HeroSlider {
         // Add active class to new
         this.slides[this.currentIndex].classList.add('active');
     }
-
     next() {
         const nextIndex = (this.currentIndex + 1) % this.slides.length;
         this.goTo(nextIndex);

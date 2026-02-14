@@ -48,6 +48,15 @@ class FirebaseService {
             this.storage = firebase.storage();
             this.isInitialized = true;
             console.log("✅ Firebase initialized (Compat)");
+
+            // Enable offline persistence for faster subsequent loads
+            this.db.enablePersistence().catch((err) => {
+                if (err.code === 'failed-precondition') {
+                    console.warn("[FirebaseService] Persistence failed (multiple tabs open)");
+                } else if (err.code === 'unimplemented') {
+                    console.warn("[FirebaseService] Persistence not supported by browser");
+                }
+            });
         } catch (error) {
             console.error("❌ Firebase initialization failed:", error);
         }
@@ -61,23 +70,12 @@ class FirebaseService {
         if (!this.isInitialized) return null;
 
         try {
-            // Try to get fresh data from server first
-            try {
-                const docSnap = await this.db.collection("content").doc(pageId).get({ source: 'server' });
-                if (docSnap.exists) {
-                    return docSnap.data();
-                }
-            } catch (e) {
-                console.warn(`[FirebaseService] Server fetch failed for ${pageId}, falling back to cache.`, e);
-            }
-
-            // Fallback to cache/default if server fails or document doesn't exist on server (unlikely with source:server)
+            // Use cache-first intelligence (removed source: 'server' for speed)
             const docSnap = await this.db.collection("content").doc(pageId).get();
             if (docSnap.exists) {
                 return docSnap.data();
-            } else {
-                return null;
             }
+            return null;
         } catch (error) {
             console.error(`❌ Failed to load content for page '${pageId}':`, error);
             return null;

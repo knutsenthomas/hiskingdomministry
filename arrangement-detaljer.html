@@ -7,282 +7,613 @@
     <title>Arrangement Detaljer | His Kingdom Ministry</title>
     <meta name="description" content="Detaljert informasjon om våre arrangementer hos His Kingdom Ministry.">
 
-    <!-- Google Fonts -->
+    <!-- Google Fonts: Inter for hele siden -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link
-        href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&family=Merriweather:wght@400;700;900&display=swap"
-        rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 
     <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
-    <!-- Custom CSS -->
     <link rel="stylesheet" href="styles.css">
     <style>
-        .event-detail-header {
-            padding: 100px 0 60px;
-            background: var(--bg-light);
+        /* Charitics-inspired Event Details Styles */
+        :root {
+            --charitics-orange: #F15A24;
+            --charitics-dark: #121212;
+            --charitics-gray: #777777;
+            --charitics-bg-light: #F9F9F9;
         }
 
-        .event-detail-grid {
-            display: grid;
-            grid-template-columns: 2fr 1fr;
-            gap: 50px;
-            margin-top: 40px;
+        .header.scrolled {
+            background-color: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.05);
         }
 
-        .event-main-image {
+        /* Page Hero */
+        .page-hero {
+            position: relative;
+            padding: 160px 0 100px;
+            background-color: var(--charitics-dark);
+            background-image: url('https://images.unsplash.com/photo-1511632765486-a01980e01a18?w=1600&q=80');
+            /* Professional default hero */
+            background-size: cover;
+            background-position: center;
+            color: white;
+            text-align: center;
+        }
+
+        .page-hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
             width: 100%;
-            height: 450px;
-            border-radius: 20px;
-            object-fit: cover;
-            margin-bottom: 30px;
-            box-shadow: var(--shadow);
+            height: 100%;
+            background: linear-gradient(rgba(18, 18, 18, 0.85), rgba(18, 18, 18, 0.7));
+            z-index: 1;
         }
 
-        .event-info-box {
-            background: white;
-            padding: 40px;
-            border-radius: 20px;
-            box-shadow: var(--shadow);
-            position: sticky;
-            top: 120px;
+        .page-hero-content {
+            position: relative;
+            z-index: 2;
         }
 
-        .info-item {
+        .page-hero h1 {
+            font-size: 52px;
+            font-weight: 800;
+            margin-bottom: 20px;
+            letter-spacing: -0.01em;
+        }
+
+        .hero-breadcrumbs {
             display: flex;
-            gap: 20px;
+            justify-content: center;
+            align-items: center;
+            gap: 12px;
+            font-size: 16px;
+            font-weight: 500;
+        }
+
+        .hero-breadcrumbs a {
+            color: white;
+            text-decoration: none;
+            opacity: 0.8;
+            transition: opacity 0.3s;
+        }
+
+        .hero-breadcrumbs a:hover {
+            opacity: 1;
+        }
+
+        .hero-breadcrumbs .separator {
+            color: var(--charitics-orange);
+            font-weight: bold;
+        }
+
+        .hero-breadcrumbs .current {
+            color: var(--charitics-orange);
+        }
+
+        /* Layout Grid */
+        .event-details-layout {
+            padding: 100px 0;
+            background: #fff;
+        }
+
+        .event-container {
+            display: grid;
+            grid-template-columns: 350px 1fr;
+            gap: 50px;
+        }
+
+        /* Sidebar (Left) */
+        .sidebar-left {
+            display: flex;
+            flex-direction: column;
+            gap: 40px;
+        }
+
+        .sidebar-widget {
+            background: var(--charitics-bg-light);
+            padding: 30px;
+            border-radius: 12px;
+        }
+
+        .widget-title {
+            font-size: 22px;
+            font-weight: 700;
             margin-bottom: 25px;
+            color: var(--charitics-dark);
+            position: relative;
+            padding-bottom: 15px;
         }
 
-        .info-item i {
-            font-size: 24px;
-            color: var(--primary-orange);
-            width: 30px;
+        .widget-title::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 50px;
+            height: 3px;
+            background: var(--charitics-orange);
         }
 
-        .info-content h5 {
+        .search-widget .search-form {
+            position: relative;
+            display: flex;
+        }
+
+        .search-widget input {
+            width: 100%;
+            padding: 15px 20px;
+            border: none;
+            border-radius: 30px 0 0 30px;
+            font-size: 15px;
+            outline: none;
+        }
+
+        .search-widget button {
+            background: var(--charitics-orange);
+            color: white;
+            border: none;
+            padding: 0 25px;
+            border-radius: 0 30px 30px 0;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+
+        .search-widget button:hover {
+            background: #d4491c;
+        }
+
+        .category-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .category-list li {
+            padding: 12px 0;
+            border-bottom: 1px solid #eee;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .category-list li:last-child {
+            border-bottom: none;
+        }
+
+        .category-list a {
+            color: #444;
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s;
+        }
+
+        .category-list a:hover {
+            color: var(--charitics-orange);
+        }
+
+        .category-count {
+            color: var(--charitics-gray);
             font-size: 14px;
-            color: var(--text-light);
-            margin-bottom: 5px;
         }
 
-        .info-content p {
-            font-size: 18px;
-            font-weight: 600;
-            color: var(--text-dark);
+        .recent-events-list {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .recent-event-item {
+            display: flex;
+            gap: 15px;
+            align-items: center;
+        }
+
+        .recent-event-img {
+            width: 80px;
+            height: 80px;
+            border-radius: 8px;
+            object-fit: cover;
+        }
+
+        .recent-event-info h4 {
+            font-size: 15px;
+            margin: 0 0 5px;
+            line-height: 1.4;
+        }
+
+        .recent-event-info h4 a {
+            color: var(--charitics-dark);
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+
+        .recent-event-info h4 a:hover {
+            color: var(--charitics-orange);
+        }
+
+        .recent-event-date {
+            font-size: 13px;
+            color: var(--charitics-gray);
+        }
+
+        /* Main Content (Right) */
+        .main-content-right {
+            display: flex;
+            flex-direction: column;
+            gap: 30px;
+        }
+
+        .event-large-image-wrap {
+            width: 100%;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.06);
+        }
+
+        .event-large-image-wrap img {
+            width: 100%;
+            height: auto;
+            display: block;
+        }
+
+        .event-detail-header {
+            margin-top: 10px;
+        }
+
+        .event-meta-info {
+            display: flex;
+            gap: 30px;
+            margin-bottom: 25px;
+            font-size: 15px;
+            color: var(--charitics-gray);
+            font-weight: 500;
+        }
+
+        .event-meta-info i {
+            color: var(--charitics-orange);
+            margin-right: 8px;
+        }
+
+        .event-main-title {
+            font-size: 36px;
+            font-weight: 800;
+            color: var(--charitics-dark);
+            margin-bottom: 25px;
+            line-height: 1.25;
         }
 
         .event-description {
-            font-size: 18px;
+            font-size: 17px;
             line-height: 1.8;
-            color: var(--text-light);
-            margin-bottom: 40px;
+            color: #555;
         }
 
-        .event-schedule {
-            margin-top: 50px;
+        .event-description p {
+            margin-bottom: 25px;
         }
 
-        .schedule-item {
+        .event-description h3 {
+            font-size: 24px;
+            margin: 40px 0 20px;
+            color: var(--charitics-dark);
+        }
+
+        .event-details-checklist {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin: 30px 0;
+            padding: 0;
+            list-style: none;
+        }
+
+        .event-details-checklist li {
             display: flex;
-            gap: 30px;
-            padding: 20px 0;
-            border-bottom: 1px solid var(--border-color);
+            align-items: center;
+            gap: 10px;
+            font-weight: 500;
+            color: #444;
         }
 
-        .schedule-time {
+        .event-details-checklist li i {
+            color: var(--charitics-orange);
+            font-size: 14px;
+        }
+
+        .registration-footer {
+            background: var(--charitics-bg-light);
+            padding: 40px;
+            border-radius: 12px;
+            margin-top: 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .footer-cta-text h3 {
+            font-size: 24px;
+            margin-bottom: 10px;
+        }
+
+        .footer-cta-text p {
+            color: var(--charitics-gray);
+            margin: 0;
+        }
+
+        .btn-register {
+            background: var(--charitics-orange);
+            color: white;
+            padding: 16px 45px;
+            border-radius: 30px;
+            font-size: 17px;
             font-weight: 700;
-            color: var(--primary-orange);
-            min-width: 100px;
+            text-decoration: none;
+            transition: all 0.3s;
+            box-shadow: 0 10px 20px rgba(241, 90, 36, 0.2);
         }
 
-        .schedule-content h4 {
-            font-size: 20px;
-            margin-bottom: 5px;
+        .btn-register:hover {
+            background: var(--charitics-dark);
+            transform: translateY(-3px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
         }
 
-        .map-container {
-            width: 100%;
-            height: 300px;
-            border-radius: 15px;
-            overflow: hidden;
-            margin-top: 30px;
-        }
-
-        @media (max-width: 992px) {
-            .event-detail-grid {
+        @media (max-width: 1024px) {
+            .event-container {
                 grid-template-columns: 1fr;
             }
 
-            .event-info-box {
-                position: static;
+            .sidebar-left {
+                order: 2;
+            }
+
+            .main-content-right {
+                order: 1;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .page-hero h1 {
+                font-size: 36px;
+            }
+
+            .event-main-title {
+                font-size: 28px;
+            }
+
+            .registration-footer {
+                flex-direction: column;
+                text-align: center;
+                gap: 25px;
             }
         }
     </style>
     <link rel="stylesheet" href="css/cookie-consent.css">
 </head>
 
-<body>
+<body class="header-always-scrolled">
     <!-- Header -->
-    <header class="header" id="header">
-        <div class="container">
-            <div class="header-content">
-                <a href="index.html" class="logo">
-                    <div class="logo-icon">
-                        <img src="img/Logo sirkel - orange og hvit.png" alt="His Kingdom Ministry Logo">
-                    </div>
-                    <span>His Kingdom Ministry</span>
-                </a>
-
-                <nav class="nav" id="nav">
-                    <ul class="nav-list">
-                        <li><a href="index.html#hjem" class="nav-link">Hjem</a></li>
-                        <li><a href="om-oss.html" class="nav-link">Om oss</a></li>
-                        <li><a href="media.html" class="nav-link">Media</a></li>
-                        <li><a href="arrangementer.html" class="nav-link active">Arrangementer</a></li>
-                        <li><a href="blogg.html" class="nav-link">Blogg</a></li>
-                        <li><a href="kontakt.html" class="nav-link">Kontakt</a></li>
-                        <li><a href="minside/index.html" class="nav-link" target="_blank">Min Side</a></li>
-                        <li class="mobile-only"><a href="donasjoner.html" class="btn btn-primary">Gi gave</a></li>
-                    </ul>
-                </nav>
-
-                <div class="header-actions">
-                    <a href="donasjoner.html" class="btn btn-primary">Gi gave</a>
-                    <button class="mobile-toggle" id="mobile-toggle">
-                        <span></span>
-                        <span></span>
-                        <span></span>
-                    </button>
+    <header class="header scrolled" id="header">
+        <div class="container-fluid header-container">
+            <!-- Logo -->
+            <a href="index.html" class="logo">
+                <div class="logo-icon">
+                    <img src="img/Logo sirkel - orange og hvit.png" alt="His Kingdom Ministry Logo">
                 </div>
+                <span>His Kingdom Ministry</span>
+            </a>
+
+            <!-- Right Actions: Donate + Hamburger -->
+            <div class="header-actions">
+                <a href="donasjoner.html" class="btn btn-primary header-donate-btn">Gi gave <i
+                        class="fas fa-heart"></i></a>
+                <button class="menu-toggle" id="menu-toggle" aria-label="Åpne meny">
+                    <span class="hamburger-box">
+                        <span class="hamburger-inner"></span>
+                    </span>
+                </button>
             </div>
         </div>
     </header>
 
-    <main>
-        <!-- Event Detail Header -->
-        <section class="event-detail-header">
-            <div class="container">
-                <div class="breadcrumbs"
-                    style="justify-content: flex-start; margin-bottom: 20px; color: var(--text-light);">
-                    <a href="index.html" style="color: var(--text-dark);">Hjem</a>
-                    <i class="fas fa-chevron-right" style="font-size: 10px; margin: 0 10px;"></i>
-                    <a href="arrangementer.html" style="color: var(--text-dark);">Arrangementer</a>
-                    <i class="fas fa-chevron-right" style="font-size: 10px; margin: 0 10px;"></i>
-                    <span style="color: var(--primary-orange);">Ukentlig Bønnemøte</span>
+    <!-- Full-screen Mega Menu Overlay -->
+    <div class="mega-menu" id="mega-menu">
+        <div class="mega-menu-container">
+
+
+            <!-- Menu Header (Close & Search) -->
+            <div class="mega-menu-header">
+                <!-- Mirrored Header Structure for Precision Alignment -->
+                <div class="header-container-mirror">
+                    <!-- Brand Logo in Menu -->
+                    <a href="index.html" class="logo">
+                        <div class="logo-icon">
+                            <img src="img/Logo sirkel - orange og hvit.png" alt="His Kingdom Ministry Logo">
+                        </div>
+                        <span>His Kingdom Ministry</span>
+                    </a>
+
+                    <!-- Right Controls Wrapper -->
+                    <div class="header-actions-mirror">
+                        <!-- Independent Close Button -->
+                        <button class="menu-close" id="menu-close" aria-label="Lukk meny">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    </div>
                 </div>
-                <h1 class="page-title" style="color: var(--text-dark); text-align: left; font-size: 48px;">Ukentlig
-                    Bønnemøte</h1>
-            </div>
-        </section>
 
-        <!-- Event Content -->
-        <section class="section">
-            <div class="container">
-                <div class="event-detail-grid">
-                    <div class="event-main-content">
-                        <img src="https://images.unsplash.com/photo-1511795409834-ef04bbd61622?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=80"
-                            alt="Special Event" class="event-main-image">
-
-                        <div class="event-description">
-                            <p>Velkommen til vårt ukentlige bønnemøte. Dette er hjertet i vår tjeneste, hvor vi samles
-                                for å søke Guds ansikt, be for våre medlemmer, byen vår og nasjonen. Vi tror på kraften
-                                i felles bønn og ønsker å skape et rom hvor alle føler seg velkomne til å delta, uansett
-                                hvor de er på sin troshistorie.</p>
-                            <p>Møtene består av lovsang, korte bibelske betraktninger og fokuserte bønneemner. Det er
-                                også anledning til å motta personlig forbønn for de som ønsker det.</p>
-                        </div>
-
-                        <div class="event-schedule">
-                            <h2 class="section-title" style="text-align: left; font-size: 32px;">Program</h2>
-                            <div class="schedule-item">
-                                <div class="schedule-time">19:00</div>
-                                <div class="schedule-content">
-                                    <h4>Dørene åpner</h4>
-                                    <p>Velkomst og lett servering av kaffe og te.</p>
-                                </div>
-                            </div>
-                            <div class="schedule-item">
-                                <div class="schedule-time">19:15</div>
-                                <div class="schedule-content">
-                                    <h4>Lovsang & Tilbedelse</h4>
-                                    <p>Vi starter kvelden med å fokusere på Gud gjennom sang.</p>
-                                </div>
-                            </div>
-                            <div class="schedule-item">
-                                <div class="schedule-time">19:45</div>
-                                <div class="schedule-content">
-                                    <h4>Felles Bønn</h4>
-                                    <p>Vi ber sammen for aktuelle bønneemner.</p>
-                                </div>
-                            </div>
-                            <div class="schedule-item">
-                                <div class="schedule-time">20:30</div>
-                                <div class="schedule-content">
-                                    <h4>Personlig Forbønn</h4>
-                                    <p>Mulighet for å bli bedt for individuelt.</p>
-                                </div>
-                            </div>
-                        </div>
+                <!-- Search & Lang Row (Below Header) -->
+                <div class="menu-controls-row">
+                    <div class="menu-search">
+                        <i class="fas fa-search"></i>
+                        <input type="text" placeholder="Søk...">
                     </div>
 
-                    <div class="event-sidebar">
-                        <div class="event-info-box">
-                            <div class="info-item">
-                                <i class="far fa-calendar-alt"></i>
-                                <div class="info-content">
-                                    <h5>Dato</h5>
-                                    <p>Hver tirsdag</p>
-                                </div>
-                            </div>
-                            <div class="info-item">
-                                <i class="far fa-clock"></i>
-                                <div class="info-content">
-                                    <h5>Tidspunkt</h5>
-                                    <p>19:00 - 21:00</p>
-                                </div>
-                            </div>
-                            <div class="info-item">
-                                <i class="fas fa-map-marker-alt"></i>
-                                <div class="info-content">
-                                    <h5>Sted</h5>
-                                    <p>Stavanger, Norge</p>
-                                </div>
-                            </div>
-                            <div class="info-item">
-                                <i class="fas fa-tag"></i>
-                                <div class="info-content">
-                                    <h5>Pris</h5>
-                                    <p>Gratis adgang</p>
-                                </div>
-                            </div>
-
-                            <a href="kontakt.html" class="btn btn-primary btn-block" style="margin-top: 10px;">Meld deg
-                                på</a>
-
-                            <div class="map-container">
-                                <iframe
-                                    src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d16454.0487545464!2d5.71694665!3d58.9699756!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x463a3549dec49817%3A0x8673a3889025e1f0!2sStavanger!5e0!3m2!1sno!2sno!4v1700000000000!5m2!1sno!2sno"
-                                    width="100%" height="100%" style="border:0;" allowfullscreen=""
-                                    loading="lazy"></iframe>
-                            </div>
-                        </div>
+                    <div class="mega-menu-lang in-header mobile-only">
+                        <a href="arrangementer.html" class="active"><i class="fas fa-globe"></i> NO</a>
+                        <a href="en/events.html"><i class="fas fa-globe"></i> EN</a>
+                        <a href="es/eventos.html"><i class="fas fa-globe"></i> ES</a>
                     </div>
                 </div>
             </div>
-        </section>
 
-        <!-- CTA Section -->
-        <section class="cta section" style="background: var(--bg-light);">
-            <div class="container" style="text-align: center;">
-                <h2 class="section-title">Vil du vite mer om våre møter?</h2>
-                <p class="section-description" style="margin-left: auto; margin-right: auto;">Kontakt oss gjerne dersom
-                    du har spørsmål eller spesielle bønnebehov.</p>
-                <a href="kontakt.html" class="btn btn-primary">Kontakt oss nå</a>
+            <div class="mega-menu-body">
+                <div class="mega-menu-grid">
+                    <div class="menu-col">
+                        <h3 class="menu-section-title">Engasjer deg</h3>
+                        <ul class="mega-nav-list">
+                            <li><a href="donasjoner.html">Støtt arbeidet</a></li>
+                            <li><a href="donasjoner.html#faste-givere">Bli fast giver</a></li>
+                            <li><a href="for-menigheter.html">For menigheter</a></li>
+                            <li><a href="for-bedrifter.html">For bedrifter</a></li>
+                            <li><a href="bnn.html">Business Network</a></li>
+                        </ul>
+                    </div>
+
+                    <div class="menu-col">
+                        <h3 class="menu-section-title">Bli kjent med oss</h3>
+                        <ul class="mega-nav-list">
+                            <li><a href="om-oss.html">Om stiftelsen</a></li>
+                            <li><a href="om-oss.html#historie">Vår historie</a></li>
+                            <li><a href="kontakt.html">Her arbeider vi</a></li>
+                            <li><a href="kontakt.html">Kontakt oss</a></li>
+                        </ul>
+                    </div>
+
+                    <div class="menu-col">
+                        <h3 class="menu-section-title">Ressurser</h3>
+                        <ul class="mega-nav-list">
+                            <li><a href="arrangementer.html">Arrangementer</a></li>
+                            <li><a href="media.html">Media & Podcast</a></li>
+                            <li><a href="blogg.html">Nyheter & Blogg</a></li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="mega-menu-footer">
+                    <a href="donasjoner.html" class="btn btn-primary btn-large btn-block">Støtt nå <i
+                            class="fas fa-heart"></i></a>
+                    <div class="menu-footer-links">
+                        <a href="donasjoner.html#skattefradrag">Skattefradrag</a>
+                        <a href="om-oss.html">Om oss</a>
+                        <a href="personvern.html">Personvern</a>
+                    </div>
+                </div>
             </div>
-        </section>
+        </div>
+    </div>
+
+
+    <!-- Page Hero -->
+    <section class="page-hero">
+        <div class="container page-hero-content">
+            <h1 id="hero-title">Arrangement Detaljer</h1>
+            <nav class="hero-breadcrumbs">
+                <a href="index.html">Hjem</a>
+                <span class="separator">/</span>
+                <a href="arrangementer.html">Arrangementer</a>
+                <span class="separator">/</span>
+                <span class="current" id="breadcrumb-current">Detaljer</span>
+            </nav>
+        </div>
+    </section>
+
+    <!-- Main Layout -->
+    <main class="event-details-layout">
+        <div class="container event-container">
+
+            <!-- Sidebar (Left) -->
+            <aside class="sidebar-left">
+                <!-- Search -->
+                <div class="sidebar-widget search-widget">
+                    <h3 class="widget-title">Søk</h3>
+                    <form class="search-form">
+                        <input type="text" placeholder="Søk i arrangementer...">
+                        <button type="submit"><i class="fas fa-search"></i></button>
+                    </form>
+                </div>
+
+                <!-- Categories -->
+                <div class="sidebar-widget category-widget">
+                    <h3 class="widget-title">Kategorier</h3>
+                    <ul class="category-list">
+                        <li><a href="#">Møter & Konferanser</a> <span class="category-count">(04)</span></li>
+                        <li><a href="#">Bønnesamlinger</a> <span class="category-count">(07)</span></li>
+                        <li><a href="#">Undervisning</a> <span class="category-count">(03)</span></li>
+                        <li><a href="#">Business Network</a> <span class="category-count">(02)</span></li>
+                    </ul>
+                </div>
+
+                <!-- Recent Events -->
+                <div class="sidebar-widget recent-events-widget">
+                    <h3 class="widget-title">Nylige Arrangementer</h3>
+                    <div class="recent-events-list" id="recent-events-sidebar">
+                        <!-- Populated by JS -->
+                        <p>Laster nylige...</p>
+                    </div>
+                </div>
+
+                <!-- Contact Info Widget -->
+                <div class="sidebar-widget contact-widget">
+                    <h3 class="widget-title">Spørsmål?</h3>
+                    <p style="font-size: 15px; color: #666; margin-bottom: 20px;">Kontakt oss hvis du lurer på noe
+                        angående arrangementet.</p>
+                    <div style="font-size: 15px; color: #121212;">
+                        <p><i class="fas fa-envelope" style="color:var(--charitics-orange); margin-right: 10px;"></i>
+                            post@hiskingdomministry.no</p>
+                        <p><i class="fas fa-phone-alt" style="color:var(--charitics-orange); margin-right: 10px;"></i>
+                            +47 930 94 615</p>
+                    </div>
+                </div>
+            </aside>
+
+            <!-- Content Area (Right) -->
+            <div class="main-content-right">
+                <!-- Main Image -->
+                <div class="event-large-image-wrap">
+                    <img src="img/placeholder-event.jpg" alt="Event Image" id="event-hero-image">
+                </div>
+
+                <!-- Event Details Header -->
+                <div class="event-detail-header">
+                    <div class="event-meta-info">
+                        <span><i class="fas fa-calendar-alt"></i> <span id="event-time">Laster...</span></span>
+                        <span><i class="fas fa-map-marker-alt"></i> <span id="event-location">Laster...</span></span>
+                    </div>
+                    <h2 class="event-main-title" id="event-title">Arrangement Tittel</h2>
+
+                    <div class="event-description" id="event-description">
+                        <p>Laster beskrivelse...</p>
+                    </div>
+
+                    <!-- Registration CTA -->
+                    <div class="registration-footer">
+                        <div class="footer-cta-text">
+                            <h3>Bli med oss!</h3>
+                            <p>Sikre deg plass på dette arrangementet i dag.</p>
+                        </div>
+                        <a href="kontakt.html" class="btn-register">Meld deg på nå</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- CTA Section -->
+    <section class="cta section" style="background: var(--bg-light);">
+        <div class="container" style="text-align: center;">
+            <h2 class="section-title">Vil du vite mer om våre møter?</h2>
+            <p class="section-description" style="margin-left: auto; margin-right: auto;">Kontakt oss gjerne dersom
+                du har spørsmål eller spesielle bønnebehov.</p>
+            <a href="kontakt.html" class="btn btn-primary">Kontakt oss nå</a>
+        </div>
+    </section>
     </main>
 
     <!-- Footer -->
@@ -399,19 +730,19 @@
         </div>
     </footer>
 
-    <!-- Scripts -->
+    <!-- Firebase SDK (Compat) -->
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-storage-compat.js"></script>
+
+    <!-- Firebase Config & Service -->
+    <script src="js/firebase-config.js"></script>
+    <script src="js/firebase-service.js"></script>
+
+    <!-- App Scripts -->
     <script src="script.js"></script>
-    <script>
-        // Sticky header logic
-        window.addEventListener('scroll', function () {
-            const header = document.getElementById('header');
-            if (window.scrollY > 50) {
-                header.classList.add('scrolled');
-            } else {
-                header.classList.remove('scrolled');
-            }
-        });
-    </script>
+    <script src="js/content-manager.js?v=2"></script>
     <script src="js/cookie-consent.js"></script>
 </body>
 

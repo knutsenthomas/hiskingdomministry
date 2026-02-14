@@ -2,6 +2,80 @@
 // Media Page - Dynamic Loading Logic (Global version)
 // ===================================
 
+const translations = {
+    loadingVideos: {
+        no: 'Henter videoer fra YouTube...',
+        en: 'Fetching videos from YouTube...',
+        es: 'Obteniendo videos de YouTube...'
+    },
+    noVideosPlaylist: {
+        no: 'Ingen videoer funnet for <strong>{name}</strong> akkurat nå. Du kan se spillelisten direkte på YouTube <a href="{url}" target="_blank" style="color: var(--primary-color); text-decoration: underline;">her</a>.',
+        en: 'No videos found for <strong>{name}</strong> right now. You can watch the playlist directly on YouTube <a href="{url}" target="_blank" style="color: var(--primary-color); text-decoration: underline;">here</a>.',
+        es: 'No se encontraron videos para <strong>{name}</strong> en este momento. Puedes ver la lista de reproducción directamente en YouTube <a href="{url}" target="_blank" style="color: var(--primary-color); text-decoration: underline;">aquí</a>.'
+    },
+    noVideos: {
+        no: 'Ingen videoer funnet.',
+        en: 'No videos found.',
+        es: 'No se encontraron videos.'
+    },
+    selectEpisode: {
+        no: 'Velg en episode',
+        en: 'Select an episode',
+        es: 'Selecciona un episodio'
+    },
+    prevEpisode: {
+        no: 'Forrige episode',
+        en: 'Previous episode',
+        es: 'Episodio anterior'
+    },
+    nextEpisode: {
+        no: 'Neste episode',
+        en: 'Next episode',
+        es: 'Siguiente episodio'
+    },
+    playbackSpeed: {
+        no: 'Avspillingshastighet',
+        en: 'Playback speed',
+        es: 'Velocidad de reproducción'
+    },
+    listenNow: {
+        no: 'Hør nå',
+        en: 'Listen now',
+        es: 'Escuchar ahora'
+    },
+    episode: {
+        no: 'Episode',
+        en: 'Episode',
+        es: 'Episodio'
+    },
+    noEpisodesCategory: {
+        no: 'Ingen episoder funnet i denne kategorien.',
+        en: 'No episodes found in this category.',
+        es: 'No se encontraron episodios en esta categoría.'
+    },
+    loadingPodcastError: {
+        no: 'Kunne ikke laste episoder.',
+        en: 'Could not load episodes.',
+        es: 'No se pudieron cargar los episodios.'
+    },
+    all: {
+        no: 'Alle',
+        en: 'All',
+        es: 'Todos'
+    }
+};
+
+function t(key, params = {}) {
+    const lang = document.documentElement.lang || 'no';
+    // Fallback to 'no' if language not supported, or key missing in language
+    const text = (translations[key] && translations[key][lang]) || (translations[key] && translations[key]['no']) || '';
+
+    // Simple replacement for {param}
+    return text.replace(/\{(\w+)\}/g, (match, p1) => {
+        return params[p1] !== undefined ? params[p1] : match;
+    });
+}
+
 document.addEventListener('DOMContentLoaded', async function () {
     // Hent eventuelle medie-innstillinger (brukes kun til lenker m.m.)
     const settings = await loadMediaSettings();
@@ -100,7 +174,7 @@ async function initYouTubeAPI(channelId, playlistsRaw = "") {
         categoriesDiv.innerHTML = '';
         // "Alle"-knapp
         const allBtn = document.createElement('button');
-        allBtn.textContent = 'Alle';
+        allBtn.textContent = t('all');
         allBtn.className = 'category-btn active';
         allBtn.onclick = () => loadVideosByCategory();
         categoriesDiv.appendChild(allBtn);
@@ -190,7 +264,7 @@ async function initYouTubeAPI(channelId, playlistsRaw = "") {
     }
 
     async function loadVideosByCategory(playlistId = 'all') {
-        grid.innerHTML = '<div class="loader-container" style="grid-column: 1/-1; text-align: center; padding: 50px;"><div class="loader"></div><p style="margin-top: 15px; color: var(--text-muted);">Henter videoer fra YouTube...</p></div>';
+        grid.innerHTML = `<div class="loader-container" style="grid-column: 1/-1; text-align: center; padding: 50px;"><div class="loader"></div><p style="margin-top: 15px; color: var(--text-muted);">${t('loadingVideos')}</p></div>`;
         // Marker aktiv kategori
         if (categoriesDiv) {
             categoriesDiv.querySelectorAll('.category-btn').forEach(btn => btn.classList.remove('active'));
@@ -272,9 +346,9 @@ async function initYouTubeAPI(channelId, playlistsRaw = "") {
                 const pl = playlists.find(p => p.id === currentCategory);
                 const name = pl ? pl.name : 'denne spillelisten';
                 const url = `https://www.youtube.com/playlist?list=${currentCategory}`;
-                grid.innerHTML = `<p style="grid-column: 1/-1; text-align:center; color:var(--text-muted); padding: 40px;">Ingen videoer funnet for <strong>${name}</strong> akkurat nå. Du kan se spillelisten direkte på YouTube <a href="${url}" target="_blank" style="color: var(--primary-color); text-decoration: underline;">her</a>.</p>`;
+                grid.innerHTML = `<p style="grid-column: 1/-1; text-align:center; color:var(--text-muted); padding: 40px;">${t('noVideosPlaylist', { name: name, url: url })}</p>`;
             } else {
-                grid.innerHTML = '<p style="grid-column: 1/-1; text-align:center; color:var(--text-muted);">Ingen videoer funnet.</p>';
+                grid.innerHTML = `<p style="grid-column: 1/-1; text-align:center; color:var(--text-muted);">${t('noVideos')}</p>`;
             }
             if (showMoreBtn) showMoreBtn.style.display = 'none';
             return;
@@ -483,7 +557,7 @@ async function initPodcastRSS() {
         }
     } catch (error) {
         console.error('[Podcast] Feil ved henting:', error);
-        grid.innerHTML = '<p class="text-danger">Kunne ikke laste episoder.</p>';
+        grid.innerHTML = `<p class="text-danger">${t('loadingPodcastError')}</p>`;
     }
 }
 
@@ -536,7 +610,7 @@ function renderPodcastEpisodes() {
     const limit = isFullPage ? filtered.length : 3;
 
     if (filtered.length === 0) {
-        grid.innerHTML = '<p style="grid-column: 1/-1; text-align:center; color:var(--text-muted); padding: 40px;">Ingen episoder funnet i denne kategorien.</p>';
+        grid.innerHTML = `<p style="grid-column: 1/-1; text-align:center; color:var(--text-muted); padding: 40px;">${t('noEpisodesCategory')}</p>`;
         return;
     }
 
@@ -570,12 +644,12 @@ function createPodcastCard(episode, indexInView) {
             </div>
         </div>
         <div class="podcast-content">
-            <span class="podcast-episode">Episode ${episode.episodeNumber}</span>
+            <span class="podcast-episode">${t('episode')} ${episode.episodeNumber}</span>
             <h3 class="podcast-title">${episode.title}</h3>
             <p class="podcast-description">${descText}</p>
             <div class="podcast-meta"><span><i class="far fa-calendar"></i> ${pubDate}</span></div>
             <div class="podcast-actions">
-                <button class="btn-play-internal" data-audio="${episode.audioUrl}"><i class="fas fa-play"></i> Hør nå</button>
+                <button class="btn-play-internal" data-audio="${episode.audioUrl}"><i class="fas fa-play"></i> ${t('listenNow')}</button>
                 <a href="${episode.link}" target="_blank" class="btn-icon-outline"><i class="fas fa-external-link-alt"></i></a>
             </div>
         </div>
@@ -642,12 +716,12 @@ function createPlayerBar() {
             <audio id="global-audio-element"></audio>
             <div class="player-info">
                 <img src="" class="player-info-img">
-                <div class="player-info-text"><span class="player-info-title">Velg en episode</span></div>
+                <div class="player-info-text"><span class="player-info-title">${t('selectEpisode')}</span></div>
             </div>
             <div class="player-controls">
-                <button class="player-control-btn player-control-prev" title="Forrige episode"><i class="fas fa-step-backward"></i></button>
+                <button class="player-control-btn player-control-prev" title="${t('prevEpisode')}"><i class="fas fa-step-backward"></i></button>
                 <button class="player-control-btn player-control-play"><i class="fas fa-play"></i></button>
-                <button class="player-control-btn player-control-next" title="Neste episode"><i class="fas fa-step-forward"></i></button>
+                <button class="player-control-btn player-control-next" title="${t('nextEpisode')}"><i class="fas fa-step-forward"></i></button>
             </div>
             <div class="player-progress-container">
                 <span class="time-current">0:00</span>
@@ -655,7 +729,7 @@ function createPlayerBar() {
                 <span class="time-total">0:00</span>
             </div>
             <div class="player-extra">
-                <button class="player-control-btn player-speed" title="Avspillingshastighet">1x</button>
+                <button class="player-control-btn player-speed" title="${t('playbackSpeed')}">1x</button>
                 <button class="player-control-btn player-close"><i class="fas fa-times"></i></button>
             </div>
         </div>
@@ -797,36 +871,4 @@ async function renderPlaylistSection(playlist, container) {
     const section = document.createElement('div');
     section.innerHTML = `<h3 style="margin-top:40px">${playlist.name}</h3><div class="media-grid" id="pl-${playlist.id}"></div>`;
     container.appendChild(section);
-}
-
-function updatePlatformLinks(settings) {
-    if (!settings) return;
-
-    const spotifyUrl = settings.spotifyUrl || '';
-    const appleUrl = settings.appleUrl || '';
-    const rssUrl = settings.podcastRssUrl || '';
-
-    if (spotifyUrl) {
-        document.querySelectorAll('.platform-link.platform-spotify').forEach(a => {
-            a.href = spotifyUrl;
-            a.target = '_blank';
-            a.rel = 'noopener noreferrer';
-        });
-    }
-
-    if (appleUrl) {
-        document.querySelectorAll('.platform-link.platform-apple').forEach(a => {
-            a.href = appleUrl;
-            a.target = '_blank';
-            a.rel = 'noopener noreferrer';
-        });
-    }
-
-    if (rssUrl) {
-        document.querySelectorAll('.platform-link.platform-rss').forEach(a => {
-            a.href = rssUrl;
-            a.target = '_blank';
-            a.rel = 'noopener noreferrer';
-        });
-    }
 }

@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Podcast | His Kingdom Ministry</title>
+
+    <!-- Google Fonts: Inter for the whole site -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="../styles.css">
+    <link rel="stylesheet" href="../css/cookie-consent.css">
+</head>
+
+<body>
+    <!-- Header (Mega Menu Style) -->
+    <header class="header" id="header">
+        <div class="container-fluid header-container">
+            <!-- Logo -->
+            <a href="index.html" class="logo">
+                <div class="logo-icon">
+                    <img src="../img/Logo sirkel - orange og hvit.png" alt="His Kingdom Ministry Logo">
+                </div>
+                <span>His Kingdom Ministry</span>
+            </a>
+
+            <!-- Right Actions: Language + Donate + Hamburger -->
+            <div class="header-actions">
+                <div class="lang-switcher">
+                    <button class="lang-btn" id="lang-toggle">
+                        <i class="fas fa-globe"></i>
+                        <span>EN</span>
+                    </button>
+                    <div class="lang-dropdown">
+                        <a href="../podcast.html" data-lang="no">Norsk</a>
+                        <a href="podcast.html" data-lang="en" class="active">English</a>
+                        <a href="../es/podcast.html" data-lang="es">Español</a>
+                    </div>
+                </div>
+                <a href="donations.html" class="btn btn-primary header-donate-btn">Donate <i
+                        class="fas fa-heart"></i></a>
+                <button class="menu-toggle" id="menu-toggle" aria-label="Open menu">
+                    <span class="hamburger-box">
+                        <span class="hamburger-inner"></span>
+                    </span>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Full-screen Mega Menu Overlay -->
+    <div class="mega-menu" id="mega-menu">
+        <div class="mega-menu-container">
+            <!-- Independent Close Button -->
+            <button class="menu-close" id="menu-close" aria-label="Close menu">
+                <i class="fas fa-times"></i>
+            </button>
+
+            <!-- Menu Header (Close & Search) -->
+            <div class="mega-menu-header">
+                <!-- Mirrored Header Structure for Precision Alignment -->
+                <div class="header-container-mirror">
+                    <!-- Brand Logo in Menu -->
+                    <a href="index.html" class="logo">
+                        <div class="logo-icon">
+                            <img src="../img/Logo sirkel - orange og hvit.png" alt="His Kingdom Ministry Logo">
+                        </div>
+                        <span>His Kingdom Ministry</span>
+                    </a>
+
+                    <!-- Right Controls Wrapper (Now Empty) -->
+                    <div class="header-actions-mirror">
+                        <!-- Close Button Moved to Root -->
+                    </div>
+                </div>
+
+                <!-- Search & Lang Row (Below Header) -->
+                <div class="menu-controls-row">
+                    <div class="menu-search">
+                        <i class="fas fa-search"></i>
+                        <input type="text" placeholder="Search...">
+                    </div>
+
+                    <div class="mega-menu-lang in-header mobile-only">
+                        <a href="#" class="lang-switch-btn" data-lang="no"><i class="fas fa-globe"></i> NO</a>
+                        <a href="#" class="lang-switch-btn active" data-lang="en"><i class="fas fa-globe"></i> EN</a>
+                        <a href="#" class="lang-switch-btn" data-lang="es"><i class="fas fa-globe"></i> ES</a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="mega-menu-body">
+                <!-- Menu Content Grid -->
+                <div class="mega-menu-grid">
+                    <!-- Column 1: Get Involved -->
+                    <div class="menu-col">
+                        <h3 class="menu-section-title">Get Involved</h3>
+                        <ul class="mega-nav-list">
+                            <li><a href="donations.html">Support the Work</a></li>
+                            <li><a href="donations.html#faste-givere">Become a Monthly Donor</a></li>
+                            <li><a href="for-churches.html">For Churches</a></li>
+                            <li><a href="for-businesses.html">For Businesses</a></li>
+                            <li><a href="bnn.html">Business Network</a></li>
+                        </ul>
+                    </div>
+
+                    <!-- Column 2: Get to Know Us -->
+                    <div class="menu-col">
+                        <h3 class="menu-section-title">Get to Know Us</h3>
+                        <ul class="mega-nav-list">
+                            <li><a href="about.html">About the Foundation</a></li>
+                            <li><a href="about.html#historie">Our History</a></li>
+                            <li><a href="contact.html">Where We Work</a></li>
+                            <li><a href="contact.html">Contact Us</a></li>
+                        </ul>
+                    </div>
+
+                    <!-- Column 3: Resources & Media -->
+                    <div class="menu-col">
+                        <h3 class="menu-section-title">Resources</h3>
+                        <ul class="mega-nav-list">
+                            <li><a href="events.html">Events</a></li>
+                            <li><a href="media.html">Media & Podcast</a></li>
+                            <li><a href="blog.html">News & Blog</a></li>
+                            <li><a href="../minside/index.html">My Account</a></li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Menu Footer -->
+                <div class="mega-menu-footer">
+                    <a href="donations.html" class="btn btn-primary btn-large btn-block">Support Now <i
+                            class="fas fa-heart"></i></a>
+                    <div class="menu-footer-links">
+                        <a href="donations.html#skattefradrag">Tax Deduction</a>
+                        <a href="about.html">About Us</a>
+                        <a href="privacy.html">Privacy</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- Page Hero -->
+    <section class="page-hero" style="padding-top: 160px;">
+        <div class="container">
+            <h1 class="page-hero-title">Podcast</h1>
+            <p class="page-hero-subtitle">Listen to inspiring episodes about faith and life</p>
+            <div style="margin-top: 20px;">
+                <a href="media.html" class="btn btn-outline btn-sm">
+                    <i class="fas fa-arrow-left"></i> Back to Media
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Podcast Content -->
+    <section class="media-content-section">
+        <div class="container">
+            <div class="section-header">
+                <span class="section-label">Episode Archive</span>
+                <h2 class="section-title">All Episodes</h2>
+                <p class="section-description">Here you can listen to all our podcast episodes directly in the browser.
+                </p>
+            </div>
+
+            <!-- Podcast Filters & Sorting -->
+            <div class="podcast-controls"
+                style="margin-bottom: 40px; display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 20px;">
+                <div id="podcast-categories" class="youtube-categories"
+                    style="margin-bottom: 0; display: flex; flex-wrap: wrap; gap: 12px;">
+                    <button class="category-btn active" data-filter="all">All</button>
+                    <button class="category-btn" data-filter="tro">Faith</button>
+                    <button class="category-btn" data-filter="bibel">Bible</button>
+                    <button class="category-btn" data-filter="bønn">Prayer</button>
+                    <button class="category-btn" data-filter="undervisning">Teaching</button>
+                </div>
+
+                <div class="podcast-sort" style="display: flex; align-items: center; gap: 10px;">
+                    <span style="font-size: 0.9rem; color: var(--text-light); font-weight: 600;">Sort by:</span>
+                    <select id="podcast-sort-select"
+                        style="padding: 8px 15px; border-radius: 20px; border: 2px solid var(--border-color); background: white; font-family: inherit; font-size: 0.9rem; color: var(--text-dark); outline: none; cursor: pointer;">
+                        <option value="newest">Newest first</option>
+                        <option value="oldest">Oldest first</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="podcast-grid" id="podcast-grid">
+                <!-- Podcast episodes will be loaded here dynamically -->
+                <div class="loader-container" style="grid-column: 1/-1; text-align: center; padding: 50px;">
+                    <div class="loader"></div>
+                    <p style="margin-top: 15px; color: var(--text-muted);">Fetching podcast episodes...</p>
+                </div>
+            </div>
+
+            <div class="section-footer" style="margin-top: 50px;">
+                <div class="footer-flex">
+                    <h3 style="margin-bottom: 0; text-align: center;">Listen on your favorite platform</h3>
+                    <div class="podcast-platforms" id="podcast-links-container">
+                        <a href="https://open.spotify.com/show/3gk4nt7v5hy6yGB4k1QYGU?si=021c69679bdd49ac"
+                            class="platform-link platform-spotify" title="Spotify" target="_blank"
+                            rel="noopener noreferrer"><i class="fab fa-spotify"></i></a>
+                        <a href="https://podcasts.apple.com/us/podcast/tro-og-liv/id1753117158"
+                            class="platform-link platform-apple" title="Apple Podcasts" target="_blank"
+                            rel="noopener noreferrer"><i class="fas fa-podcast"></i></a>
+                        <a href="https://www.youtube.com/playlist?list=PL7aC7oqEJFeXLnkmFQzPOOvWcnAIfjTGv"
+                            class="platform-link platform-youtube" title="YouTube" target="_blank"
+                            rel="noopener noreferrer"><i class="fab fa-youtube"></i></a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer" id="kontakt">
+        <div class="container">
+            <div class="footer-layout-v2">
+                <!-- Left Section: Brand + Links -->
+                <div class="footer-left">
+                    <!-- Brand / Intro -->
+                    <div class="footer-brand">
+                        <a href="index.html" class="logo">
+                            <div class="logo-icon">
+                                <img src="../img/Logo sirkel - orange og hvit.png" alt="His Kingdom Ministry Logo">
+                            </div>
+                            <span class="logo-text">His Kingdom Ministry</span>
+                        </a>
+                        <p class="brand-description">His Kingdom Ministry is a non-profit organization dedicated to
+                            spiritual growth through teaching, podcasts, and missions.</p>
+                    </div>
+
+                    <!-- Links Grid -->
+                    <div class="footer-nav-grid">
+                        <div class="nav-col">
+                            <h4>About Us</h4>
+                            <ul>
+                                <li><a href="index.html#hjem">Home</a></li>
+                                <li><a href="about.html">Who We Are</a></li>
+                                <li><a href="about.html#visjon">Our Vision</a></li>
+                                <li><a href="contact.html">Contact Us</a></li>
+                            </ul>
+                        </div>
+
+                        <div class="nav-col">
+                            <h4>Resources</h4>
+                            <ul>
+                                <li><a href="media.html#teaching-section">Teaching</a></li>
+                                <li><a href="events.html">Online Courses</a></li>
+                                <li><a href="blog.html">Books & Blog</a></li>
+                                <li><a href="../minside/index.html">My Account</a></li>
+                            </ul>
+                        </div>
+
+                        <div class="nav-col">
+                            <h4>Media</h4>
+                            <ul>
+                                <li><a href="media.html#podcast-section">Podcast</a></li>
+                                <li><a href="media.html">Videos</a></li>
+                                <li><a href="https://www.youtube.com/@HisKingdomMinistry" target="_blank">YouTube</a>
+                                </li>
+                            </ul>
+                        </div>
+
+                        <div class="nav-col">
+                            <h4>Get Involved</h4>
+                            <ul>
+                                <li><a href="events.html">Calendar</a></li>
+                                <li><a href="donations.html">Make a Donation</a></li>
+                                <li><a href="privacy.html">Privacy Policy</a></li>
+                                <li><a href="accessibility.html">Accessibility</a></li>
+                                <li><a href="#"
+                                        onclick="localStorage.removeItem('hkm_cookie_consent'); location.reload(); return false;">Cookies</a>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Right Section: Cards -->
+                <div class="footer-right">
+                    <!-- Follow Us Card -->
+                    <div class="footer-card">
+                        <h3>Follow Us</h3>
+                        <div class="footer-social-icons">
+                            <a href="https://www.facebook.com/hiskingdomministry777?locale=nb_NO" target="_blank"><i
+                                    class="fab fa-facebook-f"></i></a>
+                            <a href="https://www.instagram.com/hiskingdomdesigns/" target="_blank"><i
+                                    class="fab fa-instagram"></i></a>
+                            <a href="https://www.youtube.com/@HisKingdomMinistry" target="_blank"><i
+                                    class="fab fa-youtube"></i></a>
+                        </div>
+                    </div>
+
+                    <!-- Contact Us Card -->
+                    <div class="footer-card contact-card">
+                        <h3>Contact Us</h3>
+                        <a href="contact.html" class="btn btn-primary btn-block btn-sm">Contact Form</a>
+
+                        <div class="contact-details">
+                            <div class="detail-item">
+                                <strong>Email:</strong>
+                                <p>post@hiskingdomministry.no</p>
+                            </div>
+                            <div class="detail-item">
+                                <strong>Phone:</strong>
+                                <p>+47 930 94 615</p>
+                            </div>
+                            <div class="detail-item">
+                                <strong>Vipps:</strong>
+                                <p>938361</p>
+                            </div>
+                            <div class="detail-item">
+                                <strong>Account No.:</strong>
+                                <p>3000.66.08759</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="footer-bottom">
+                <p>&copy; <span id="copyright-year">2026</span> His Kingdom Ministry. All rights reserved.</p>
+                <a href="../admin/login.html" class="admin-link">Admin</a>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Firebase SDK (Compat) -->
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-storage-compat.js"></script>
+
+    <!-- Firebase Config & Service -->
+    <script src="../js/firebase-config.js"></script>
+    <script src="../js/firebase-service.js"></script>
+
+    <!-- App Scripts -->
+    <script src="../js/i18n.js"></script>
+    <script src="../script.js"></script>
+    <script src="../media.js"></script>
+    <script src="../js/content-manager.js?v=author"></script>
+    <script src="../js/cookie-consent.js"></script>
+</body>
+
+</html>
