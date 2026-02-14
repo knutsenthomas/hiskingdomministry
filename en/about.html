@@ -17,80 +17,98 @@
     <!-- Custom CSS -->
     <link rel="stylesheet" href="../styles.css">
     <link rel="stylesheet" href="../css/cookie-consent.css">
+
+    <!-- Tailwind CSS Play CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'primary-orange': '#f39c12',
+                        'primary-red': '#e74c3c',
+                        'text-dark': '#333333',
+                    }
+                }
+            }
+        }
+    </script>
 </head>
 
 <body class="cms-loading">
     <!-- Header -->
-    <header class="header" id="header">
-        <div class="container-fluid header-container">
+    <header class="header fixed top-0 left-0 w-full z-[10001] transition-all duration-300" id="header">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex justify-between items-center h-[100px] transition-all duration-300"
+            id="header-container">
             <!-- Logo -->
-            <a href="index.html" class="logo">
-                <div class="logo-icon">
-                    <img src="../img/Logo sirkel - orange og hvit.png" alt="His Kingdom Ministry Logo">
+            <a href="index.html" class="flex items-center gap-3 font-bold text-white transition-all duration-300 logo">
+                <div
+                    class="w-[45px] h-[45px] flex items-center justify-center rounded-full overflow-hidden shrink-0 logo-icon">
+                    <img src="../img/Logo sirkel - orange og hvit.png" alt="His Kingdom Ministry Logo"
+                        class="w-full h-full object-cover">
                 </div>
-                <span>His Kingdom Ministry</span>
+                <span class="text-xl text-white">His Kingdom Ministry</span>
             </a>
 
             <!-- Right Actions: Donate + Language + Hamburger -->
-            <div class="header-actions">
-                <div class="lang-switcher">
-                    <button class="lang-btn">
-                        <i class="fas fa-globe"></i> <span>EN</span>
+            <div class="flex items-center gap-5 header-actions">
+                <!-- Desktop Language Switcher -->
+                <div class="lang-switcher relative group">
+                    <button
+                        class="flex items-center gap-2 text-white font-medium hover:text-primary-orange transition-colors lang-btn">
+                        <i class="fas fa-globe text-lg"></i> <span>EN</span>
                     </button>
-                    <div class="lang-dropdown">
-                        <a href="#" class="lang-switch-btn" data-lang="no">🇳🇴 Norsk</a>
-                        <a href="#" class="lang-switch-btn" data-lang="en">🇺🇸 English</a>
-                        <a href="#" class="lang-switch-btn" data-lang="es">🇪🇸 Español</a>
+                    <div
+                        class="lang-dropdown absolute right-0 mt-2 w-40 bg-white shadow-xl rounded-lg py-2 hidden group-hover:block border border-gray-100">
+                        <a href="../om-oss.html" class="block px-4 py-2 text-gray-800 hover:bg-gray-50">🇳🇴 Norsk</a>
+                        <a href="about.html" class="block px-4 py-2 text-gray-800 hover:bg-gray-50 font-bold">🇺🇸
+                            English</a>
+                        <a href="../es/sobre-nosotros.html" class="block px-4 py-2 text-gray-800 hover:bg-gray-50">🇪🇸
+                            Español</a>
                     </div>
                 </div>
-                <a href="donations.html" class="btn btn-primary header-donate-btn">Donate <i
-                        class="fas fa-heart"></i></a>
-                <button class="menu-toggle" id="menu-toggle" aria-label="Open menu">
-                    <span class="hamburger-box">
-                        <span class="hamburger-inner"></span>
-                    </span>
+
+                <a href="donations.html"
+                    class="hidden md:flex items-center gap-2 px-6 py-3 rounded-full font-semibold text-white bg-gradient-to-br from-[#f39c12] to-[#e74c3c] hover:scale-105 transition-transform header-donate-btn">
+                    Donate <i class="fas fa-heart text-sm"></i>
+                </a>
+
+                <!-- Unified Toggle Button -->
+                <button
+                    class="w-[50px] h-[50px] rounded-full flex items-center justify-center cursor-pointer transition-all duration-300 bg-gradient-to-br from-[#f39c12] to-[#e74c3c] hover:scale-105 text-white active:scale-95 z-[10002]"
+                    id="menu-toggle" aria-label="Toggle menu">
+                    <i class="fas fa-bars text-xl transition-all duration-300 open-icon"></i>
+                    <i class="fas fa-times text-xl transition-all duration-300 close-icon hidden"></i>
                 </button>
             </div>
         </div>
     </header>
 
     <!-- Full-screen Mega Menu Overlay -->
-    <div class="mega-menu" id="mega-menu">
-        <div class="mega-menu-container">
-            <!-- Independent Close Button -->
-            <button class="menu-close" id="menu-close" aria-label="Close menu">
-                <i class="fas fa-times"></i>
-            </button>
-
-            <!-- Menu Header (Close & Search) -->
-            <div class="mega-menu-header">
-                <!-- Mirrored Header Structure for Precision Alignment -->
-                <div class="header-container-mirror">
-                    <!-- Brand Logo in Menu -->
-                    <a href="index.html" class="logo">
-                        <div class="logo-icon">
-                            <img src="../img/Logo sirkel - orange og hvit.png" alt="His Kingdom Ministry Logo">
-                        </div>
-                        <span>His Kingdom Ministry</span>
-                    </a>
-
-                    <!-- Right Controls Wrapper (Now Empty) -->
-                    <div class="header-actions-mirror">
-                        <!-- Close Button Moved to Root -->
-                    </div>
+    <div class="fixed inset-0 bg-white z-[10000] opacity-0 invisible transition-all duration-300 flex flex-col overflow-y-auto mega-menu"
+        id="mega-menu">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full pt-[100px] flex flex-col gap-6 justify-start">
+            <!-- Menu Top Controls (Search & Mobile Lang) -->
+            <div class="flex flex-col gap-6">
+                <div class="relative w-full">
+                    <i class="fas fa-search absolute left-4 top-1/2 -translate-y-1/2 text-gray-400"></i>
+                    <input type="text" placeholder="Search..."
+                        class="w-full pl-12 pr-4 py-4 bg-gray-100 rounded-2xl border-none focus:outline-none focus:ring-0 transition-all text-gray-800">
                 </div>
 
-                <!-- Search & Lang Row (Below Header) -->
-                <div class="menu-controls-row">
-                    <div class="menu-search">
-                        <i class="fas fa-search"></i>
-                        <input type="text" placeholder="Search...">
-                    </div>
-
-                    <div class="mega-menu-lang in-header mobile-only">
-                        <a href="#" class="lang-switch-btn" data-lang="no"><i class="fas fa-globe"></i> NO</a>
-                        <a href="#" class="lang-switch-btn active" data-lang="en"><i class="fas fa-globe"></i> EN</a>
-                        <a href="#" class="lang-switch-btn" data-lang="es"><i class="fas fa-globe"></i> ES</a>
+                <!-- Mobile Language Selector (Pill Style) -->
+                <div class="flex md:hidden">
+                    <div class="flex items-center gap-4 px-5 py-3 border border-gray-100 rounded-full bg-gray-100">
+                        <i class="fas fa-globe text-gray-400"></i>
+                        <div class="flex gap-4 items-center">
+                            <a href="../om-oss.html"
+                                class="text-sm font-semibold text-gray-500 hover:text-primary-orange">NO</a>
+                            <div class="w-px h-3 bg-gray-300"></div>
+                            <a href="about.html" class="text-sm font-bold text-primary-orange">EN</a>
+                            <div class="w-px h-3 bg-gray-300"></div>
+                            <a href="../es/sobre-nosotros.html"
+                                class="text-sm font-semibold text-gray-500 hover:text-primary-orange">ES</a>
+                        </div>
                     </div>
                 </div>
             </div>

@@ -61,34 +61,60 @@ window.addEventListener('scroll', () => {
 // Mobile Menu Toggle
 // ===================================
 // ===================================
-// Mega Menu Toggle
+// Mega Menu Toggle (Tailwind Refactored)
 // ===================================
 document.addEventListener('DOMContentLoaded', () => {
+    const header = document.getElementById('header');
     const menuToggle = document.getElementById('menu-toggle');
-    const menuClose = document.getElementById('menu-close');
     const megaMenu = document.getElementById('mega-menu');
     const body = document.body;
 
+    // Icon elements
+    const openIcon = menuToggle?.querySelector('.open-icon');
+    const closeIcon = menuToggle?.querySelector('.close-icon');
+
     function openMenu() {
-        if (megaMenu) {
-            megaMenu.classList.add('active');
-            body.style.overflow = 'hidden'; // Lock scroll
+        if (megaMenu && header) {
+            megaMenu.classList.remove('invisible', 'opacity-0');
+            megaMenu.classList.add('visible', 'opacity-100');
+            header.classList.add('menu-open');
+            body.style.overflow = 'hidden';
+
+            // Swap icons
+            openIcon?.classList.add('hidden');
+            closeIcon?.classList.remove('hidden');
         }
     }
 
     function closeMenu() {
-        if (megaMenu) {
-            megaMenu.classList.remove('active');
-            body.style.overflow = ''; // Unlock scroll
+        if (megaMenu && header) {
+            megaMenu.classList.add('invisible', 'opacity-0');
+            megaMenu.classList.remove('visible', 'opacity-100');
+            header.classList.remove('menu-open');
+            body.style.overflow = '';
+
+            // Swap icons
+            openIcon?.classList.remove('hidden');
+            closeIcon?.classList.add('hidden');
         }
     }
 
-    if (menuToggle) menuToggle.addEventListener('click', openMenu);
-    if (menuClose) menuClose.addEventListener('click', closeMenu);
+    function toggleMenu() {
+        const isOpen = megaMenu?.classList.contains('opacity-100');
+        if (isOpen) {
+            closeMenu();
+        } else {
+            openMenu();
+        }
+    }
+
+    if (menuToggle) {
+        menuToggle.addEventListener('click', toggleMenu);
+    }
 
     // Close on Escape key
     document.addEventListener('keydown', (e) => {
-        if (e.key === 'Escape' && megaMenu && megaMenu.classList.contains('active')) {
+        if (e.key === 'Escape' && megaMenu && megaMenu.classList.contains('opacity-100')) {
             closeMenu();
         }
     });
