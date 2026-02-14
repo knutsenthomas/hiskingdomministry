@@ -222,77 +222,75 @@ if (headerActions) {
 // ===================================
 // Hero Slider
 // ===================================
+// ===================================
+// Hero Slider (Ingen Utelatt Style)
+// ===================================
 class HeroSlider {
     constructor() {
-        this.slides = document.querySelectorAll('.slide');
+        this.slides = document.querySelectorAll('.hero-slide');
+        this.prevBtn = document.querySelector('.hero-nav.prev');
+        this.nextBtn = document.querySelector('.hero-nav.next');
+
         if (this.slides.length === 0) return;
-        this.currentSlide = 0;
-        this.slideInterval = null;
+
+        this.currentIndex = 0;
+        this.interval = null;
+
         this.init();
     }
 
     init() {
-        const dotsContainer = document.querySelector('.slider-dots');
-        if (dotsContainer) dotsContainer.innerHTML = '';
-        this.createDots();
-        this.startAutoPlay();
-        this.setupNavigation();
-    }
-
-    createDots() {
-        const dotsContainer = document.querySelector('.slider-dots');
-        this.slides.forEach((_, index) => {
-            const dot = document.createElement('div');
-            dot.classList.add('slider-dot');
-            if (index === 0) dot.classList.add('active');
-            dot.addEventListener('click', () => this.goToSlide(index));
-            dotsContainer.appendChild(dot);
+        // Event Listeners
+        if (this.prevBtn) this.prevBtn.addEventListener('click', () => {
+            this.stopAutoPlay();
+            this.prev();
+            this.startAutoPlay();
         });
-        this.dots = document.querySelectorAll('.slider-dot');
+
+        if (this.nextBtn) this.nextBtn.addEventListener('click', () => {
+            this.stopAutoPlay();
+            this.next();
+            this.startAutoPlay();
+        });
+
+        // Start Auto Play
+        this.startAutoPlay();
     }
 
-    setupNavigation() {
-        const prevBtn = document.querySelector('.slider-prev');
-        const nextBtn = document.querySelector('.slider-next');
+    goTo(index) {
+        // Remove active class from current
+        this.slides[this.currentIndex].classList.remove('active');
 
-        prevBtn.addEventListener('click', () => this.prevSlide());
-        nextBtn.addEventListener('click', () => this.nextSlide());
+        // Update index
+        this.currentIndex = index;
+
+        // Add active class to new
+        this.slides[this.currentIndex].classList.add('active');
     }
 
-    goToSlide(index) {
-        this.slides[this.currentSlide].classList.remove('active');
-        this.dots[this.currentSlide].classList.remove('active');
-
-        this.currentSlide = index;
-
-        this.slides[this.currentSlide].classList.add('active');
-        this.dots[this.currentSlide].classList.add('active');
-
-        this.resetAutoPlay();
+    next() {
+        const nextIndex = (this.currentIndex + 1) % this.slides.length;
+        this.goTo(nextIndex);
     }
 
-    nextSlide() {
-        const next = (this.currentSlide + 1) % this.slides.length;
-        this.goToSlide(next);
-    }
-
-    prevSlide() {
-        const prev = (this.currentSlide - 1 + this.slides.length) % this.slides.length;
-        this.goToSlide(prev);
+    prev() {
+        const prevIndex = (this.currentIndex - 1 + this.slides.length) % this.slides.length;
+        this.goTo(prevIndex);
     }
 
     startAutoPlay() {
-        this.slideInterval = setInterval(() => this.nextSlide(), 5000);
+        this.interval = setInterval(() => this.next(), 6000); // 6 seconds per slide
     }
 
-    resetAutoPlay() {
-        clearInterval(this.slideInterval);
-        this.startAutoPlay();
+    stopAutoPlay() {
+        if (this.interval) clearInterval(this.interval);
     }
 }
 
 // Initialize Hero Slider
-window.heroSlider = new HeroSlider();
+document.addEventListener('DOMContentLoaded', () => {
+    window.heroSlider = new HeroSlider();
+});
 
 // ===================================
 // Smooth Scrolling
