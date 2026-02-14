@@ -4017,8 +4017,12 @@ ol.block-list {
     content: '';
     position: absolute;
     inset: 0;
-    /* Dark gradient at bottom to make text pop */
-    background: linear-gradient(180deg, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.2) 50%, rgba(0, 0, 0, 0.85) 90%);
+    /* Dark gradient at top (for menu) and bottom (for text) */
+    background: linear-gradient(180deg,
+            rgba(0, 0, 0, 0.6) 0%,
+            rgba(0, 0, 0, 0.1) 25%,
+            rgba(0, 0, 0, 0) 50%,
+            rgba(0, 0, 0, 0.85) 100%);
     pointer-events: none;
 }
 
