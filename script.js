@@ -222,127 +222,77 @@ if (headerActions) {
 // ===================================
 // Hero Slider
 // ===================================
-// ===================================
-// Hero Slider (Cinematic)
-// ===================================
 class HeroSlider {
     constructor() {
-        this.slidesData = [];
-        this.currentSlideIndex = 0;
-        this.dom = {
-            bg: document.getElementById('hero-bg'),
-            content: document.getElementById('hero-content'),
-            thumbs: document.getElementById('hero-thumbs'),
-            dataContainer: document.getElementById('hero-data')
-        };
-
-        if (!this.dom.dataContainer) return;
-
+        this.slides = document.querySelectorAll('.slide');
+        if (this.slides.length === 0) return;
+        this.currentSlide = 0;
+        this.slideInterval = null;
         this.init();
     }
 
     init() {
-        // 1. Parse Data
-        const sourceSlides = this.dom.dataContainer.querySelectorAll('.slide-data');
-        sourceSlides.forEach(el => {
-            this.slidesData.push({
-                image: el.dataset.image,
-                title: el.dataset.title,
-                subtitle: el.dataset.subtitle,
-                location: el.dataset.location || 'Featured',
-                buttonsHtml: el.querySelector('.buttons').innerHTML
-            });
-        });
-
-        if (this.slidesData.length === 0) return;
-
-        // 2. Render Initial State
-        this.renderThumbs();
-        this.updateView(0);
-
-        // 3. Auto Play
+        const dotsContainer = document.querySelector('.slider-dots');
+        if (dotsContainer) dotsContainer.innerHTML = '';
+        this.createDots();
         this.startAutoPlay();
+        this.setupNavigation();
     }
 
-    renderThumbs() {
-        this.dom.thumbs.innerHTML = '';
-        this.slidesData.forEach((slide, index) => {
-            // We only show thumbs for slides... well, all of them actually in this design
-            // The active one is highlighted or maybe hidden? 
-            // Reference design shows Next slides. Let's show all for simplicity first.
-            const thumb = document.createElement('div');
-            thumb.className = `hero-thumb ${index === 0 ? 'active' : ''}`;
-            thumb.onclick = () => this.goToSlide(index);
-            thumb.innerHTML = `
-                <img src="${slide.image}" alt="${slide.title}">
-                <div class="hero-thumb-content">
-                    <div class="hero-thumb-title">${slide.location}</div>
-                    <div class="hero-thumb-location">${slide.title.split(' ')[0]}...</div>
-                </div>
-            `;
-            this.dom.thumbs.appendChild(thumb);
+    createDots() {
+        const dotsContainer = document.querySelector('.slider-dots');
+        this.slides.forEach((_, index) => {
+            const dot = document.createElement('div');
+            dot.classList.add('slider-dot');
+            if (index === 0) dot.classList.add('active');
+            dot.addEventListener('click', () => this.goToSlide(index));
+            dotsContainer.appendChild(dot);
         });
+        this.dots = document.querySelectorAll('.slider-dot');
     }
 
-    updateView(index) {
-        const slide = this.slidesData[index];
+    setupNavigation() {
+        const prevBtn = document.querySelector('.slider-prev');
+        const nextBtn = document.querySelector('.slider-next');
 
-        // Background
-        this.dom.bg.style.backgroundImage = `url('${slide.image}')`;
-
-        // Content Animation (Fade Out -> Update -> Fade In)
-        this.dom.content.classList.remove('active');
-
-        setTimeout(() => {
-            this.dom.content.innerHTML = `
-                <h1 class="hero-title">${slide.title}</h1>
-                <p class="hero-subtitle">${slide.subtitle}</p>
-                <div class="hero-buttons">${slide.buttonsHtml}</div>
-            `;
-            this.dom.content.classList.add('active');
-        }, 300);
-
-        // Thumbs Update
-        const thumbs = this.dom.thumbs.querySelectorAll('.hero-thumb');
-        thumbs.forEach((t, i) => {
-            if (i === index) t.classList.add('active');
-            else t.classList.remove('active');
-        });
-
-        // Scroll active thumb into view
-        const activeThumb = thumbs[index];
-        if (activeThumb) {
-            activeThumb.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
-        }
-
-        this.currentSlideIndex = index;
+        prevBtn.addEventListener('click', () => this.prevSlide());
+        nextBtn.addEventListener('click', () => this.nextSlide());
     }
 
     goToSlide(index) {
-        if (index === this.currentSlideIndex) return;
-        this.updateView(index);
+        this.slides[this.currentSlide].classList.remove('active');
+        this.dots[this.currentSlide].classList.remove('active');
+
+        this.currentSlide = index;
+
+        this.slides[this.currentSlide].classList.add('active');
+        this.dots[this.currentSlide].classList.add('active');
+
         this.resetAutoPlay();
     }
 
     nextSlide() {
-        const next = (this.currentSlideIndex + 1) % this.slidesData.length;
+        const next = (this.currentSlide + 1) % this.slides.length;
         this.goToSlide(next);
     }
 
+    prevSlide() {
+        const prev = (this.currentSlide - 1 + this.slides.length) % this.slides.length;
+        this.goToSlide(prev);
+    }
+
     startAutoPlay() {
-        this.interval = setInterval(() => this.nextSlide(), 6000);
+        this.slideInterval = setInterval(() => this.nextSlide(), 5000);
     }
 
     resetAutoPlay() {
-        clearInterval(this.interval);
+        clearInterval(this.slideInterval);
         this.startAutoPlay();
     }
 }
 
-// Initialize Hero Slider with delay to ensure DOM parsing
-document.addEventListener('DOMContentLoaded', () => {
-    window.heroSlider = new HeroSlider();
-});
+// Initialize Hero Slider
+window.heroSlider = new HeroSlider();
 
 // ===================================
 // Smooth Scrolling
