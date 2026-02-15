@@ -12,128 +12,156 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="styles.css">
     <link rel="stylesheet" href="css/cookie-consent.css">
+<!-- Tailwind CSS Play CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'primary-orange': '#f39c12',
+                        'primary-red': '#e74c3c',
+                        'text-dark': '#333333',
+                    }
+                }
+            }
+        }
+    </script>
 </head>
 
 <body>
     <!-- Header -->
     <!-- Header (Mega Menu Style) -->
-    <header class="header" id="header">
-        <div class="container-fluid header-container">
+    <!-- Header -->
+    <header class="header fixed top-0 left-0 w-full z-[10001] transition-all duration-300" id="header">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex justify-between items-center h-[100px] transition-all duration-300"
+            id="header-container">
             <!-- Logo -->
-            <a href="index.html" class="logo">
-                <div class="logo-icon">
-                    <img src="img/Logo sirkel - orange og hvit.png" alt="His Kingdom Ministry Logo">
+            <a href="index.html" class="flex items-center gap-3 font-bold text-white transition-all duration-300 logo">
+                <div
+                    class="w-[45px] h-[45px] flex items-center justify-center rounded-full overflow-hidden shrink-0 logo-icon">
+                    <img src="img/Logo sirkel - orange og hvit.png" alt="His Kingdom Ministry Logo"
+                        class="w-full h-full object-cover">
                 </div>
-                <span>His Kingdom Ministry</span>
+                <span class="text-xl">His Kingdom Ministry</span>
             </a>
 
-            <!-- Right Actions: Donate + Hamburger -->
-            <div class="header-actions">
-                <a href="donasjoner.html" class="btn btn-primary header-donate-btn">Gi gave <i
-                        class="fas fa-heart"></i></a>
-                <button class="menu-toggle" id="menu-toggle" aria-label="Åpne meny">
-                    <span class="hamburger-box">
-                        <span class="hamburger-inner"></span>
-                    </span>
+            <!-- Right Actions: Donate + Language + Hamburger -->
+            <div class="flex items-center gap-5 header-actions">
+                <div class="lang-switcher relative group">
+                    <button
+                        class="flex items-center gap-2 text-white font-medium hover:text-primary-orange transition-colors lang-btn">
+                        <i class="fas fa-globe text-lg"></i> <span>NO</span>
+                    </button>
+                    <div
+                        class="lang-dropdown absolute right-0 mt-2 w-40 bg-white shadow-xl rounded-lg py-2 hidden group-hover:block border border-gray-100">
+                        <a href="#" class="block px-4 py-2 text-gray-800 hover:bg-gray-50 lang-switch-btn"
+                            data-lang="no">🇳🇴 Norsk</a>
+                        <a href="#" class="block px-4 py-2 text-gray-800 hover:bg-gray-50 lang-switch-btn"
+                            data-lang="en">🇺🇸 English</a>
+                        <a href="#" class="block px-4 py-2 text-gray-800 hover:bg-gray-50 lang-switch-btn"
+                            data-lang="es">🇪🇸 Español</a>
+                    </div>
+                </div>
+                <a href="donasjoner.html"
+                    class="hidden md:flex items-center gap-2 px-6 py-3 rounded-full font-semibold text-white bg-gradient-to-br from-[#f39c12] to-[#e74c3c] hover:scale-105 transition-transform header-donate-btn">
+                    Gi gave <i class="fas fa-heart text-sm"></i>
+                </a>
+
+                <!-- Unified Toggle Button -->
+                <button
+                    class="menu-toggle h-10 w-10 rounded-full flex items-center justify-center text-white bg-gradient-to-br from-[#f39c12] to-[#e74c3c] transition-transform hover:scale-105 focus:outline-none focus:ring-0 relative"
+                    id="menu-toggle" aria-label="Toggle meny">
+                    <i class="fas fa-bars text-lg open-icon"></i>
+                    <i class="fas fa-times text-lg close-icon hidden"></i>
                 </button>
             </div>
         </div>
     </header>
 
     <!-- Full-screen Mega Menu Overlay -->
-    <div class="mega-menu" id="mega-menu">
-        <div class="mega-menu-container">
+    <!-- Full-screen Mega Menu Overlay -->
+    <div class="fixed inset-0 bg-white z-[10000] opacity-0 invisible transition-all duration-300 flex flex-col overflow-y-auto mega-menu"
+        id="mega-menu">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full pt-[100px] flex flex-col gap-6 justify-start">
+            <!-- Menu Top Controls (Search & Mobile Lang) -->
+            <div class="flex flex-col gap-6">
+                <div class="relative w-full">
+                    <i class="fas fa-search absolute left-4 top-1/2 -translate-y-1/2 text-gray-400"></i>
+                    <input type="text" placeholder="Søk..."
+                        class="w-full pl-12 pr-4 py-4 bg-gray-100 rounded-2xl border-none focus:outline-none focus:ring-0 transition-all text-gray-800">
+                </div>
 
-
-            <!-- Menu Header (Close & Search) -->
-            <div class="mega-menu-header">
-                <!-- Mirrored Header Structure for Precision Alignment -->
-                <div class="header-container-mirror">
-                    <!-- Brand Logo in Menu -->
-                    <a href="index.html" class="logo">
-                        <div class="logo-icon">
-                            <img src="img/Logo sirkel - orange og hvit.png" alt="His Kingdom Ministry Logo">
+                <!-- Mobile Language Selector (Pill Style) -->
+                <div class="flex md:hidden">
+                    <div class="flex items-center gap-4 px-5 py-3 border border-gray-100 rounded-full bg-gray-50/50">
+                        <i class="fas fa-globe text-gray-400"></i>
+                        <div class="flex gap-4 items-center">
+                            <a href="index.html" class="text-sm font-bold text-primary-orange">NO</a>
+                            <div class="w-px h-3 bg-gray-300"></div>
+                            <a href="en/index.html"
+                                class="text-sm font-semibold text-gray-500 hover:text-primary-orange">EN</a>
+                            <div class="w-px h-3 bg-gray-300"></div>
+                            <a href="es/index.html"
+                                class="text-sm font-semibold text-gray-500 hover:text-primary-orange">ES</a>
                         </div>
-                        <span>His Kingdom Ministry</span>
-                    </a>
-
-                    <!-- Right Controls Wrapper -->
-                    <div class="header-actions-mirror">
-                        <!-- Independent Close Button -->
-                        <button class="menu-close" id="menu-close" aria-label="Lukk meny">
-                            <i class="fas fa-times"></i>
-                        </button>
-                    </div>
-                </div>
-
-                <!-- Search & Lang Row (Below Header) -->
-                <div class="menu-controls-row">
-                    <div class="menu-search">
-                        <i class="fas fa-search"></i>
-                        <input type="text" placeholder="Søk...">
-                    </div>
-
-                    <div class="mega-menu-lang in-header mobile-only">
-                        <a href="blogg-post-3.html" class="active"><i class="fas fa-globe"></i> NO</a>
-                        <a href="en/blog.html"><i class="fas fa-globe"></i> EN</a>
-                        <a href="es/blog.html"><i class="fas fa-globe"></i> ES</a>
                     </div>
                 </div>
             </div>
 
-            <!-- Menu Content Grid -->
-            <div class="mega-menu-grid">
-                <!-- Column 1: Engasjer deg -->
-                <div class="menu-col">
-                    <h3 class="menu-section-title">Engasjer deg</h3>
-                    <ul class="mega-nav-list">
-                        <li><a href="donasjoner.html">Støtt arbeidet</a></li>
-                        <li><a href="donasjoner.html#faste-givere">Bli fast giver</a></li>
-                        <li><a href="for-menigheter.html">For menigheter</a></li>
-                        <li><a href="for-bedrifter.html">For bedrifter</a></li>
-                        <li><a href="bnn.html">Business Network</a></li>
-                    </ul>
+            <div class="mega-menu-body">
+                <!-- Menu Content Grid -->
+                <div class="mega-menu-grid">
+                    <!-- Column 1: Engasjer deg -->
+                    <div class="menu-col">
+                        <h3 class="menu-section-title">Engasjer deg</h3>
+                        <ul class="mega-nav-list">
+                            <li><a href="donasjoner.html">Støtt arbeidet</a></li>
+                            <li><a href="bli-fast-giver.html">Bli fast giver</a></li>
+                            <li><a href="for-menigheter.html">For menigheter</a></li>
+                            <li><a href="for-bedrifter.html">For bedrifter</a></li>
+                            <li><a href="bnn.html">Business Network</a></li>
+                        </ul>
+                    </div>
+
+                    <!-- Column 2: Bli kjent med oss -->
+                    <div class="menu-col">
+                        <h3 class="menu-section-title">Bli kjent med oss</h3>
+                        <ul class="mega-nav-list">
+                            <li><a href="om-oss.html">Om oss</a></li>
+                            <li><a href="kontakt.html">Kontakt oss</a></li>
+                        </ul>
+                    </div>
+
+                    <!-- Column 3: Ressurser & Media -->
+                    <div class="menu-col">
+                        <h3 class="menu-section-title">Ressurser</h3>
+                        <ul class="mega-nav-list">
+                            <li><a href="arrangementer.html">Arrangementer</a></li>
+                            <li><a href="media.html">Media & Podcast</a></li>
+                            <li><a href="blogg.html">Nyheter & Blogg</a></li>
+                            <li><a href="minside/index.html">Min Side</a></li>
+                        </ul>
+                    </div>
                 </div>
 
-                <!-- Column 2: Bli kjent med oss -->
-                <div class="menu-col">
-                    <h3 class="menu-section-title">Bli kjent med oss</h3>
-                    <ul class="mega-nav-list">
-                        <li><a href="om-oss.html">Om stiftelsen</a></li>
-                        <li><a href="om-oss.html#historie">Vår historie</a></li>
-                        <li><a href="kontakt.html">Her arbeider vi</a></li>
-                        <li><a href="kontakt.html">Kontakt oss</a></li>
-                    </ul>
-                </div>
-
-                <!-- Column 3: Ressurser & Media -->
-                <div class="menu-col">
-                    <h3 class="menu-section-title">Ressurser</h3>
-                    <ul class="mega-nav-list">
-                        <li><a href="arrangementer.html">Arrangementer</a></li>
-                        <li><a href="media.html">Media & Podcast</a></li>
-                        <li><a href="blogg.html">Nyheter & Blogg</a></li>
-                        <li><a href="minside/index.html">Min Side</a></li>
-                    </ul>
-                </div>
-            </div>
-
-            <!-- Menu Footer -->
-            <div class="mega-menu-footer">
-                <a href="donasjoner.html" class="btn btn-primary btn-large btn-block">Støtt nå <i
-                        class="fas fa-heart"></i></a>
-                <div class="menu-footer-links">
-                    <a href="donasjoner.html#skattefradrag">Skattefradrag</a>
-                    <a href="om-oss.html">Om oss</a>
-                    <a href="personvern.html">Personvern</a>
+                <!-- Menu Footer -->
+                <div class="mega-menu-footer">
+                    <a href="donasjoner.html" class="btn btn-primary btn-large btn-block">Støtt nå <i
+                            class="fas fa-heart"></i></a>
+                    <div class="menu-footer-links">
+                        <a href="donasjoner.html#skattefradrag">Skattefradrag</a>
+                        <a href="om-oss.html">Om oss</a>
+                        <a href="personvern.html">Personvern</a>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
 
 
-    <section class="page-hero"
-        style="background-image: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)), url('https://images.unsplash.com/photo-1475483768296-6163e08872a1?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80'); padding-top: 160px;">
+    <section class="page-hero relative" id="blog-hero"
+        style="background-image: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)), url('https://images.unsplash.com/photo-1475483768296-6163e08872a1?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80'); padding-top: 180px; margin-top: 0;">
         <div class="container">
             <div class="breadcrumbs" style="margin-bottom: 20px;">
                 <a href="index.html">Hjem</a><i class="fas fa-chevron-right"></i>
@@ -215,7 +243,7 @@
                             <h4>Om oss</h4>
                             <ul>
                                 <li><a href="index.html#hjem">Hjem</a></li>
-                                <li><a href="om-oss.html">Hvem er vi?</a></li>
+                                <li><a href="om-oss.html">Om oss</a></li>
                                 <li><a href="om-oss.html#visjon">Vår visjon</a></li>
                                 <li><a href="kontakt.html">Kontakt oss</a></li>
                             </ul>
@@ -304,6 +332,9 @@
             </div>
         </div>
     </footer>
+    <!-- JavaScript -->
+    <script src="js/user-roles.js"></script>
+    <script src="js/i18n.js"></script>
     <script src="script.js"></script>
     <script src="js/cookie-consent.js"></script>
 </body>

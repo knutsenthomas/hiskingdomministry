@@ -12,39 +12,66 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="../styles.css">
     <link rel="stylesheet" href="../css/cookie-consent.css">
+<!-- Tailwind CSS Play CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'primary-orange': '#f39c12',
+                        'primary-red': '#e74c3c',
+                        'text-dark': '#333333',
+                    }
+                }
+            }
+        }
+    </script>
 </head>
 
 <body>
     <!-- Header (Mega Menu Style) -->
-    <header class="header" id="header">
-        <div class="container-fluid header-container">
+    <header class="header fixed top-0 left-0 w-full z-[10001] transition-all duration-300" id="header">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex justify-between items-center h-[100px] transition-all duration-300"
+            id="header-container">
             <!-- Logo -->
-            <a href="index.html" class="logo">
-                <div class="logo-icon">
-                    <img src="../img/Logo sirkel - orange og hvit.png" alt="His Kingdom Ministry Logo">
+            <a href="index.html" class="flex items-center gap-3 font-bold text-white transition-all duration-300 logo">
+                <div
+                    class="w-[45px] h-[45px] flex items-center justify-center rounded-full overflow-hidden shrink-0 logo-icon">
+                    <img src="img/Logo sirkel - orange og hvit.png" alt="His Kingdom Ministry Logo"
+                        class="w-full h-full object-cover">
                 </div>
-                <span>His Kingdom Ministry</span>
+                <span class="text-xl">His Kingdom Ministry</span>
             </a>
 
-            <!-- Right Actions: Language + Donate + Hamburger -->
-            <div class="header-actions">
-                <div class="lang-switcher">
-                    <button class="lang-btn" id="lang-toggle">
-                        <i class="fas fa-globe"></i>
-                        <span>ES</span>
+            <!-- Right Actions: Donate + Language + Hamburger -->
+            <div class="flex items-center gap-5 header-actions">
+                <div class="lang-switcher relative group">
+                    <button
+                        class="flex items-center gap-2 text-white font-medium hover:text-primary-orange transition-colors lang-btn">
+                        <i class="fas fa-globe text-lg"></i> <span>NO</span>
                     </button>
-                    <div class="lang-dropdown">
-                        <a href="../blogg-post-4.html" data-lang="no">Norsk</a>
-                        <a href="../en/blog-post-4.html" data-lang="en">English</a>
-                        <a href="blog-post-4.html" data-lang="es" class="active">Español</a>
+                    <div
+                        class="lang-dropdown absolute right-0 mt-2 w-40 bg-white shadow-xl rounded-lg py-2 hidden group-hover:block border border-gray-100">
+                        <a href="#" class="block px-4 py-2 text-gray-800 hover:bg-gray-50 lang-switch-btn"
+                            data-lang="no">🇳🇴 Norsk</a>
+                        <a href="#" class="block px-4 py-2 text-gray-800 hover:bg-gray-50 lang-switch-btn"
+                            data-lang="en">🇺🇸 English</a>
+                        <a href="#" class="block px-4 py-2 text-gray-800 hover:bg-gray-50 lang-switch-btn"
+                            data-lang="es">🇪🇸 Español</a>
                     </div>
                 </div>
+                <a href="donasjoner.html"
+                    class="hidden md:flex items-center gap-2 px-6 py-3 rounded-full font-semibold text-white bg-gradient-to-br from-[#f39c12] to-[#e74c3c] hover:scale-105 transition-transform header-donate-btn">
+                    Gi gave <i class="fas fa-heart text-sm"></i>
+                </a>
 
-                <a href="donaciones.html" class="btn btn-primary header-donate-btn">Dar <i class="fas fa-heart"></i></a>
-                <button class="menu-toggle" id="menu-toggle" aria-label="Abrir menú">
-                    <span class="hamburger-box">
-                        <span class="hamburger-inner"></span>
-                    </span>
+                <!-- Unified Toggle Button -->
+                <button
+                    class="menu-toggle h-10 w-10 rounded-full flex items-center justify-center text-white bg-gradient-to-br from-[#f39c12] to-[#e74c3c] transition-transform hover:scale-105 focus:outline-none focus:ring-0 relative"
+                    id="menu-toggle" aria-label="Toggle meny">
+                    <i class="fas fa-bars text-lg open-icon"></i>
+                    <i class="fas fa-times text-lg close-icon hidden"></i>
                 </button>
             </div>
         </div>
@@ -142,7 +169,7 @@
     </div>
 
 
-    <section class="page-hero"
+    <section class="page-hero" data-content-key="hero.backgroundImage"
         style="background-image: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)), url('https://images.unsplash.com/photo-1517486808906-6ca8b3f04846?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80'); padding-top: 160px;">
         <div class="container">
             <div class="breadcrumbs" style="margin-bottom: 20px;">

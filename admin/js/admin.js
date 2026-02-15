@@ -49,6 +49,11 @@ class AdminManager {
             throw new Error("Firebase Service er ikke lastet!");
         }
 
+        // Initialize toast container
+        this.toastContainer = document.createElement('div');
+        this.toastContainer.className = 'toast-container';
+        document.body.appendChild(this.toastContainer);
+
         this.initAuth();
         this.initDashboard();
         this.initMessageListener();
@@ -56,6 +61,61 @@ class AdminManager {
         // Expose to window for the inline navigation script
         window.adminManager = this;
         console.log("AdminManager initialized successfully.");
+    }
+
+    /**
+     * Show a toast notification
+     * @param {string} message 
+     * @param {'success' | 'error'} type 
+     * @param {number} duration 
+     */
+    showToast(message, type = 'success', duration = 7000) {
+        const toast = document.createElement('div');
+        toast.className = `toast ${type}`;
+
+        const icon = type === 'success' ? 'check_circle' : 'error';
+
+        toast.innerHTML = `
+            <span class="material-symbols-outlined toast-icon">${icon}</span>
+            <div class="toast-content">
+                <p class="toast-message">${message}</p>
+            </div>
+            <button class="toast-close">
+                <span class="material-symbols-outlined">close</span>
+            </button>
+            <div class="toast-progress">
+                <div class="toast-progress-bar" style="animation-duration: ${duration}ms"></div>
+            </div>
+        `;
+
+        this.toastContainer.appendChild(toast);
+
+        const removeToast = () => {
+            if (toast.parentElement) {
+                toast.classList.add('removing');
+                setTimeout(() => {
+                    if (toast.parentElement) {
+                        this.toastContainer.removeChild(toast);
+                    }
+                }, 300);
+            }
+        };
+
+        // Auto close after duration
+        const timeoutId = setTimeout(removeToast, duration);
+
+        // Manual close
+        toast.querySelector('.toast-close').addEventListener('click', (e) => {
+            e.stopPropagation();
+            clearTimeout(timeoutId);
+            removeToast();
+        });
+
+        // Close on click anywhere on toast
+        toast.addEventListener('click', () => {
+            clearTimeout(timeoutId);
+            removeToast();
+        });
     }
 
     /**
@@ -200,7 +260,7 @@ class AdminManager {
             window.location.href = 'login.html';
         } catch (error) {
             console.error("Error signing out:", error);
-            alert("Failed to log out. Please try again.");
+            this.showToast("Failed to log out. Please try again.", "error", 5000);
         }
     }
 
@@ -452,7 +512,10 @@ class AdminManager {
                         item.category,
                         item.author,
                         item.seoTitle,
-                        item.seoDescription
+                        item.seoDescription,
+                        item.hero?.title, // Added hero.title
+                        item.hero?.subtitle, // Added hero.subtitle
+                        item.hero?.bg // Added hero.bg
                     ].filter(Boolean).join(' ').toLowerCase();
 
                     if (combined.includes(qLower)) {
@@ -1140,10 +1203,10 @@ class AdminManager {
                 appleUrl: appleUrl,
                 updatedAt: new Date().toISOString()
             });
-            alert('✅ Media-innstillinger er lagret!');
+            this.showToast('✅ Media-innstillinger er lagret!', 'success', 5000);
         } catch (err) {
             console.error("Save media settings error:", err);
-            alert('❌ Feil ved lagring: ' + err.message);
+            this.showToast('❌ Feil ved lagring: ' + err.message, 'error', 5000);
         } finally {
             btn.textContent = 'Lagre media-innstillinger';
             btn.disabled = false;
@@ -1219,10 +1282,10 @@ class AdminManager {
                 overrides: overrides,
                 updatedAt: new Date().toISOString()
             });
-            alert('✅ Podcast-overstyringer er lagret!');
+            this.showToast('✅ Podcast-overstyringer er lagret!', 'success', 5000);
         } catch (err) {
             console.error("Save overrides error:", err);
-            alert('❌ Feil ved lagring: ' + err.message);
+            this.showToast('❌ Feil ved lagring: ' + err.message, 'error', 5000);
         } finally {
             btn.textContent = 'Lagre overstyringer';
             btn.disabled = false;
@@ -1249,6 +1312,7 @@ class AdminManager {
                         <li class="page-item" data-page="media">Media</li>
                         <li class="page-item" data-page="arrangementer">Arrangementer</li>
                         <li class="page-item" data-page="blogg">Blogg</li>
+                        <li class="page-item" data-page="for-menigheter">For menigheter</li>
                         <li class="page-item" data-page="kontakt">Kontakt</li>
                         <li class="page-item" data-page="donasjoner">Donasjoner</li>
                         <li class="page-item" data-page="undervisning">Undervisning</li>
@@ -1256,6 +1320,9 @@ class AdminManager {
                         <li class="page-item" data-page="bibelstudier">Bibelstudier</li>
                         <li class="page-item" data-page="seminarer">Seminarer</li>
                         <li class="page-item" data-page="podcast">Podcast</li>
+                        <li class="page-item" data-page="youtube">YouTube</li>
+                        <li class="page-item" data-page="for-bedrifter">For bedrifter</li>
+                        <li class="page-item" data-page="bnn">Business Network</li>
                     </ul>
                 </aside>
                 <div class="content-main">
@@ -1650,10 +1717,10 @@ class AdminManager {
                         await firebaseService.savePageContent(`collection_${collectionId}`, { items: list });
                         modal.remove();
                         this.loadCollection(collectionId);
-                        alert('✅ Lagret!');
+                        this.showToast('✅ Lagret!', 'success');
                     } catch (err) {
                         console.error('Error saving item:', err);
-                        alert('Kunne ikke lagre. Sjekk konsollen for detaljer.');
+                        this.showToast('Kunne ikke lagre. Sjekk konsollen for detaljer.', 'error', 5000);
                     } finally {
                         if (btn) {
                             btn.textContent = 'Lagre endringer';
@@ -1665,7 +1732,7 @@ class AdminManager {
         } catch (err) {
             console.error('Error opening editor:', err);
             const errorMsg = err.message || JSON.stringify(err);
-            alert(`Kunne ikke åpne elementet.\nFeilmelding: ${errorMsg}\n\nSjekk at Editor.js scriptet er lastet.`);
+            this.showToast(`Kunne ikke åpne elementet. Feilmelding: ${errorMsg}. Sjekk at Editor.js scriptet er lastet.`, 'error', 7000);
         }
     }
 
@@ -1695,14 +1762,14 @@ class AdminManager {
 
         } catch (error) {
             console.error('Error creating new item:', error);
-            alert('Kunne ikke opprette nytt element. Sjekk konsollen.');
+            this.showToast('Kunne ikke opprette nytt element. Sjekk konsollen.', 'error', 5000);
         }
     }
 
     async deleteItem(collectionId, index) {
         // Permission Check
         if (!this.hasPermission('MANAGE_CONTENT')) {
-            alert('Du har ikke tilgang til å slette elementer.');
+            this.showToast('Du har ikke tilgang til å slette elementer.', 'error', 5000);
             return;
         }
 
@@ -1713,6 +1780,7 @@ class AdminManager {
         items.splice(index, 1);
         await firebaseService.savePageContent(`collection_${collectionId}`, { items: items });
         this.loadCollection(collectionId);
+        this.showToast('✅ Element slettet!', 'success');
     }
 
     async renderDesignSection() {
@@ -1863,9 +1931,9 @@ class AdminManager {
 
             try {
                 await firebaseService.savePageContent('settings_design', data);
-                alert('✅ Design-innstillinger er lagret!');
+                this.showToast('✅ Design-innstillinger er lagret!', 'success', 5000);
             } catch (err) {
-                alert('❌ Feil ved lagring');
+                this.showToast('❌ Feil ved lagring', 'error', 5000);
             } finally {
                 btn.textContent = 'Lagre design-innstillinger';
                 btn.disabled = false;
@@ -1885,13 +1953,13 @@ class AdminManager {
 
             button.onclick = async () => {
                 if (!firebaseService.isInitialized) {
-                    alert('Firebase er ikke konfigurert. Kan ikke laste opp.');
+                    this.showToast('Firebase er ikke konfigurert. Kan ikke laste opp.', 'error', 5000);
                     return;
                 }
 
                 const file = fileInput.files && fileInput.files[0];
                 if (!file) {
-                    alert('Velg en fil for opplasting.');
+                    this.showToast('Velg en fil for opplasting.', 'warning', 3000);
                     return;
                 }
 
@@ -1906,7 +1974,7 @@ class AdminManager {
                     this.updatePreview(previewId, url);
                 } catch (err) {
                     console.error('Upload error:', err);
-                    alert('Feil ved opplasting. Proev igjen.');
+                    this.showToast('Feil ved opplasting. Prøv igjen.', 'error', 5000);
                 } finally {
                     button.disabled = false;
                     button.textContent = idleText;
@@ -2123,7 +2191,7 @@ class AdminManager {
         const editId = document.getElementById('cause-form-modal').dataset.editId;
 
         if (!title) {
-            alert('Tittel er påkrevd');
+            this.showToast('Tittel er påkrevd', 'warning', 3000);
             return;
         }
 
@@ -2142,9 +2210,10 @@ class AdminManager {
             await firebaseService.savePageContent('collection_causes', { items: causes });
             document.getElementById('cause-form-modal').style.display = 'none';
             await this.loadCauses();
+            this.showToast('✅ Innsamlingsaksjon lagret!', 'success');
         } catch (error) {
             console.error('Error saving cause:', error);
-            alert('Feil ved lagring av innsamlingsaksjon');
+            this.showToast('Feil ved lagring av innsamlingsaksjon', 'error', 5000);
         }
     }
 
@@ -2175,9 +2244,10 @@ class AdminManager {
             causes.splice(index, 1);
             await firebaseService.savePageContent('collection_causes', { items: causes });
             await this.loadCauses();
+            this.showToast('✅ Innsamlingsaksjon slettet!', 'success');
         } catch (error) {
             console.error('Error deleting cause:', error);
-            alert('Feil ved sletting av innsamlingsaksjon');
+            this.showToast('Feil ved sletting av innsamlingsaksjon', 'error', 5000);
         }
     }
 
@@ -2215,6 +2285,7 @@ class AdminManager {
             this.renderHeroSlides(this.heroSlides);
         } catch (e) {
             container.innerHTML = '<p>Kunne ikke laste slides.</p>';
+            this.showToast('Kunne ikke laste slides.', 'error', 5000);
         }
     }
 
@@ -2315,7 +2386,7 @@ class AdminManager {
                 preview.innerHTML = `<img src="${url}" style="width: 100%; height: 100%; object-fit: cover;">`;
             } catch (err) {
                 console.error("❌ Upload failed:", err);
-                alert('Opplasting feilet: ' + err.message + '\n\nSjekk at du har tilgang til å laste opp filer i Firebase Storage (Security Rules).');
+                this.showToast('Opplasting feilet: ' + err.message + '. Sjekk at du har tilgang til å laste opp filer i Firebase Storage (Security Rules).', 'error', 7000);
             } finally {
                 uploadBtn.disabled = false;
                 uploadBtn.innerHTML = '<span class="material-symbols-outlined">upload</span> Last opp nytt bilde';
@@ -2340,12 +2411,13 @@ class AdminManager {
 
             try {
                 await firebaseService.savePageContent('settings_profile', data);
-                alert('✅ Profilen er lagret!');
+                this.showToast('✅ Profilen er lagret!', 'success', 5000);
                 // Update header info immediately
                 const user = firebaseService.auth.currentUser;
                 if (user) this.updateUserInfo(user);
             } catch (err) {
-                alert('❌ Feil ved lagring');
+                console.error(err);
+                this.showToast('❌ Feil ved lagring', 'error', 5000);
             } finally {
                 btn.textContent = 'Lagre Profil';
                 btn.disabled = false;
@@ -2441,7 +2513,7 @@ class AdminManager {
                 const url = await firebaseService.uploadImage(fileInput.files[0], `hero/${Date.now()}_${fileInput.files[0].name}`);
                 imgInput.value = url;
             } catch (err) {
-                alert('Upload failed: ' + err.message);
+                this.showToast('Opplasting feilet: ' + err.message, 'error', 5000);
             } finally {
                 uploadBtn.disabled = false;
                 uploadBtn.innerHTML = '<span class="material-symbols-outlined">upload</span> Last opp nytt bilde';
@@ -2472,8 +2544,9 @@ class AdminManager {
                 await firebaseService.savePageContent('hero_slides', { slides: this.heroSlides });
                 modal.remove();
                 this.renderHeroSlides(this.heroSlides);
+                this.showToast('✅ Slide lagret!', 'success');
             } catch (err) {
-                alert('Feil ved lagring');
+                this.showToast('Feil ved lagring', 'error', 5000);
                 btn.textContent = 'Lagre slide';
                 btn.disabled = false;
             }
@@ -2486,8 +2559,9 @@ class AdminManager {
         try {
             await firebaseService.savePageContent('hero_slides', { slides: this.heroSlides });
             this.renderHeroSlides(this.heroSlides);
+            this.showToast('✅ Slettet!', 'success');
         } catch (err) {
-            alert('Feil ved sletting');
+            this.showToast('❌ Feil ved sletting', 'error', 5000);
         }
     }
 
@@ -2681,8 +2755,8 @@ class AdminManager {
             btn.disabled = true;
             try {
                 await firebaseService.savePageContent('settings_seo', seoData);
-                alert('Globale SEO-innstillinger lagret!');
-            } catch (err) { alert('Feil ved lagring'); }
+                this.showToast('✅ Globale SEO-innstillinger lagret!', 'success', 5000);
+            } catch (err) { this.showToast('❌ Feil ved lagring', 'error', 5000); }
             finally {
                 btn.textContent = 'Lagre Globale Innstillinger';
                 btn.disabled = false;
@@ -2923,8 +2997,8 @@ class AdminManager {
         document.getElementById('save-fb').addEventListener('click', () => {
             const val = document.getElementById('fb-config').value;
             localStorage.setItem('hkm_firebase_config', val);
-            alert('Lagret! Laster på nytt...');
-            window.location.reload();
+            this.showToast('✅ Lagret! Laster på nytt...', 'success', 5000);
+            setTimeout(() => window.location.reload(), 2000);
         });
 
         document.getElementById('sync-existing-content').addEventListener('click', () => this.seedExistingData());
@@ -3286,8 +3360,27 @@ class AdminManager {
         container.innerHTML = '<div class="loader">Laster...</div>';
 
         try {
-            const data = await firebaseService.getPageContent(pageId);
-            this.renderFields(data || {});
+            const data = await firebaseService.getPageContent(pageId) || {};
+
+            // For subpages, ensure hero fields exist so they show up in the editor
+            if (pageId !== 'index') {
+                if (!data.hero) data.hero = {};
+                if (data.hero.title === undefined) data.hero.title = "";
+                if (data.hero.subtitle === undefined) data.hero.subtitle = "";
+
+                // Support both backgroundImage and bg keys
+                if (pageId === 'for-bedrifter' || pageId === 'bnn' || pageId === 'for-menigheter' || pageId === 'blogg') {
+                    if (data.hero.bg === undefined && data.hero.backgroundImage === undefined) {
+                        data.hero.bg = ""; // Default to .bg for these
+                    } else if (data.hero.bg === undefined && data.hero.backgroundImage !== undefined) {
+                        data.hero.bg = data.hero.backgroundImage; // Migrate if needed
+                    }
+                } else {
+                    if (data.hero.backgroundImage === undefined) data.hero.backgroundImage = "";
+                }
+            }
+
+            this.renderFields(data);
         } catch (e) {
             container.innerHTML = '<p>Error.</p>';
         }
@@ -3325,6 +3418,35 @@ class AdminManager {
 
             formGroup.appendChild(label);
             formGroup.appendChild(inputElement);
+
+            // Add image preview if it's a background image field
+            if (key.includes('backgroundImage') || key.includes('imageUrl') || key.endsWith('.bg')) {
+                const preview = document.createElement('div');
+                preview.className = 'img-preview-mini';
+                preview.style.marginTop = '10px';
+                preview.style.height = '60px';
+                preview.style.width = '100px';
+                preview.style.background = '#f1f5f9';
+                preview.style.borderRadius = '4px';
+                preview.style.overflow = 'hidden';
+                preview.style.display = 'flex';
+                preview.style.alignItems = 'center';
+                preview.style.justifyContent = 'center';
+                preview.style.border = '1px solid #e2e8f0';
+
+                const updateMiniPreview = (url) => {
+                    if (url && url.length > 5) {
+                        preview.innerHTML = `<img src="${url}" style="width:100%; height:100%; object-fit:cover;">`;
+                    } else {
+                        preview.innerHTML = '<span class="material-symbols-outlined" style="font-size:20px; color:#cbd5e1;">image</span>';
+                    }
+                };
+
+                updateMiniPreview(value);
+                inputElement.addEventListener('input', (e) => updateMiniPreview(e.target.value));
+                formGroup.appendChild(preview);
+            }
+
             container.appendChild(formGroup);
         });
     }
@@ -3349,9 +3471,9 @@ class AdminManager {
 
         try {
             await firebaseService.savePageContent(pageId, dataToSave);
-            alert('✅ Innholdet er lagret!');
+            this.showToast('✅ Innholdet er lagret!', 'success', 5000);
         } catch (err) {
-            alert('❌ Feil ved lagring');
+            this.showToast('❌ Feil ved lagring', 'error', 5000);
         }
     }
 

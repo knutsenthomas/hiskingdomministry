@@ -52,8 +52,23 @@
                 <span class="text-xl">His Kingdom Ministry</span>
             </a>
 
-            <!-- Right Actions: Donate + Hamburger -->
+            <!-- Right Actions: Donate + Language + Hamburger -->
             <div class="flex items-center gap-5 header-actions">
+                <div class="lang-switcher relative group">
+                    <button
+                        class="flex items-center gap-2 text-white font-medium hover:text-primary-orange transition-colors lang-btn">
+                        <i class="fas fa-globe text-lg"></i> <span>NO</span>
+                    </button>
+                    <div
+                        class="lang-dropdown absolute right-0 mt-2 w-40 bg-white shadow-xl rounded-lg py-2 hidden group-hover:block border border-gray-100">
+                        <a href="#" class="block px-4 py-2 text-gray-800 hover:bg-gray-50 lang-switch-btn"
+                            data-lang="no">🇳🇴 Norsk</a>
+                        <a href="#" class="block px-4 py-2 text-gray-800 hover:bg-gray-50 lang-switch-btn"
+                            data-lang="en">🇺🇸 English</a>
+                        <a href="#" class="block px-4 py-2 text-gray-800 hover:bg-gray-50 lang-switch-btn"
+                            data-lang="es">🇪🇸 Español</a>
+                    </div>
+                </div>
                 <a href="donasjoner.html"
                     class="hidden md:flex items-center gap-2 px-6 py-3 rounded-full font-semibold text-white bg-gradient-to-br from-[#f39c12] to-[#e74c3c] hover:scale-105 transition-transform header-donate-btn">
                     Gi gave <i class="fas fa-heart text-sm"></i>
@@ -61,10 +76,10 @@
 
                 <!-- Unified Toggle Button -->
                 <button
-                    class="w-[50px] h-[50px] rounded-full flex items-center justify-center cursor-pointer transition-all duration-300 bg-gradient-to-br from-[#f39c12] to-[#e74c3c] hover:scale-105 text-white active:scale-95 z-[10002]"
+                    class="menu-toggle h-10 w-10 rounded-full flex items-center justify-center text-white bg-gradient-to-br from-[#f39c12] to-[#e74c3c] transition-transform hover:scale-105 focus:outline-none focus:ring-0 relative"
                     id="menu-toggle" aria-label="Toggle meny">
-                    <i class="fas fa-bars text-xl transition-all duration-300 open-icon"></i>
-                    <i class="fas fa-times text-xl transition-all duration-300 close-icon hidden"></i>
+                    <i class="fas fa-bars text-lg open-icon"></i>
+                    <i class="fas fa-times text-lg close-icon hidden"></i>
                 </button>
             </div>
         </div>
@@ -107,7 +122,7 @@
                         <h3 class="menu-section-title">Engasjer deg</h3>
                         <ul class="mega-nav-list">
                             <li><a href="donasjoner.html">Støtt arbeidet</a></li>
-                            <li><a href="donasjoner.html#faste-givere">Bli fast giver</a></li>
+                            <li><a href="bli-fast-giver.html">Bli fast giver</a></li>
                             <li><a href="for-menigheter.html">For menigheter</a></li>
                             <li><a href="for-bedrifter.html">For bedrifter</a></li>
                             <li><a href="bnn.html">Business Network</a></li>
@@ -118,9 +133,7 @@
                     <div class="menu-col">
                         <h3 class="menu-section-title">Bli kjent med oss</h3>
                         <ul class="mega-nav-list">
-                            <li><a href="om-oss.html">Om stiftelsen</a></li>
-                            <li><a href="om-oss.html#historie">Vår historie</a></li>
-                            <li><a href="kontakt.html">Her arbeider vi</a></li>
+                            <li><a href="om-oss.html">Om oss</a></li>
                             <li><a href="kontakt.html">Kontakt oss</a></li>
                         </ul>
                     </div>
@@ -154,29 +167,19 @@
 
     <main>
         <!-- Page Hero -->
-        <section class="page-hero"
-            style="background-image: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)), url('https://images.unsplash.com/photo-1523580494863-6f3031224c94?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80'); padding-top: 160px;">
+        <section class="page-hero" data-content-key="hero.bg"
+            style="background-image: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)), url('https://images.unsplash.com/photo-1523580494863-6f3031224c94?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80');">
             <div class="container">
-                <div class="page-hero-content">
-                    <h1 class="page-title" data-content-key="hero.title">Arrangementer</h1>
-                    <div class="breadcrumbs">
-                        <a href="index.html">Hjem</a>
-                        <i class="fas fa-chevron-right"></i>
-                        <span>Arrangementer</span>
-                    </div>
-                </div>
+                <h1 class="page-hero-title" data-content-key="hero.title">Arrangementer</h1>
+                <p class="page-hero-subtitle" data-content-key="hero.subtitle">Bli med på våre kommende hendelser</p>
             </div>
         </section>
 
         <!-- Events List -->
         <section class="events-page section">
             <div class="container">
-                <div class="section-header">
-                    <span class="section-label">Bli med oss</span>
-                    <h2 class="section-title" data-content-key="section.title">Kommende arrangementer</h2>
-                    <p class="section-description" data-content-key="section.description">Vi inviterer deg til å delta
-                        på våre seminarer, møter og konferanser.
-                        Se oversikten under for hva som skjer fremover.</p>
+                <div class="section-header" style="display: none;">
+                    <!-- Content moved to Hero -->
                 </div>
 
                 <div class="events-grid">
@@ -186,7 +189,7 @@
         </section>
 
         <!-- Month Calendar moved from kalender.html -->
-        <section class="calendar-section" id="arrangement-kalender">
+        <section class="calendar-section" id="arrangement-kalender" style="display: none;">
             <div class="container">
                 <div class="calendar-container" data-cal-view="month">
                     <div class="calendar-view-toggle">
@@ -265,7 +268,7 @@
                             <h4>Om oss</h4>
                             <ul>
                                 <li><a href="index.html#hjem">Hjem</a></li>
-                                <li><a href="om-oss.html">Hvem er vi?</a></li>
+                                <li><a href="om-oss.html">Om oss</a></li>
                                 <li><a href="om-oss.html#visjon">Vår visjon</a></li>
                                 <li><a href="kontakt.html">Kontakt oss</a></li>
                             </ul>

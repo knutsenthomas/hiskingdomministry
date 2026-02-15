@@ -191,11 +191,12 @@ async function initYouTubeAPI(channelId, playlistsRaw = "") {
     // Funksjon for å hente og vise videoer fra valgt kategori/playlist
 
     // YouTube Data API v3
-    // YouTube API Key (Hentet fra prosjektinnstillinger i Firebase)
+    // [EDIT HERE] YouTube API Key (Hentet fra prosjektinnstillinger i Firebase)
     // Denne nøkkelen brukes for å hente spesifikke spillelister (kategorier)
     const _ytKeyA = 'AIza' + 'Sy';
     const _ytKeyB = 'ClPHHywl7Vr0naj2JnK_t-lY-V86gmKys';
     const YT_API_KEY = _ytKeyA + _ytKeyB;
+    // [EDIT HERE] YouTube Channel ID
     const YT_CHANNEL_ID = 'UCFbX-Mf7NqDm2a07hk6hveg';
     let allVideosCache = {};
     let currentCategory = null;
@@ -214,7 +215,8 @@ async function initYouTubeAPI(channelId, playlistsRaw = "") {
             const data = await resp.json();
 
             if (data.error) {
-                console.error("YouTube Data API Error:", data.error);
+                console.error("[YouTube API] PlaylistItems Error:", data.error);
+                console.log("[YouTube API] Full error object:", data);
                 throw new Error(data.error.message);
             }
 
@@ -243,7 +245,8 @@ async function initYouTubeAPI(channelId, playlistsRaw = "") {
             const data = await resp.json();
 
             if (data.error) {
-                console.error("YouTube Channel API Error:", data.error);
+                console.error("[YouTube API] Search Error:", data.error);
+                console.log("[YouTube API] Full error object:", data);
                 throw new Error(data.error.message);
             }
 
@@ -299,6 +302,11 @@ async function initYouTubeAPI(channelId, playlistsRaw = "") {
                         console.log(`Henter videoer for spilleliste via RSS: ${playlistId}`);
                         const response = await fetch(proxyUrl);
                         const data = await response.json();
+
+                        if (data.status === 'error') {
+                            console.error(`[YouTube RSS] RSS2JSON Error for playlist ${playlistId}:`, data.message);
+                        }
+
                         videos = data.items || [];
                     } catch (e) {
                         console.error(`Feil ved henting av spilleliste (RSS ${playlistId}):`, e);

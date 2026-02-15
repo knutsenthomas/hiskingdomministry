@@ -34,6 +34,10 @@ class ContentManager {
         if (path.includes('for-menigheter.html') || path.includes('for-churches.html') || path.includes('para-iglesias.html')) return 'for-menigheter';
         if (path.includes('for-bedrifter.html') || path.includes('for-businesses.html') || path.includes('para-empresas.html')) return 'for-bedrifter';
         if (path.includes('bnn.html')) return 'bnn';
+        if (path.includes('youtube.html')) return 'youtube';
+        if (path.includes('podcast.html')) return 'podcast';
+        if (path.includes('undervisning.html')) return 'undervisning';
+        if (path.includes('seminarer.html')) return 'seminarer';
         return '';
     }
 
@@ -200,7 +204,7 @@ class ContentManager {
 
             // 1. Month View
             const monthSection = document.getElementById('arrangement-kalender');
-            if (settings.showMonthView !== false) {
+            if (settings.showMonthView === true) {
                 this.setupCalendarNavigation();
                 this.setCalendarEvents(events || []);
                 this.renderCalendarView();
@@ -270,6 +274,62 @@ class ContentManager {
             const teachingItems = Array.isArray(teachingData) ? teachingData : (teachingData?.items || []);
             if (teachingItems.length > 0) this.renderTeachingSeries(teachingItems, '.media-grid');
         }
+
+        if (this.pageId === 'donasjoner') {
+            const causes = await this.loadCauses();
+            this.renderCauses(causes);
+        }
+    }
+
+    async loadCauses() {
+        try {
+            const data = await firebaseService.getPageContent('collection_causes');
+            return Array.isArray(data) ? data : (data?.items || []);
+        } catch (e) {
+            console.warn('[ContentManager] Failed to load causes:', e);
+            return [];
+        }
+    }
+
+    renderCauses(causes) {
+        const container = document.querySelector('.causes-grid');
+        const section = document.querySelector('.donations-page.section');
+
+        if (!container || !section) return;
+
+        if (!causes || causes.length === 0) {
+            section.style.display = 'none';
+            return;
+        }
+
+        section.style.display = 'block';
+
+        container.innerHTML = causes.map(cause => `
+            <div class="cause-card">
+                <div class="cause-image">
+                    <img src="${cause.imageUrl || 'img/placeholder.jpg'}" alt="${cause.title}">
+                    ${cause.tag ? `<span class="cause-tag">${cause.tag}</span>` : ''}
+                </div>
+                <div class="cause-content">
+                    <h3 class="cause-title">${cause.title}</h3>
+                    <p class="cause-description">${cause.description}</p>
+                    
+                    ${cause.goal ? `
+                    <div class="cause-progress">
+                        <div class="progress-bar">
+                            <div class="progress-fill" style="width: ${Math.min((cause.raised / cause.goal) * 100, 100)}%"></div>
+                        </div>
+                        <div class="progress-stats">
+                            <span>${cause.raised ? cause.raised.toLocaleString() : '0'} kr samlet inn</span>
+                            <span>Mål: ${cause.goal.toLocaleString()} kr</span>
+                        </div>
+                    </div>
+                    ` : ''}
+                    
+                    <a href="${cause.link || '#gi-gave'}" class="btn btn-primary btn-block">Støtt prosjektet</a>
+                </div>
+            </div>
+        `).join('');
     }
 
     async renderSingleBlogPost() {
@@ -1278,24 +1338,27 @@ class ContentManager {
                 return;
             }
 
+            // Background images application with fallback
+            const isHeroSection = el.classList.contains('page-hero') || el.classList.contains('hero-section');
+            const isBgKey = key === "hero.backgroundImage" || key === "hero.bg" || key.endsWith(".backgroundImage") || key.endsWith(".bg");
+
+            if (this.pageId !== 'index' && isHeroSection && isBgKey) {
+                // High-quality fallback image
+                const defaultBg = "https://images.unsplash.com/photo-1499750310159-5b600aaf0320?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=1080";
+                const bgUrl = value || defaultBg;
+                // Debug log for hero image
+                console.log('[ContentManager] Hero image URL for page:', this.pageId, '->', bgUrl);
+                // Force hero-section background image style
+                const heroEl = document.querySelector('.hero-section') || el;
+                if (heroEl) {
+                    heroEl.style.backgroundImage = `url('${bgUrl}')`;
+                }
+                el.style.backgroundImage = `linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)), url('${bgUrl}')`;
+                return;
+            }
+
             const newText = String(value).trim();
             const currentText = (el.textContent || "").trim();
-
-            // Første gang vi rører elementet: unngå å overskrive ferdig, ikke-"placeholder" tekst
-            const isFirstBind = !el.dataset.cmsBound;
-            if (isFirstBind) {
-                el.dataset.cmsBound = "true";
-
-                const lower = currentText.toLowerCase();
-                const isPlaceholder = !currentText ||
-                    lower === "laster..." ||
-                    lower.includes("kommer mer snart");
-
-                // Hvis HTML allerede har ekte tekst som er ulik CMS-verdi, la HTML vinne ved første last
-                if (!isPlaceholder && currentText && currentText !== newText) {
-                    return;
-                }
-            }
 
             if (currentText !== newText) {
                 el.textContent = value;
@@ -1469,7 +1532,7 @@ class ContentManager {
                         </div>
                         ` : ''}
                         <h3 class="blog-title" style="margin-bottom: 12px; font-size: 1.25rem;">${post.title}</h3>
-                        <p class="blog-excerpt" style="color: #666; font-size: 14px; line-height: 1.6; margin-bottom: 20px;">${this.stripHtml(this.parseBlocks(post.content) || '').substring(0, 120)}...</p>
+                        <p class="blog-excerpt" style="color: #666; font-size: 14px; line-height: 1.6; margin-bottom: 20px;">${this.generateExcerpt(post.content, post.title)}...</p>
                         <a href="${this.getLocalizedLink('blogg-post.html')}?id=${encodeURIComponent(post.id || post.title)}" class="blog-link" style="color: var(--primary-color); font-weight: 600; text-decoration: none;">${this.getTranslation('read_more')} <i class="fas fa-arrow-right" style="margin-left: 5px;"></i></a>
                     </div>
                 </article>
@@ -1642,10 +1705,32 @@ class ContentManager {
         if (titleEl) titleEl.textContent = event.title;
         if (breadcrumbEl) breadcrumbEl.textContent = event.title;
 
-        const imageUrl = event.imageUrl || event.image || event.imageLink || this.generateEventImage(event.title);
+        // Preload logic: If dashboard image is set, use it immediately
+        let dashboardImage = '';
+        if (event.dashboardImage) {
+            dashboardImage = event.dashboardImage;
+        }
+        const imageUrl = dashboardImage || event.imageUrl || event.image || event.imageLink || this.generateEventImage(event.title);
         if (imgEl && imageUrl) {
-            imgEl.src = imageUrl;
-            imgEl.onerror = () => { imgEl.src = '../img/placeholder-event.jpg'; };
+            // Hide image until loaded
+            imgEl.style.opacity = '0';
+            imgEl.style.visibility = 'hidden';
+            imgEl.classList.remove('fade-in');
+            // Preload image
+            const tempImg = new window.Image();
+            tempImg.onload = function() {
+                imgEl.src = imageUrl;
+                imgEl.style.visibility = 'visible';
+                imgEl.style.opacity = '1';
+                imgEl.classList.add('fade-in');
+            };
+            tempImg.onerror = function() {
+                imgEl.src = '../img/placeholder-event.jpg';
+                imgEl.style.visibility = 'visible';
+                imgEl.style.opacity = '1';
+                imgEl.classList.add('fade-in');
+            };
+            tempImg.src = imageUrl;
         }
 
         // Description
@@ -1765,9 +1850,65 @@ class ContentManager {
 
     stripHtml(html) {
         if (!html) return "";
-        const tmp = document.createElement("DIV");
-        tmp.innerHTML = html;
-        return tmp.textContent || tmp.innerText || "";
+        // Replace HTML tags with spaces to prevent word concatenation
+        let text = String(html).replace(/<[^>]+>/g, ' ');
+        // Clean up multiple spaces
+        text = text.replace(/\s+/g, ' ').trim();
+        return text;
+    }
+
+    /**
+     * Generate a clean excerpt from blog content, excluding the title
+     * @param {string|object} content - Blog content (HTML string or Editor.js JSON)
+     * @param {string} title - Blog post title to exclude from excerpt
+     * @returns {string} - Clean excerpt text (max 120 chars)
+     */
+    generateExcerpt(content, title) {
+        if (!content) return "";
+
+        let html = '';
+
+        // Handle Legacy HTML (string)
+        if (typeof content === 'string') {
+            html = content;
+        }
+        // Handle Editor.js JSON - exclude header blocks to prevent title in excerpt
+        else if (typeof content === 'object' && content.blocks) {
+            html = content.blocks
+                .filter(block => block.type !== 'header')
+                .map(block => {
+                    switch (block.type) {
+                        case 'paragraph':
+                            return `<p>${block.data.text}</p>`;
+                        case 'list':
+                            const listTag = block.data.style === 'ordered' ? 'ol' : 'ul';
+                            const items = block.data.items.map(item => `<li>${item}</li>`).join('');
+                            return `<${listTag}>${items}</${listTag}>`;
+                        default:
+                            return '';
+                    }
+                }).join('');
+        } else {
+            html = this.parseBlocks(content) || '';
+        }
+
+        // Strip HTML tags with proper spacing
+        let text = this.stripHtml(html);
+
+        // Additional safety: remove title from beginning if it still appears
+        if (title) {
+            const titleTrimmed = title.trim();
+            const textTrimmed = text.trim();
+
+            if (textTrimmed.toLowerCase().startsWith(titleTrimmed.toLowerCase())) {
+                text = textTrimmed.substring(titleTrimmed.length).trim();
+            } else {
+                text = textTrimmed;
+            }
+        }
+
+        // Truncate to 120 characters
+        return text.substring(0, 120);
     }
 
     /**

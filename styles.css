@@ -248,6 +248,40 @@ ul {
     padding: 0 20px;
 }
 
+/* Page Hero - Default Styles */
+.page-hero {
+    position: relative;
+    padding-top: 180px;
+    padding-bottom: 80px;
+    background-color: var(--primary-green);
+    /* Fallback dark background */
+    background-image: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)), url('https://images.unsplash.com/photo-1438232992991-995b7058df31?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80');
+    background-size: cover;
+    background-position: center;
+    color: white;
+    margin-top: 0;
+}
+
+/* Ensure text is white in hero */
+.page-hero-title,
+.page-hero-subtitle {
+    color: white;
+    text-align: center;
+}
+
+.page-hero-title {
+    font-size: 3.5rem;
+    font-weight: 800;
+    margin-bottom: 1rem;
+}
+
+.page-hero-subtitle {
+    font-size: 1.25rem;
+    opacity: 0.9;
+    max-width: 800px;
+    margin: 0 auto;
+}
+
 /* Buttons */
 .mobile-only {
     display: none !important;
@@ -2798,6 +2832,23 @@ body {
     margin: 0 auto;
 }
 
+/* Specific contrast for buttons in CTA section */
+.cta-section .btn-primary,
+.cta-section .btn-outline {
+    background: white;
+    color: var(--primary-orange);
+    border-color: white;
+}
+
+.cta-section .btn-primary:hover,
+.cta-section .btn-outline:hover {
+    background: transparent;
+    color: white;
+    border-color: white;
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+}
+
 .page-hero .btn-outline {
     background: white;
     color: var(--primary-orange);
@@ -3150,7 +3201,7 @@ body {
 /* Responsive */
 @media (max-width: 768px) {
     .page-hero {
-        padding: 80px 0 60px;
+        padding: 140px 0 80px;
     }
 
     .page-hero-title {
@@ -4340,6 +4391,24 @@ ol.block-list {
     /* Match donate button scale */
 }
 
+/* Menu Toggle Icon Visibility */
+.menu-toggle .open-icon,
+.menu-toggle .close-icon {
+    position: absolute;
+    transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+.menu-toggle .hidden {
+    display: none !important;
+}
+
+/* Blog Post Content - Hide duplicate title */
+.blog-post-content>h1:first-child,
+.blog-post-content>h2:first-child,
+.blog-post-content>.block-header:first-child {
+    display: none;
+}
+
 .hamburger-box {
     width: 24px;
     height: 24px;
@@ -4390,11 +4459,6 @@ ol.block-list {
     visibility: visible;
 }
 
-/* Hide original header toggle when menu is open */
-.mega-menu.active~.header .menu-toggle,
-.header:has(~ .mega-menu.active) .menu-toggle {
-    display: none !important;
-}
 
 .mega-menu-container {
     max-width: 1440px;
@@ -4419,9 +4483,12 @@ ol.block-list {
     box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
 }
 
-.header.scrolled .logo,
-.header.menu-open .logo {
+.header.scrolled .logo {
     color: var(--text-dark) !important;
+}
+
+.header.menu-open .logo {
+    color: #ffffff !important;
 }
 
 .header.scrolled .lang-btn,

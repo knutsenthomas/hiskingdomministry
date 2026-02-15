@@ -45,41 +45,40 @@
             <a href="index.html" class="flex items-center gap-3 font-bold text-white transition-all duration-300 logo">
                 <div
                     class="w-[45px] h-[45px] flex items-center justify-center rounded-full overflow-hidden shrink-0 logo-icon">
-                    <img src="../img/Logo sirkel - orange og hvit.png" alt="His Kingdom Ministry Logo"
+                    <img src="img/Logo sirkel - orange og hvit.png" alt="His Kingdom Ministry Logo"
                         class="w-full h-full object-cover">
                 </div>
-                <span class="text-xl text-white">His Kingdom Ministry</span>
+                <span class="text-xl">His Kingdom Ministry</span>
             </a>
 
-            <!-- Right Actions: Language + Donate + Hamburger -->
+            <!-- Right Actions: Donate + Language + Hamburger -->
             <div class="flex items-center gap-5 header-actions">
-                <!-- Desktop Language Switcher -->
                 <div class="lang-switcher relative group">
                     <button
                         class="flex items-center gap-2 text-white font-medium hover:text-primary-orange transition-colors lang-btn">
-                        <i class="fas fa-globe text-lg"></i> <span>EN</span>
+                        <i class="fas fa-globe text-lg"></i> <span>NO</span>
                     </button>
                     <div
                         class="lang-dropdown absolute right-0 mt-2 w-40 bg-white shadow-xl rounded-lg py-2 hidden group-hover:block border border-gray-100">
-                        <a href="../podcast.html" class="block px-4 py-2 text-gray-800 hover:bg-gray-50">🇳🇴 Norsk</a>
-                        <a href="podcast.html" class="block px-4 py-2 text-gray-800 hover:bg-gray-50 font-bold">🇺🇸
-                            English</a>
-                        <a href="../es/podcast.html" class="block px-4 py-2 text-gray-800 hover:bg-gray-50">🇪🇸
-                            Español</a>
+                        <a href="#" class="block px-4 py-2 text-gray-800 hover:bg-gray-50 lang-switch-btn"
+                            data-lang="no">🇳🇴 Norsk</a>
+                        <a href="#" class="block px-4 py-2 text-gray-800 hover:bg-gray-50 lang-switch-btn"
+                            data-lang="en">🇺🇸 English</a>
+                        <a href="#" class="block px-4 py-2 text-gray-800 hover:bg-gray-50 lang-switch-btn"
+                            data-lang="es">🇪🇸 Español</a>
                     </div>
                 </div>
-
-                <a href="donations.html"
+                <a href="donasjoner.html"
                     class="hidden md:flex items-center gap-2 px-6 py-3 rounded-full font-semibold text-white bg-gradient-to-br from-[#f39c12] to-[#e74c3c] hover:scale-105 transition-transform header-donate-btn">
-                    Donate <i class="fas fa-heart text-sm"></i>
+                    Gi gave <i class="fas fa-heart text-sm"></i>
                 </a>
 
                 <!-- Unified Toggle Button -->
                 <button
-                    class="w-[50px] h-[50px] rounded-full flex items-center justify-center cursor-pointer transition-all duration-300 bg-gradient-to-br from-[#f39c12] to-[#e74c3c] hover:scale-105 text-white active:scale-95 z-[10002]"
-                    id="menu-toggle" aria-label="Toggle menu">
-                    <i class="fas fa-bars text-xl transition-all duration-300 open-icon"></i>
-                    <i class="fas fa-times text-xl transition-all duration-300 close-icon hidden"></i>
+                    class="menu-toggle h-10 w-10 rounded-full flex items-center justify-center text-white bg-gradient-to-br from-[#f39c12] to-[#e74c3c] transition-transform hover:scale-105 focus:outline-none focus:ring-0 relative"
+                    id="menu-toggle" aria-label="Toggle meny">
+                    <i class="fas fa-bars text-lg open-icon"></i>
+                    <i class="fas fa-times text-lg close-icon hidden"></i>
                 </button>
             </div>
         </div>
@@ -168,7 +167,7 @@
 
 
     <!-- Page Hero -->
-    <section class="page-hero" style="padding-top: 160px;">
+    <section class="page-hero" data-content-key="hero.backgroundImage" style="padding-top: 160px;">
         <div class="container">
             <h1 class="page-hero-title">Podcast</h1>
             <p class="page-hero-subtitle">Listen to inspiring episodes about faith and life</p>

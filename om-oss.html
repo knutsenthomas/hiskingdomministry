@@ -50,8 +50,23 @@
                 <span class="text-xl">His Kingdom Ministry</span>
             </a>
 
-            <!-- Right Actions: Donate + Hamburger -->
+            <!-- Right Actions: Donate + Language + Hamburger -->
             <div class="flex items-center gap-5 header-actions">
+                <div class="lang-switcher relative group">
+                    <button
+                        class="flex items-center gap-2 text-white font-medium hover:text-primary-orange transition-colors lang-btn">
+                        <i class="fas fa-globe text-lg"></i> <span>NO</span>
+                    </button>
+                    <div
+                        class="lang-dropdown absolute right-0 mt-2 w-40 bg-white shadow-xl rounded-lg py-2 hidden group-hover:block border border-gray-100">
+                        <a href="#" class="block px-4 py-2 text-gray-800 hover:bg-gray-50 lang-switch-btn"
+                            data-lang="no">🇳🇴 Norsk</a>
+                        <a href="#" class="block px-4 py-2 text-gray-800 hover:bg-gray-50 lang-switch-btn"
+                            data-lang="en">🇺🇸 English</a>
+                        <a href="#" class="block px-4 py-2 text-gray-800 hover:bg-gray-50 lang-switch-btn"
+                            data-lang="es">🇪🇸 Español</a>
+                    </div>
+                </div>
                 <a href="donasjoner.html"
                     class="hidden md:flex items-center gap-2 px-6 py-3 rounded-full font-semibold text-white bg-gradient-to-br from-[#f39c12] to-[#e74c3c] hover:scale-105 transition-transform header-donate-btn">
                     Gi gave <i class="fas fa-heart text-sm"></i>
@@ -59,10 +74,10 @@
 
                 <!-- Unified Toggle Button -->
                 <button
-                    class="w-[50px] h-[50px] rounded-full flex items-center justify-center cursor-pointer transition-all duration-300 bg-gradient-to-br from-[#f39c12] to-[#e74c3c] hover:scale-105 text-white active:scale-95 z-[10002]"
+                    class="menu-toggle h-10 w-10 rounded-full flex items-center justify-center text-white bg-gradient-to-br from-[#f39c12] to-[#e74c3c] transition-transform hover:scale-105 focus:outline-none focus:ring-0 relative"
                     id="menu-toggle" aria-label="Toggle meny">
-                    <i class="fas fa-bars text-xl transition-all duration-300 open-icon"></i>
-                    <i class="fas fa-times text-xl transition-all duration-300 close-icon hidden"></i>
+                    <i class="fas fa-bars text-lg open-icon"></i>
+                    <i class="fas fa-times text-lg close-icon hidden"></i>
                 </button>
             </div>
         </div>
@@ -105,7 +120,7 @@
                         <h3 class="menu-section-title">Engasjer deg</h3>
                         <ul class="mega-nav-list">
                             <li><a href="donasjoner.html">Støtt arbeidet</a></li>
-                            <li><a href="donasjoner.html#faste-givere">Bli fast giver</a></li>
+                            <li><a href="bli-fast-giver.html">Bli fast giver</a></li>
                             <li><a href="for-menigheter.html">For menigheter</a></li>
                             <li><a href="for-bedrifter.html">For bedrifter</a></li>
                             <li><a href="bnn.html">Business Network</a></li>
@@ -116,9 +131,7 @@
                     <div class="menu-col">
                         <h3 class="menu-section-title">Bli kjent med oss</h3>
                         <ul class="mega-nav-list">
-                            <li><a href="om-oss.html">Om stiftelsen</a></li>
-                            <li><a href="om-oss.html#historie">Vår historie</a></li>
-                            <li><a href="kontakt.html">Her arbeider vi</a></li>
+                            <li><a href="om-oss.html">Om oss</a></li>
                             <li><a href="kontakt.html">Kontakt oss</a></li>
                         </ul>
                     </div>
@@ -151,11 +164,12 @@
 
 
     <!-- Page Hero -->
-    <section class="page-hero" style="padding-top: 160px;">
+    <section class="page-hero" data-content-key="hero.backgroundImage"
+        style="background-image: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)), url('https://images.unsplash.com/photo-1529070538774-1843cb3265df?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80');">
         <div class="container">
-            <h1 class="page-hero-title" data-content-key="hero.title">Hvem er vi</h1>
-            <p class="page-hero-subtitle" data-content-key="hero.subtitle">Lær mer om His Kingdom Ministry og hjertene
-                bak tjenesten.</p>
+            <h1 class="page-hero-title" data-content-key="hero.title">Om Oss</h1>
+            <p class="page-hero-subtitle" data-content-key="hero.subtitle">Lær mer om vår visjon, oppdrag og historie
+            </p>
         </div>
     </section>
 
@@ -175,12 +189,11 @@
                 </div>
 
                 <div class="about-content">
-                    <span class="section-label" data-content-key="intro.label">Hvem er vi</span>
-                    <h2 class="section-title" data-content-key="intro.title">His Kingdom Ministry</h2>
-                    <p class="section-text" data-content-key="intro.text">His Kingdom Ministry er en kristen
-                        organisasjon med base i Lyngdal. Vi driver med undervisning, bønn og misjon, og ønsker å hjelpe
-                        folk å vokse i troen sin. Vi har blant annet en podcast med ukentlige andakter, og vi
-                        arrangerer ulike samlinger og seminarer.</p>
+                    <span class="section-label" data-content-key="intro.label">Velkommen til Fellesskapet</span>
+                    <h2 class="section-title" data-content-key="intro.title">Vi er en Non-Profit Organisasjon</h2>
+                    <p class="section-text" data-content-key="intro.text">His Kingdom Ministry driver med åndelig
+                        samlinger som bønnemøter, undervisningseminarer, og forkynnende reisevirksomhet. Vi ønsker å
+                        være et felleskap der mennesker kan vokse i sin tro og relasjon til Jesus.</p>
 
                     <a href="kontakt.html" class="btn btn-primary">Kontakt oss</a>
                 </div>
@@ -192,10 +205,11 @@
     <section class="vision-values">
         <div class="container">
             <div class="section-header center">
-                <span class="section-label" data-content-key="values.label">Vår historie</span>
-                <h2 class="section-title" data-content-key="values.title">Hvordan det begynte: A Journey of Love</h2>
+                <span class="section-label" data-content-key="values.label">Om oss</span>
+                <h2 class="section-title" data-content-key="values.title">Hva Vi Står For</h2>
             </div>
-            <p class="section-description" data-content-key="values.bible.text">Kommer mer snart...</p>
+            <p class="section-description" data-content-key="values.bible.text">Vi forankrer alt vi gjør i Guds ord og
+                søker å leve etter Bibelens prinsipper.</p>
         </div>
     </section>
 
@@ -275,7 +289,7 @@
                 <p>Vi ønsker å være et sted der du kan vokse i din tro og oppleve Guds nærvær.</p>
                 <div class="cta-buttons">
                     <a href="arrangementer.html" class="btn btn-primary">Se arrangementer</a>
-                    <a href="kontakt.html" class="btn btn-outline">Kontakt oss</a>
+                    <a href="kontakt.html" class="btn btn-primary">Kontakt oss</a>
                 </div>
             </div>
         </div>
@@ -305,7 +319,7 @@
                             <h4>Om oss</h4>
                             <ul>
                                 <li><a href="index.html#hjem">Hjem</a></li>
-                                <li><a href="om-oss.html">Hvem er vi?</a></li>
+                                <li><a href="om-oss.html">Om oss</a></li>
                                 <li><a href="om-oss.html#visjon">Vår visjon</a></li>
                                 <li><a href="kontakt.html">Kontakt oss</a></li>
                             </ul>
